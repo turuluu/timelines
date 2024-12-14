@@ -51,25 +51,24 @@ main(int argc, char** argv)
         *e | startYear | endYear;
     }
 
-    RenderingController controller;
+    auto controller = new RenderingController();
+    {
+        auto r1 = controller->own(new Horizontal());
+        r1->year_range.start = -430;
+        r1->year_range.end = 0;
+        r1->render_range(Global::instance().data, &r1->year_range);
 
-   
-    Renderer* r1 = new Horizontal();
-    r1->year_range.start = -430;
-    r1->year_range.end = 0;
-    r1->render_range(Global::instance().data, &r1->year_range);
-    controller.renderer_container.emplace_back(r1);
+        auto r0 = controller->own(new Vertical());
+        r0->year_range.start = -430;
+        r0->year_range.end = 0;
+        r0->render_range(Global::instance().data, &r0->year_range);
 
-    Renderer* r0 = new Vertical();
-    r0->year_range.start = -430;
-    r0->year_range.end = 0;
-    r0->render_range(Global::instance().data, &r0->year_range);
-    controller.renderer_container.emplace_back(r0);
- 
-    controller.renderer = controller.renderer_container.back().get();
+        controller->set_current(r0);
+    }
 
-    EventHandler evh{&controller};
-    evh.handleEvents();
+    auto app = Application::own(new SdlEventHandler(), controller);
+    app.loop();
+
 #endif
 
   // return res + client_stuff_return_code; // the result from doctest is propagated here as well

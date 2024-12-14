@@ -78,7 +78,10 @@ struct Renderer
 
     virtual void render_range(std::vector<EntityPtr>& _entities, YearRange* yrRange) = 0;
 
-    virtual void render_entity_box(SDL_Rect& r, Entity* e, uint8_t borderColour, uint8_t fillColour) const = 0;
+    virtual void render_entity_box(SDL_Rect& r,
+                                   Entity* e,
+                                   uint8_t borderColour,
+                                   uint8_t fillColour) const = 0;
 
     virtual void draw_grid(int year_start, int year_end, const double scale_x) const {};
 
@@ -143,6 +146,24 @@ struct RenderingController
     void button_right_drag() {}
 
     void paint() {}
+
+    void set_current(Renderer* renderer_ptr)
+    {
+        auto it =
+          std::find_if(renderer_container.begin(),
+                       renderer_container.end(),
+                       [&renderer_ptr](auto& uniq_ptr) { return uniq_ptr.get() == renderer_ptr; });
+
+        if (it != renderer_container.end())
+            renderer = it->get();
+        // TODO : error handling
+    }
+
+    Renderer* own(Renderer* new_renderer)
+    {
+        renderer_container.emplace_back(new_renderer);
+        return renderer_container.back().get();
+    }
 
     bool toggle{ true };
     std::vector<std::unique_ptr<Renderer>> renderer_container;
@@ -222,15 +243,15 @@ struct Vertical : Renderer
             const size_t lane_index =
               lane(max_entities_in_interval, entity_start_year, entity_end_year);
 
-//            e->bounds.x = 10 + (w * lane_index);
-//            e->bounds.y = rect_start_y * scale_y;
-//            e->bounds.h = (rect_end_y - rect_start_y) * scale_y;
-//            e->bounds.w = w;
+            //            e->bounds.x = 10 + (w * lane_index);
+            //            e->bounds.y = rect_start_y * scale_y;
+            //            e->bounds.h = (rect_end_y - rect_start_y) * scale_y;
+            //            e->bounds.w = w;
 
-//            r.x = e->bounds.x;
-//            r.y = e->bounds.y;
-//            r.w = e->bounds.w;
-//            r.h = e->bounds.h;
+            //            r.x = e->bounds.x;
+            //            r.y = e->bounds.y;
+            //            r.w = e->bounds.w;
+            //            r.h = e->bounds.h;
 
             SDL_Rect r;
             r.x = 10 + (w * lane_index);
@@ -262,7 +283,10 @@ struct Vertical : Renderer
         //        SDL_Delay(50);
     }
 
-    void render_entity_box(SDL_Rect& r, Entity* e, uint8_t colour_border, uint8_t colour_fill) const override
+    void render_entity_box(SDL_Rect& r,
+                           Entity* e,
+                           uint8_t colour_border,
+                           uint8_t colour_fill) const override
     {
         // outline
         SDL_SetRenderDrawColor(g.ren, 0xFF, 0xFF, 0xFF, 0x20);
@@ -398,7 +422,10 @@ struct Horizontal : Renderer
     }
 
     // TODO : probably can be refactored to a free function for both renderers
-    void render_entity_box(SDL_Rect& r, Entity* e, uint8_t borderColour, uint8_t fillColour) const override
+    void render_entity_box(SDL_Rect& r,
+                           Entity* e,
+                           uint8_t borderColour,
+                           uint8_t fillColour) const override
     {
         // fill
         SDL_SetRenderDrawColor(g.ren,
@@ -440,7 +467,11 @@ struct Horizontal : Renderer
 
 // render_range(..., auto max_h = screen_h - 80, screen_h)
 static void
-render_range(Renderer& renderer, std::vector<Renderer::EntityPtr>& _entities, YearRange* year_range, int max_dim, int scale_nom)
+render_range(Renderer& renderer,
+             std::vector<Renderer::EntityPtr>& _entities,
+             YearRange* year_range,
+             int max_dim,
+             int scale_nom)
 {
     const auto render_start = year_range->start;
     const auto render_end = year_range->end;
