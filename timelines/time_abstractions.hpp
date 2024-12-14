@@ -19,7 +19,7 @@
 #include "calendars.hpp"
 #include "details/utilities.h"
 #include "entities.hpp"
-#include "globals.hpp"
+#include "spec.hpp"
 #include "time_abstractions.hpp"
 
 
@@ -53,8 +53,8 @@ static YearRange new_scaled_year_range(const Sint32 value,
     const float mid = (year_range->start + year_range->end) * mid_point;
     const float end = year_range->end;
 
-    const int newStart = year_limits((int)(((start - mid) * timescale) + mid));
-    const int newEnd = year_limits((int)(((end - mid) * timescale) + mid));
-    return { newStart, newEnd };
+    const int new_start = year_limits((int)(((start - mid) * timescale) + mid));
+    const int new_end = year_limits((int)(((end - mid) * timescale) + mid));
+    return { new_start, new_end };
 }
 }

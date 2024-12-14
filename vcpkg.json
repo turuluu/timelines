@@ -1,10 +1,7 @@
 {
-  "dependencies": [
-    "zlib",
-    "bzip2",
-    "sdl2",
-    "sdl2-ttf",
-    "cpr",
-    "nlohmann-json"
-  ]
+  "dependencies" : [ "zlib", "bzip2", "sdl2", "sdl2-ttf", "nlohmann-json", {
+    "name" : "cpr",
+    "version>=" : "1.10.2+3"
+  } ],
+  "builtin-baseline": "a5d91f7d264786b42b0d6bb7b1d31a3f2842a39c"
 }

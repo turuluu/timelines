@@ -5,7 +5,7 @@
 
 #include "details/utilities.h"
 #include "entities.hpp"
-#include "globals.hpp"
+#include "spec.hpp"
 
 namespace tl
 {
