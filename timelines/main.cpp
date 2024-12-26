@@ -32,7 +32,7 @@ main(int argc, char** argv)
     int client_stuff_return_code = 0;
 #endif
 #ifndef TESTS_ONLY
-    using namespace tl;
+    using namespace tls;
     ScopedGraphics sc_g(screen_w, screen_h);
 
     // path to csv

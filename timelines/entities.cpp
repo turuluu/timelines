@@ -21,7 +21,7 @@ TEST_CASE("testing entities")
 }
 #endif
 
-namespace tl
+namespace tls
 {
 
 Entity::Entity(std::string _name)

@@ -12,7 +12,7 @@
 
 #include "utilities.h"
 
-namespace tl
+namespace tls
 {
 static struct Graphics
 {

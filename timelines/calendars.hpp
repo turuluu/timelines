@@ -7,11 +7,11 @@
 #include "entities.hpp"
 #include "spec.hpp"
 
-namespace tl
+namespace tls
 {
-tl::idx_t year_to_index(tl::year_t year);
-tl::year_t index_to_year(tl::idx_t index);
-tl::year_t year_limits(tl::year_t year);
+tls::idx_t year_to_index(tls::year_t year);
+tls::year_t index_to_year(tls::idx_t index);
+tls::year_t year_limits(tls::year_t year);
 
 struct TimeInterface
 {
@@ -26,7 +26,7 @@ struct Years
     Years() = default;
     ~Years();
 
-    std::array<size_t, tl::MAX_BINS> year_bins{ 0 };
+    std::array<size_t, tls::MAX_BINS> year_bins{ 0 };
 
     void insert(Entity* e);
     void clear();

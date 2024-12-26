@@ -10,3 +10,12 @@
   - [ ] nesting tiler
 - [ ] cool stuff
   - [ ] LLM to figure out what is event-entity data from crap
+- [◤] controls
+  - [◤] zoom gesture
+    - [▣] it's now mapped to scroll up/down
+    - [ ] pinch
+- [ ] path resolving for csv files
+- [ ] calendars - underlying timekeeping framework
+- [ ] multithreaded event, render, messages
+
+

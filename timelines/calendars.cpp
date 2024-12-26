@@ -2,27 +2,27 @@
 
 #include "calendars.hpp"
 
-namespace tl
+namespace tls
 {
-tl::idx_t
-year_to_index(tl::year_t year)
+tls::idx_t
+year_to_index(tls::year_t year)
 {
-    const auto index = util::limit<tl::idx_t>(0, tl::MAX_BINS - 1, tl::BINS_SPLIT + year);
-    assert(index >= 0 && index < tl::MAX_BINS);
+    const auto index = util::limit<tls::idx_t>(0, tls::MAX_BINS - 1, tls::BINS_SPLIT + year);
+    assert(index >= 0 && index < tls::MAX_BINS);
     return index;
 }
 
-tl::year_t
-index_to_year(tl::idx_t index)
+tls::year_t
+index_to_year(tls::idx_t index)
 {
-    const tl::year_t year = index - tl::BINS_SPLIT;
+    const tls::year_t year = index - tls::BINS_SPLIT;
     return year;
 }
 
-tl::year_t
-year_limits(tl::year_t year)
+tls::year_t
+year_limits(tls::year_t year)
 {
-    return util::limit<tl::year_t>(-tl::BINS_SPLIT, tl::MAX_BINS - tl::BINS_SPLIT, year);
+    return util::limit<tls::year_t>(-tls::BINS_SPLIT, tls::MAX_BINS - tls::BINS_SPLIT, year);
 }
 ////////////////////////////////////////////////////////////////////////////////
 

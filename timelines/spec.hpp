@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace tl
+namespace tls
 {
 
 using int_pixels_t = uint16_t;

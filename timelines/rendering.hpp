@@ -5,7 +5,7 @@
 #include "resource_mgr.hpp"
 #include "time_abstractions.hpp"
 
-namespace tl
+namespace tls
 {
 struct MouseMove
 {
