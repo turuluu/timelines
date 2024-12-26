@@ -33,7 +33,7 @@ main(int argc, char** argv)
 #endif
 #ifndef TESTS_ONLY
     using namespace tls;
-    ScopedGraphics sc_g(screen_w, screen_h);
+    ScopedGraphics sc_g(spec::screen_w, spec::screen_h);
 
     // path to csv
     auto basepath = std::filesystem::path(std::string(SDL_GetBasePath()));
@@ -44,7 +44,9 @@ main(int argc, char** argv)
 
     // populate entities from csv
     in.read_header(io::ignore_extra_column, "name", "start", "end");
-    std::string name = ""; int startYear = 0; int endYear = 0;
+    std::string name;
+    int startYear = 0;
+    int endYear = 0;
     while(in.read_row(name, startYear, endYear)){
         std::cout << "name: " << name << " s: " << startYear << " e: " << endYear << "\n";
         auto* e = new Entity(name);

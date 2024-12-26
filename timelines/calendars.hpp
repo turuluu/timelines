@@ -26,7 +26,7 @@ struct Years
     Years() = default;
     ~Years();
 
-    std::array<size_t, tls::MAX_BINS> year_bins{ 0 };
+    std::array<size_t, tls::spec::max_bins> year_bins{ 0 };
 
     void insert(Entity* e);
     void clear();

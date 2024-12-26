@@ -34,7 +34,7 @@ struct YearRange
 
 static YearRange new_relative_year_range(const Sint32 xrel,
                         const YearRange* year_range,
-                        const int_pixels_t relative_max = screen_w)
+                        const int_pixels_t relative_max = spec::screen_w)
 {
     float scale = (float)(year_range->end - year_range->start) / relative_max;
     int scaled_x = xrel * scale;
@@ -43,8 +43,8 @@ static YearRange new_relative_year_range(const Sint32 xrel,
 
 static YearRange new_scaled_year_range(const Sint32 value,
                       const YearRange* year_range,
-                      const int_pixels_t mid_x = (screen_w / 2),
-                      const int_pixels_t relative_max = screen_w)
+                      const int_pixels_t mid_x = (spec::screen_w / 2),
+                      const int_pixels_t relative_max = spec::screen_w)
 {
     const float mid_point = 1.0f - ((float)mid_x / relative_max);
     constexpr float scale = 1e-2f;

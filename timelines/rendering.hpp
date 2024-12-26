@@ -107,7 +107,7 @@ struct RenderingController
         if (renderer == nullptr)
             return;
 
-        auto screen_dim = is_horizontal() ? screen_w : screen_h;
+        auto screen_dim = is_horizontal() ? spec::screen_w : spec::screen_h;
         YearRange* year_range = &renderer->year_range;
         YearRange timescaled = new_scaled_year_range(delta_y, year_range, x);
 
@@ -185,7 +185,7 @@ struct Vertical : Renderer
         SDL_SetRenderDrawColor(g.ren, 0x00, 0x00, 0x00, 0x00);
         SDL_RenderClear(g.ren);
 
-        lanes.resize(MAX_BINS);
+        lanes.resize(spec::max_bins);
     }
 
     ~Vertical() override
@@ -203,7 +203,7 @@ struct Vertical : Renderer
         //        std::cout << "rendering time frame [" << render_start << ", " <<
         //        render_end << "]\n";
         assert(render_start <= render_end);
-        auto maxW = screen_w / 2;
+        auto maxW = spec::screen_w / 2;
 
         std::vector<Entity*> selected_entities = select_from(_entities);
 
@@ -220,8 +220,8 @@ struct Vertical : Renderer
 
         const auto render_start_y = year_to_index(render_start);
         const auto render_end_y = year_to_index(render_end);
-        const auto interval = util::limit<int>(0, MAX_BINS, render_end_y - render_start_y);
-        const double scale_y = screen_h / (double)interval;
+        const auto interval = util::limit<int>(0, spec::max_bins, render_end_y - render_start_y);
+        const double scale_y = spec::screen_h / (double)interval;
 
         std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
 
@@ -265,14 +265,14 @@ struct Vertical : Renderer
             SDL_RenderDrawLine(g.ren,
                                r.x + r.w,
                                r.y + font_size / 2,
-                               screen_w / 2 + 20,
+                               spec::screen_w / 2 + 20,
                                r.y + font_size / 2);
 
             SDL_Rect rt;
-            rt.x = screen_w / 2 + 10;
+            rt.x = spec::screen_w / 2 + 10;
             rt.y = rect_start_y * scale_y;
             rt.h = font_size;
-            rt.w = screen_w / 2 - 20;
+            rt.w = spec::screen_w / 2 - 20;
 
             SDL_Color color{ 255, 255, 255, 0xDD };
             render_text(font, &color, &rt, e->name.c_str(), font_size);
@@ -318,7 +318,7 @@ struct Horizontal : Renderer
         SDL_SetRenderDrawColor(g.ren, 0x00, 0x00, 0x00, 0x00);
         SDL_RenderClear(g.ren);
 
-        lanes.resize(MAX_BINS);
+        lanes.resize(spec::max_bins);
     }
 
     ~Horizontal() override
@@ -340,14 +340,14 @@ struct Horizontal : Renderer
             {
                 SDL_SetRenderDrawColor(g.ren, 0x5F, 0x5F, 0x5F, 0x20);
                 const int x = (year_to_index(i) - start_idx) * scale_x;
-                SDL_RenderDrawLine(g.ren, x, 0, x, screen_h);
+                SDL_RenderDrawLine(g.ren, x, 0, x, spec::screen_h);
 
                 const int label_w = 50;
                 const int label_h = 20;
 
                 SDL_Rect grid_label_bounds;
                 grid_label_bounds.x = x - (label_w / 2);
-                grid_label_bounds.y = screen_h - label_h;
+                grid_label_bounds.y = spec::screen_h - label_h;
                 grid_label_bounds.w = label_w;
                 grid_label_bounds.h = label_h;
 
@@ -364,7 +364,7 @@ struct Horizontal : Renderer
 
         //    std::cout << "rendering time frame [" << render_start << ", " << render_end << "]\n";
         assert(render_start <= render_end);
-        auto max_h = screen_h - 80;
+        auto max_h = spec::screen_h - 80;
 
         std::vector<Entity*> selected_entities = select_from(_entities);
 
@@ -381,8 +381,8 @@ struct Horizontal : Renderer
 
         const auto render_start_x = year_to_index(render_start);
         const auto render_end_x = year_to_index(render_end);
-        const auto interval = util::limit<int>(0, MAX_BINS, render_end_x - render_start_x);
-        const double xScale = screen_w / (double)interval;
+        const auto interval = util::limit<int>(0, spec::max_bins, render_end_x - render_start_x);
+        const double xScale = spec::screen_w / (double)interval;
 
         std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
 
@@ -494,7 +494,7 @@ render_range(Renderer& renderer,
 
     const auto render_start_pos = year_to_index(render_start);
     const auto render_end_pos = year_to_index(render_end);
-    const auto interval = util::limit<int>(0, MAX_BINS, render_end_pos - render_start_pos);
+    const auto interval = util::limit<int>(0, spec::max_bins, render_end_pos - render_start_pos);
     const double scale = scale_nom / (double)interval;
 
     std::fill(renderer.lanes.begin(), renderer.lanes.end(), std::numeric_limits<uint8_t>::max());
