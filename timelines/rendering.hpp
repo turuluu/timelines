@@ -37,7 +37,8 @@ struct Renderer
     std::vector<Entity*> select_from(std::vector<EntityPtr>& _entities) const
     {
         std::vector<Entity*> selected_entities;
-        Global::instance().years->clear();
+        years().clear();
+        // Global::instance().years->clear();
         for (auto& e : _entities)
         {
             if (e->start_year < year_range.end && e->end_year > year_range.start)

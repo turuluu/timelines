@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "entities.hpp"
 #include "resource_mgr.hpp"
 
