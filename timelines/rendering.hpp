@@ -7,10 +7,9 @@
 
 namespace tls
 {
-struct ATimer
+struct ITimer
 {
-    virtual ~ATimer() = default;
-
+    virtual ~ITimer() = default;
     virtual void wait_ms(size_t delay_ms) const = 0;
 
     /**
@@ -107,7 +106,6 @@ struct ThreadPool
 {
 };
 
-struct ATimer;
 struct RenderingController
 {
     RenderingController() = default;
@@ -118,8 +116,11 @@ struct RenderingController
     void wait_until_next_frame() const
     {
         auto time_delta_ms = timer->get_ms_since_start();
-        auto delay_ms = frame_interval_ms - (time_delta_ms - last_frame_ms);
-        timer->wait_ms(delay_ms);
+        auto elapsed_ms = time_delta_ms - last_frame_ms;
+        if (elapsed_ms >= frame_interval_ms)
+            return;
+        else
+            timer->wait_ms(frame_interval_ms - elapsed_ms);
     }
 
     void scroll_y(int delta_y, int x, int y) const
@@ -165,8 +166,6 @@ struct RenderingController
 
     void button_right_drag() {}
 
-    void paint() {}
-
     void set_current(Renderer* renderer_ptr)
     {
         auto it =
@@ -188,7 +187,7 @@ struct RenderingController
     bool toggle{ true };
     size_t frame_interval_ms{};
     size_t last_frame_ms{};
-    std::unique_ptr<ATimer> timer;
+    std::unique_ptr<ITimer> timer;
     std::vector<std::unique_ptr<Renderer>> renderer_container;
     Renderer* renderer = nullptr;
 };

@@ -71,11 +71,13 @@ struct Application
     }
     void loop()
     {
+        controller->last_frame_ms = controller->timer->get_ms_since_start();
         while (is_running)
         {
             event_handler->handle_events(events);
             controller->wait_until_next_frame();
             process_events();
+            controller->last_frame_ms = controller->timer->get_ms_since_start();
         }
     }
     bool is_running{ true };
@@ -131,7 +133,7 @@ struct EventHandler : IEventHandler
     const float wheel_y_mult = 6.5f;
 };
 
-struct Timer : ATimer
+struct Timer : ITimer
 {
     [[nodiscard]] size_t get_ms_since_start() const override { return SDL_GetTicks(); }
     void wait_ms(size_t ms) const override { SDL_Delay(ms); }

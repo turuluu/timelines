@@ -17,43 +17,41 @@ limit(Type min, Type max, Type value)
 
 size_t length(const char* cstr);
 
-template <typename T>
-std::string stream_to_string(T obj)
+template<typename... T>
+std::string
+to_string(T... obj)
 {
-    return (std::stringstream {} << obj).str();
+    return (std::stringstream{} << ... << obj).str();
 }
 
 std::string get_thread_id();
 
 }
 
-// Convenience logging, for example for clion which can create hyperlinks from these print outs
+// Thread, Stack, Location debug print helper
+#define TSL_PRINT_ENABLED 0
+#if TSL_PRINT_ENABLED
+#ifndef PRINT_TSL
+#if defined(_MSC_VER)
+#ifndef __PRETTY_FUNCTION__
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+#endif
+
 #ifndef FILE_LOC
-    #define FILE_LOC (std::stringstream {} << __FILE__ << ":" << __LINE__).str()
+#define FILE_LOC util::to_string(__FILE__, ":", __LINE__)
+#endif
 
-    #if defined(_MSC_VER)
-        #ifndef __PRETTY_FUNCTION__
-            #define __PRETTY_FUNCTION__ __FUNCSIG__
-        #endif
-    #endif
-
-    // Print thread, class and location (file:line_n). This is not bound to DEBUG and will log even
-    // in pace builds - which is intentional use TCL_PRINT_ENABLED dummy definition to disable the
-    // annoying logs for local builds
-    #define TCL_PRINT_ENABLED 1
-    #if TCL_PRINT_ENABLED
-        #define PRINT_TCL                          \
-            do                                     \
-            {                                      \
-                printf(                            \
-                    "T[ %s ]\tC[ %s ]\tL[ %s ]\n", \
-                    util::get_thread_id().c_str(), \
-                    __PRETTY_FUNCTION__,           \
-                    FILE_LOC.c_str()               \
-                );                                 \
-                fflush(NULL);                      \
-            } while (0);
-    #else
-        #define PRINT_TCL ;
-    #endif // TCL_PRINT_ENABLED
+#define PRINT_TSL                                                                                  \
+    do                                                                                             \
+    {                                                                                              \
+        printf("T[ %s ]\tS[ %s ]\tL[ %s ]\n",                                                      \
+               util::get_thread_id().c_str(),                                                      \
+               __PRETTY_FUNCTION__,                                                                \
+               FILE_LOC.c_str());                                                                  \
+        fflush(NULL);                                                                              \
+    } while (0);
+#else
+#define PRINT_TSL ;
+#endif // TSL
 #endif
