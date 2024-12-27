@@ -14,6 +14,17 @@
 
 namespace tls
 {
+// Using SDL types
+using i8 = Sint8;
+using i16 = Sint16;
+using i32 = Sint32;
+using i64 = Sint64;
+
+using u8 = Uint8;
+using u16 = Uint16;
+using u32 = Uint32;
+using u64 = Uint64;
+
 static struct Graphics
 {
     SDL_Window* win;
@@ -41,7 +52,11 @@ get_title_font(int fontSize)
 }
 
 static void
-render_text(TTF_Font* font, SDL_Color* color, SDL_Rect* msgBounds, const char* text, int ptsize = 40)
+render_text(TTF_Font* font,
+            SDL_Color* color,
+            SDL_Rect* msgBounds,
+            const char* text,
+            int ptsize = 40)
 {
     if (font == nullptr || text == nullptr)
     {

@@ -20,8 +20,8 @@ struct ITimer
 
 struct MouseMove
 {
-    Sint32 x;
-    Sint32 y;
+    i32 x;
+    i32 y;
 };
 
 struct Renderer
@@ -73,7 +73,7 @@ struct Renderer
             auto lanes_end = std::begin(lanes) + year_to_index(end);
             if (std::all_of(lanes_begin,
                             lanes_end,
-                            [&](Uint8 ui) { return (bool)Uint8(1 << lane & ui); }))
+                            [&](u8 ui) { return (bool)u8(1 << lane & ui); }))
             {
                 // mark lane
                 auto marked_begin = std::begin(lanes) + year_to_index(start);
@@ -99,7 +99,7 @@ struct Renderer
 
     // TODO : consider other options, state in interface..
     YearRange year_range;
-    std::vector<Uint8> lanes;
+    std::vector<u8> lanes;
     Flavour flavour = Flavour::Horizontal;
 };
 
@@ -147,7 +147,7 @@ struct RenderingController
         if (renderer == nullptr)
             return;
 
-        const Sint32 multiplied_value =
+        const i32 multiplied_value =
           is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
 
         YearRange* year_range = &renderer->year_range;
@@ -239,7 +239,7 @@ struct Vertical : Renderer
         clear();
 
         assert(!_entities.empty());
-        Uint8 colour_incr = 255 / _entities.size();
+        u8 colour_incr = 255 / _entities.size();
 
         const auto render_start_y = year_to_index(render_start);
         const auto render_end_y = year_to_index(render_end);
@@ -281,8 +281,8 @@ struct Vertical : Renderer
             r.y = rect_start_y * scale_y;
             r.h = (rect_end_y - rect_start_y) * scale_y;
             r.w = w;
-            const Uint8 colour_fill = e->id * colour_incr;
-            const Uint8 colour_border = colour_fill + colour_incr;
+            const u8 colour_fill = e->id * colour_incr;
+            const u8 colour_border = colour_fill + colour_incr;
 
             render_entity_box(r, e, colour_border, colour_fill);
             SDL_RenderDrawLine(g.ren,
@@ -385,7 +385,6 @@ struct Horizontal : Renderer
         const auto render_start = year_range->start;
         const auto render_end = year_range->end;
 
-        //    std::cout << "rendering time frame [" << render_start << ", " << render_end << "]\n";
         assert(render_start <= render_end);
         auto max_h = spec::screen_h - 80;
 
@@ -400,7 +399,7 @@ struct Horizontal : Renderer
         clear();
 
         assert(_entities.size() > 0);
-        Uint8 colour_incr = 255 / _entities.size();
+        u8 colour_incr = 255 / _entities.size();
 
         const auto render_start_x = year_to_index(render_start);
         const auto render_end_x = year_to_index(render_end);
@@ -433,8 +432,8 @@ struct Horizontal : Renderer
             r.w = (rect_end_x - rect_start_x) * xScale;
             r.h = h;
 
-            const Uint8 fillColour = e->id * colour_incr;
-            const Uint8 borderColour = fillColour + colour_incr;
+            const u8 fillColour = e->id * colour_incr;
+            const u8 borderColour = fillColour + colour_incr;
 
             render_entity_box(r, e, borderColour, fillColour);
         }
@@ -513,7 +512,7 @@ render_range(Renderer& renderer,
     clear();
 
     assert(_entities.size() > 0);
-    Uint8 colour_incr = 255 / _entities.size();
+    u8 colour_incr = 255 / _entities.size();
 
     const auto render_start_pos = year_to_index(render_start);
     const auto render_end_pos = year_to_index(render_end);
@@ -547,8 +546,8 @@ render_range(Renderer& renderer,
         r.w = (rect_end_x - rect_start_x) * scale;
         r.h = h;
 
-        const Uint8 fillColour = e->id * colour_incr;
-        const Uint8 borderColour = fillColour + colour_incr;
+        const u8 fillColour = e->id * colour_incr;
+        const u8 borderColour = fillColour + colour_incr;
 
         renderer.render_entity_box(r, e, borderColour, fillColour);
     }

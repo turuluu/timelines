@@ -9,7 +9,7 @@ struct Events
     bool should_quit{ false };
     bool toggle_renderer{ false };
     std::deque<MouseMove> mouse;
-    std::deque<Sint32> wheel;
+    std::deque<i32> wheel;
 };
 
 
@@ -23,7 +23,7 @@ struct Application
   private:
     Application(IEventHandler* specific_event_handler, RenderingController* controller_ptr)
       : event_handler(specific_event_handler)
-      , controller(controller_ptr)
+      , ui(controller_ptr)
     {
     }
 
@@ -42,11 +42,11 @@ struct Application
 
         if (events.toggle_renderer)
         {
-            controller->toggle_renderer();
+            ui->toggle_renderer();
             events.toggle_renderer = false;
         }
 
-        Sint32 y_scroll_delta = 0;
+        i32 y_scroll_delta = 0;
         while (!events.wheel.empty())
         {
             y_scroll_delta += events.wheel.back();
@@ -56,7 +56,7 @@ struct Application
         {
             int x = 0, y = 0;
             SDL_GetMouseState(&x, &y);
-            controller->scroll_y(y_scroll_delta, x, y);
+            ui->scroll_y(y_scroll_delta, x, y);
         }
 
         MouseMove mouse_move_delta = { 0, 0 };
@@ -67,23 +67,23 @@ struct Application
             events.mouse.pop_back();
         }
         if (mouse_move_delta.x != mouse_move_delta.y != 0)
-            controller->button_left_drag(mouse_move_delta);
+            ui->button_left_drag(mouse_move_delta);
     }
     void loop()
     {
-        controller->last_frame_ms = controller->timer->get_ms_since_start();
+        ui->last_frame_ms = ui->timer->get_ms_since_start();
         while (is_running)
         {
             event_handler->handle_events(events);
-            controller->wait_until_next_frame();
+            ui->wait_until_next_frame();
             process_events();
-            controller->last_frame_ms = controller->timer->get_ms_since_start();
+            ui->last_frame_ms = ui->timer->get_ms_since_start();
         }
     }
     bool is_running{ true };
     Events events;
     std::unique_ptr<IEventHandler> event_handler;
-    std::unique_ptr<RenderingController> controller;
+    std::unique_ptr<RenderingController> ui;
 };
 
 namespace sdl
