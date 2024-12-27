@@ -1,12 +1,24 @@
 #pragma once
 
 #include "details/graphics.hpp"
-#include "details/utilities.h"
+#include "details/utilities.hpp"
 #include "resource_mgr.hpp"
 #include "time_abstractions.hpp"
 
 namespace tls
 {
+struct ATimer
+{
+    virtual ~ATimer() = default;
+
+    virtual void wait_ms(size_t delay_ms) const = 0;
+
+    /**
+     * time delta since initiation
+     */
+    [[nodiscard]] virtual size_t get_ms_since_start() const = 0;
+};
+
 struct MouseMove
 {
     Sint32 x;
@@ -95,12 +107,20 @@ struct ThreadPool
 {
 };
 
+struct ATimer;
 struct RenderingController
 {
     RenderingController() = default;
 
     bool is_horizontal() const { return renderer->flavour == Renderer::Flavour::Horizontal; }
     bool is_vertical() const { return renderer->flavour == Renderer::Flavour::Vertical; }
+    void set_refresh_rate(size_t refresh_rate) { frame_interval_ms = 1000 / refresh_rate; }
+    void wait_until_next_frame() const
+    {
+        auto time_delta_ms = timer->get_ms_since_start();
+        auto delay_ms = frame_interval_ms - (time_delta_ms - last_frame_ms);
+        timer->wait_ms(delay_ms);
+    }
 
     void scroll_y(int delta_y, int x, int y) const
     {
@@ -166,6 +186,9 @@ struct RenderingController
     }
 
     bool toggle{ true };
+    size_t frame_interval_ms{};
+    size_t last_frame_ms{};
+    std::unique_ptr<ATimer> timer;
     std::vector<std::unique_ptr<Renderer>> renderer_container;
     Renderer* renderer = nullptr;
 };

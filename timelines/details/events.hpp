@@ -11,32 +11,30 @@ struct Events
     std::deque<MouseMove> mouse;
     std::deque<Sint32> wheel;
 };
-struct EventHandler
+
+
+struct IEventHandler
 {
-    virtual ~EventHandler() { printf("Event Handler DTOR\n"); }
-    virtual void wait(size_t ms) const = 0;
+    virtual ~IEventHandler() { printf("Event Handler DTOR\n"); }
     virtual void handle_events(Events& events) = 0;
 };
 struct Application
 {
-private:
-    Application(EventHandler* specific_event_handler, RenderingController* controller_ptr)
+  private:
+    Application(IEventHandler* specific_event_handler, RenderingController* controller_ptr)
       : event_handler(specific_event_handler)
       , controller(controller_ptr)
     {
     }
 
-public:
-    static Application own(EventHandler* specific_event_handler, RenderingController*
-    controller_ptr)
+  public:
+    static Application own(IEventHandler* specific_event_handler,
+                           RenderingController* controller_ptr)
     {
-        return {specific_event_handler, controller_ptr};
+        return { specific_event_handler, controller_ptr };
     }
 
-    ~Application()
-    {
-        printf("Application DTOR\n");
-    }
+    ~Application() { printf("Application DTOR\n"); }
 
     void process_events()
     {
@@ -76,19 +74,20 @@ public:
         while (is_running)
         {
             event_handler->handle_events(events);
-            event_handler->wait(100);
+            controller->wait_until_next_frame();
             process_events();
         }
     }
     bool is_running{ true };
     Events events;
-    std::unique_ptr<EventHandler> event_handler;
+    std::unique_ptr<IEventHandler> event_handler;
     std::unique_ptr<RenderingController> controller;
 };
-struct SdlEventHandler : EventHandler
-{
-    void wait(size_t ms) const override { SDL_Delay(ms); }
 
+namespace sdl
+{
+struct EventHandler : IEventHandler
+{
     void handle_events(Events& events) override
     {
         SDL_Event e;
@@ -131,4 +130,11 @@ struct SdlEventHandler : EventHandler
 
     const float wheel_y_mult = 6.5f;
 };
+
+struct Timer : ATimer
+{
+    [[nodiscard]] size_t get_ms_since_start() const override { return SDL_GetTicks(); }
+    void wait_ms(size_t ms) const override { SDL_Delay(ms); }
+};
+}
 }

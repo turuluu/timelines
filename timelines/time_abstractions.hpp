@@ -17,7 +17,7 @@
 // #define SDL_MAIN_HANDLED
 
 #include "calendars.hpp"
-#include "details/utilities.h"
+#include "details/utilities.hpp"
 #include "entities.hpp"
 #include "spec.hpp"
 #include "time_abstractions.hpp"

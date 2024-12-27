@@ -3,7 +3,7 @@
 #include <array>
 #include <cassert>
 
-#include "details/utilities.h"
+#include "details/utilities.hpp"
 #include "entities.hpp"
 #include "spec.hpp"
 

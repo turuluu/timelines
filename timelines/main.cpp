@@ -65,10 +65,12 @@ main(int argc, char** argv)
         r0->year_range.end = 0;
         r0->render_range(Global::instance().data, &r0->year_range);
 
+        controller->timer = std::make_unique<sdl::Timer>();
+        controller->set_refresh_rate(60);
         controller->set_current(r0);
     }
 
-    auto app = Application::own(new SdlEventHandler(), controller);
+    auto app = Application::own(new sdl::EventHandler(), controller);
     app.loop();
 
 #endif
