@@ -53,24 +53,24 @@ main(int argc, char** argv)
         *e | startYear | endYear;
     }
 
-    auto controller = new RenderingController();
+    auto ui = new RenderingController();
     {
-        auto r1 = controller->own(new Horizontal());
-        r1->year_range.start = -430;
-        r1->year_range.end = 0;
-        r1->render_range(Global::instance().data, &r1->year_range);
+        auto renderer_h = ui->own(new Horizontal());
+        renderer_h->year_range.start = -430;
+        renderer_h->year_range.end = 0;
+        renderer_h->render_range(Global::instance().data, &renderer_h->year_range);
 
-        auto r0 = controller->own(new Vertical());
-        r0->year_range.start = -430;
-        r0->year_range.end = 0;
-        r0->render_range(Global::instance().data, &r0->year_range);
+        auto renderer_v = ui->own(new Vertical());
+        renderer_v->year_range.start = -430;
+        renderer_v->year_range.end = 0;
+        renderer_v->render_range(Global::instance().data, &renderer_v->year_range);
 
-        controller->timer = std::make_unique<sdl::Timer>();
-        controller->set_refresh_rate(60);
-        controller->set_current(r0);
+        ui->timer = std::make_unique<sdl::Timer>();
+        ui->set_refresh_rate(60);
+        ui->set_current(renderer_v);
     }
 
-    auto app = Application::own(new sdl::EventHandler(), controller);
+    auto app = Application::own(new sdl::EventHandler(), ui);
     app.loop();
 
 #endif
