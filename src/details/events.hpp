@@ -12,7 +12,6 @@ struct Events
     std::deque<i32> wheel;
 };
 
-
 struct IEventHandler
 {
     virtual ~IEventHandler() { printf("Event Handler DTOR\n"); }
@@ -20,21 +19,15 @@ struct IEventHandler
 };
 struct Application
 {
-  private:
-    Application(IEventHandler* specific_event_handler, RenderingController* controller_ptr)
-      : event_handler(specific_event_handler)
-      , ui(controller_ptr)
+    Application(Core& core)
+      : core(core)
     {
-    }
-
-  public:
-    static Application own(IEventHandler* specific_event_handler,
-                           RenderingController* controller_ptr)
-    {
-        return { specific_event_handler, controller_ptr };
     }
 
     ~Application() { printf("Application DTOR\n"); }
+
+    void own(IEventHandler* specific_event_handler) { event_handler.reset(specific_event_handler); }
+    void own(RenderingController* controller_ptr) { ui.reset(controller_ptr); }
 
     void process_events()
     {
@@ -80,6 +73,8 @@ struct Application
             ui->last_frame_ms = ui->timer->get_ms_since_start();
         }
     }
+
+    Core& core;
     bool is_running{ true };
     Events events;
     std::unique_ptr<IEventHandler> event_handler;

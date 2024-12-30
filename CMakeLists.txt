@@ -14,8 +14,7 @@ set(HEADERS
         src/headers.hpp
         src/details/csv/csv.h
         src/details/graphics.hpp
-        src/details/graphics.hpp
-        src/resource_mgr.hpp)
+        src/core.hpp)
 
 add_executable(${PROJECT_NAME}
         ${SRC_LIST}

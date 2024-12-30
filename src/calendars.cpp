@@ -31,9 +31,9 @@ year_limits(tls::year_t year)
 Years::~Years() { std::cout << "DTOR " << __PRETTY_FUNCTION__ << "\n"; }
 
 void
-Years::insert(Entity* e)
+Years::insert(const Entity& e)
 {
-    for (auto i = year_to_index(e->start_year); i < year_to_index(e->end_year); ++i)
+    for (auto i = year_to_index(e.start_year); i < year_to_index(e.end_year); ++i)
         ++year_bins[i];
 }
 

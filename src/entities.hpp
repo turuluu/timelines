@@ -65,7 +65,7 @@ Entity::Property operator|=(Entity::Property& lhs, Entity::Property rhs);
  * @param text
  * @return Reference to Entity allocated in heap
  */
-Entity& operator""_e(const char* text, size_t);
+Entity operator""_e(const char* text, size_t);
 
 /**
  * First usage will default to passing <start year> and second
@@ -76,20 +76,10 @@ Entity& operator""_e(const char* text, size_t);
  * @param year
  * @return
  */
-Entity& operator|(Entity& e, int year);
+Entity operator|(Entity e, int year);
 
-template<typename>
+struct Core;
 void
-populate_entities_test()
-{
-    auto& philip = "Philip II of Macedon"_e | -382 | -336;
-    "Alexander the Great"_e | -356 | -323;
-    "Aristoteles"_e | -384 | -322;
-    "Plato"_e | -428 | -348;
-    "Macedonia"_e | -808 | -168;
-    "Minna the Great"_e | -3200 | 2019;
+populate_entities_test(Core& core);
 
-    //    for (auto& e : Global::instance()->data)
-    //        years.insert(e.get());
-}
 }

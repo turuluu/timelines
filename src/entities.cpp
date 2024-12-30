@@ -1,7 +1,7 @@
 #include <cassert>
 
 #include "entities.hpp"
-#include "resource_mgr.hpp"
+#include "core.hpp"
 
 #if 0
 #include "doctest/doctest.h"
@@ -66,18 +66,18 @@ operator|=(Entity::Property& lhs, Entity::Property rhs)
     return lhs;
 }
 
-Entity&
+Entity
 operator""_e(const char* text, size_t)
 {
-    Entity* e = new Entity{ text };
-    e->properties |= Entity::Property::Has_name_and_id;
-    return *e;
+    Entity e = Entity{ text };
+    e.properties |= Entity::Property::Has_name_and_id;
+    return e;
 }
 
-Entity&
-operator|(Entity& e, int year)
+Entity
+operator|(Entity e, int year)
 {
-    if ((bool)(e.properties & Entity::Property::Has_start_year))
+    if (e.properties == Entity::Property::Has_start_year)
     {
         // end year should be after start year
         assert(year > e.start_year);
@@ -89,11 +89,10 @@ operator|(Entity& e, int year)
         e.end_year = year;
         e.properties |= Entity::Property::Has_end_year;
         std::cout << "emplacing (" << e.name << ", " << e.start_year << ", " << e.end_year << ")\n";
-        Global::instance().data.emplace_back(&e);
         //        Years::instance()->insert(&e);
         return e;
     }
-    else if ((bool)(e.properties & Entity::Property::Has_end_year))
+    else if (e.properties == Entity::Property::Has_end_year)
     {
         std::cout << "warning: tried to set even though all parameters are set\n";
         return e;
@@ -106,10 +105,14 @@ operator|(Entity& e, int year)
     }
 }
 
-Global&
-Global::instance()
+void populate_entities_test(Core& core)
 {
-    static Global instance;
-    return instance;
+    core.add("Philip II of Macedon"_e | -382 | -336);
+    core.add("Alexander the Great"_e | -356 | -323);
+    core.add("Aristoteles"_e | -384 | -322);
+    core.add("Plato"_e | -428 | -348);
+    core.add("Macedonia"_e | -808 | -168);
+    core.add("Minna the Great"_e | -3200 | 2019);
 }
+
 }

@@ -1,9 +1,8 @@
 #pragma once
 
+#include "core.hpp"
 #include "details/graphics.hpp"
 #include "details/utilities.hpp"
-#include "resource_mgr.hpp"
-#include "time_abstractions.hpp"
 
 namespace tls
 {
@@ -24,6 +23,7 @@ struct MouseMove
     i32 y;
 };
 
+struct RenderingController;
 struct Renderer
 {
     using EntityPtr = std::unique_ptr<Entity>;
@@ -34,35 +34,9 @@ struct Renderer
         Vertical = 2
     };
 
-    std::vector<Entity*> select_from(std::vector<EntityPtr>& _entities) const
-    {
-        std::vector<Entity*> selected_entities;
-        years().clear();
-        // Global::instance().years->clear();
-        for (auto& e : _entities)
-        {
-            if (e->start_year < year_range.end && e->end_year > year_range.start)
-            {
-                selected_entities.push_back(e.get());
-                years().insert(e.get());
-            }
-        }
+    Core::Entities select_from(const Core::Entities& entities) const;
 
-        return selected_entities;
-    }
-
-    size_t entities_in_interval(int start, int end) const
-    {
-        size_t max_entities_in_interval = 0;
-        for (auto i = start; i < end; ++i)
-            max_entities_in_interval =
-              std::max(years().year_bins[year_to_index(i)], max_entities_in_interval);
-
-        if (max_entities_in_interval == 0)
-            std::cout << "no entities in time frame..\n";
-
-        return max_entities_in_interval;
-    };
+    size_t entities_in_interval(int start, int end) const;
 
     size_t lane(size_t max_entities_in_interval, int start, int end)
     {
@@ -88,16 +62,19 @@ struct Renderer
 
     virtual ~Renderer() = default;
 
-    virtual void render_range(std::vector<EntityPtr>& _entities, YearRange* yrRange) = 0;
+    void set_controller(RenderingController* controller);
+
+    virtual void render_range(std::vector<Entity>& _entities, YearRange* yrRange) = 0;
 
     virtual void render_entity_box(SDL_Rect& r,
-                                   Entity* e,
+                                   Entity& e,
                                    uint8_t borderColour,
                                    uint8_t fillColour) const = 0;
 
     virtual void draw_grid(int year_start, int year_end, const double scale_x) const {};
 
     // TODO : consider other options, state in interface..
+    RenderingController* controller;
     YearRange year_range;
     std::vector<u8> lanes;
     Flavour flavour = Flavour::Horizontal;
@@ -109,7 +86,10 @@ struct ThreadPool
 
 struct RenderingController
 {
-    RenderingController() = default;
+    explicit RenderingController(Core& core)
+      : core(core)
+    {
+    }
 
     bool is_horizontal() const { return renderer->flavour == Renderer::Flavour::Horizontal; }
     bool is_vertical() const { return renderer->flavour == Renderer::Flavour::Vertical; }
@@ -139,7 +119,7 @@ struct RenderingController
         constexpr double scale = 0.5e-2f;
         int rel_mid_point = (x - mid_x) * (delta_y * scale);
         *year_range = timescaled;
-        renderer->render_range(Global::instance().data, year_range);
+        renderer->render_range(core.data, year_range);
     }
 
     void button_left_drag(MouseMove m, const float multiplier = 1.5f) const
@@ -155,14 +135,14 @@ struct RenderingController
         *year_range = adjusted;
         std::cout << "rel.range: " << std::to_string(year_range->start) << " - "
                   << std::to_string(year_range->end) << "\n";
-        renderer->render_range(Global::instance().data, year_range);
+        renderer->render_range(core.data, year_range);
     }
 
     void toggle_renderer()
     {
         toggle = !toggle;
         renderer = renderer_container[(int)toggle].get();
-        renderer->render_range(Global::instance().data, &renderer_container[!toggle]->year_range);
+        renderer->render_range(core.data, &renderer_container[!toggle]->year_range);
     }
 
     void button_right_drag() {}
@@ -181,10 +161,12 @@ struct RenderingController
 
     Renderer* own(Renderer* new_renderer)
     {
+        new_renderer->set_controller(this);
         renderer_container.emplace_back(new_renderer);
         return renderer_container.back().get();
     }
 
+    Core& core;
     bool toggle{ true };
     size_t frame_interval_ms{};
     size_t last_frame_ms{};
@@ -218,7 +200,7 @@ struct Vertical : Renderer
     }
 
     // TODO : feels quite repeated too..
-    void render_range(std::vector<EntityPtr>& _entities, YearRange* yr_range) override
+    void render_range(std::vector<Entity>& _entities, YearRange* yr_range) override
     {
         const auto render_start = yr_range->start;
         const auto render_end = yr_range->end;
@@ -228,7 +210,7 @@ struct Vertical : Renderer
         assert(render_start <= render_end);
         auto maxW = spec::screen_w / 2;
 
-        std::vector<Entity*> selected_entities = select_from(_entities);
+        Core::Entities selected_entities = select_from(_entities);
 
         auto max_entities_in_interval = entities_in_interval(render_start, render_end);
         if (max_entities_in_interval == 0)
@@ -253,8 +235,8 @@ struct Vertical : Renderer
             //            std::cout << "Entity found, rendering..\n";
             // draw_grid(render_start, render_end, xScale);
 
-            const int entity_start_year = e->start_year;
-            const int entity_end_year = e->end_year;
+            const int entity_start_year = e.start_year;
+            const int entity_end_year = e.end_year;
 
             auto start_bound = std::max(entity_start_year, render_start);
             const int rect_start_y = year_to_index(start_bound) - render_start_y;
@@ -281,7 +263,7 @@ struct Vertical : Renderer
             r.y = rect_start_y * scale_y;
             r.h = (rect_end_y - rect_start_y) * scale_y;
             r.w = w;
-            const u8 colour_fill = e->id * colour_incr;
+            const u8 colour_fill = e.id * colour_incr;
             const u8 colour_border = colour_fill + colour_incr;
 
             render_entity_box(r, e, colour_border, colour_fill);
@@ -298,7 +280,7 @@ struct Vertical : Renderer
             rt.w = spec::screen_w / 2 - 20;
 
             SDL_Color color{ 255, 255, 255, 0xDD };
-            render_text(font, &color, &rt, e->name.c_str(), font_size);
+            render_text(font, &color, &rt, e.name.c_str(), font_size);
         }
 
         SDL_RenderPresent(g.ren);
@@ -307,7 +289,7 @@ struct Vertical : Renderer
     }
 
     void render_entity_box(SDL_Rect& r,
-                           Entity* e,
+                           Entity& e,
                            uint8_t colour_border,
                            uint8_t colour_fill) const override
     {
@@ -380,7 +362,7 @@ struct Horizontal : Renderer
         }
     }
 
-    void render_range(std::vector<EntityPtr>& _entities, YearRange* year_range) override
+    void render_range(Core::Entities& _entities, YearRange* year_range) override
     {
         const auto render_start = year_range->start;
         const auto render_end = year_range->end;
@@ -388,7 +370,7 @@ struct Horizontal : Renderer
         assert(render_start <= render_end);
         auto max_h = spec::screen_h - 80;
 
-        std::vector<Entity*> selected_entities = select_from(_entities);
+        Core::Entities selected_entities = select_from(_entities);
 
         auto max_entities_in_interval = entities_in_interval(render_start, render_end);
         if (max_entities_in_interval == 0)
@@ -414,8 +396,8 @@ struct Horizontal : Renderer
 
             draw_grid(render_start, render_end, xScale);
 
-            const int entity_start = e->start_year;
-            const int entity_end = e->end_year;
+            const int entity_start = e.start_year;
+            const int entity_end = e.end_year;
 
             auto bound_start = std::max(entity_start, render_start);
             const int rect_start_x = year_to_index(bound_start) - render_start_x;
@@ -432,7 +414,7 @@ struct Horizontal : Renderer
             r.w = (rect_end_x - rect_start_x) * xScale;
             r.h = h;
 
-            const u8 fillColour = e->id * colour_incr;
+            const u8 fillColour = e.id * colour_incr;
             const u8 borderColour = fillColour + colour_incr;
 
             render_entity_box(r, e, borderColour, fillColour);
@@ -445,7 +427,7 @@ struct Horizontal : Renderer
 
     // TODO : probably can be refactored to a free function for both renderers
     void render_entity_box(SDL_Rect& r,
-                           Entity* e,
+                           Entity& e,
                            uint8_t borderColour,
                            uint8_t fillColour) const override
     {
@@ -462,7 +444,7 @@ struct Horizontal : Renderer
 
         SDL_RenderDrawRect(g.ren, &r);
         SDL_Color color{ 255, 255, 255, 0x80 };
-        render_text_2(font, &color, &r, e->name.c_str(), font_size);
+        render_text_2(font, &color, &r, e.name.c_str(), font_size);
     }
 
     void test()
@@ -490,7 +472,7 @@ struct Horizontal : Renderer
 // render_range(..., auto max_h = screen_h - 80, screen_h)
 static void
 render_range(Renderer& renderer,
-             std::vector<Renderer::EntityPtr>& _entities,
+             Core::Entities& _entities,
              YearRange* year_range,
              int max_dim,
              int scale_nom)
@@ -501,7 +483,7 @@ render_range(Renderer& renderer,
     //    std::cout << "rendering time frame [" << render_start << ", " << render_end << "]\n";
     assert(render_start <= render_end);
 
-    std::vector<Entity*> selected_entities = renderer.select_from(_entities);
+    Core::Entities selected_entities = renderer.select_from(_entities);
 
     auto max_entities_in_interval = renderer.entities_in_interval(render_start, render_end);
     if (max_entities_in_interval == 0)
@@ -527,8 +509,8 @@ render_range(Renderer& renderer,
 
         renderer.draw_grid(render_start, render_end, scale);
 
-        const int entity_start = e->start_year;
-        const int entity_end = e->end_year;
+        const int entity_start = e.start_year;
+        const int entity_end = e.end_year;
 
         auto bound_start = std::max(entity_start, render_start);
         const int rect_start_x = year_to_index(bound_start) - render_start_pos;
@@ -546,7 +528,7 @@ render_range(Renderer& renderer,
         r.w = (rect_end_x - rect_start_x) * scale;
         r.h = h;
 
-        const u8 fillColour = e->id * colour_incr;
+        const u8 fillColour = e.id * colour_incr;
         const u8 borderColour = fillColour + colour_incr;
 
         renderer.render_entity_box(r, e, borderColour, fillColour);

@@ -1,5 +1,7 @@
-- [ ] time/entity parser
-  - [ ] fix doctest
+- [◤] time/entity parser
+  - [▣] fix doctest
+  - [ ] modularize for tests
+  - [ ] harness into tests for a feedback system
   - [ ] hook up cpr
   - [ ] requests to json (or csv)
   - [ ] parse into entities
@@ -17,5 +19,8 @@
 - [ ] path resolving for csv files
 - [ ] calendars - underlying timekeeping framework
 - [ ] multithreaded event, render, messages
+- [ ] create deps/ for all vcpkg installed libs
+- [ ] move csv to deps
+- [ ] replace sdl ttf with stf font or sth and include font as binary
 
 

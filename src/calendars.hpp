@@ -26,7 +26,7 @@ struct Years
 
     std::array<size_t, tls::spec::max_bins> year_bins{ 0 };
 
-    void insert(Entity* e);
+    void insert(const Entity& e);
     void clear();
 };
 }
