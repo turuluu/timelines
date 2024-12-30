@@ -19,57 +19,28 @@ add_executable(${PROJECT_NAME}
         timelines/resource_mgr.hpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
-
-
-# json lib
-include(FetchContent)
-
-FetchContent_Declare(json
-        GIT_REPOSITORY https://github.com/nlohmann/json.git
-        GIT_TAG v3.7.3)
-
-FetchContent_GetProperties(json)
-if (NOT json_POPULATED)
-    FetchContent_Populate(json)
-    add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif ()
-
-
 find_package(BZip2 REQUIRED)
-#target_link_libraries(main PRIVATE BZip2::BZip2)
-
 find_package(ZLIB REQUIRED)
-#target_link_libraries(main PRIVATE ZLIB::ZLIB)
-
-# this is heuristically generated, and may not be correct
 find_package(cpr CONFIG REQUIRED)
-#target_link_libraries(main PRIVATE cpr::cpr)
-
 find_package(SDL2 CONFIG REQUIRED)
-#target_link_libraries(main
-#        PRIVATE
-#        $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-#        $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-#)
-
 find_package(SDL2_ttf CONFIG REQUIRED)
-#target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>)
-
 find_package(nlohmann_json CONFIG REQUIRED)
-
 #set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+find_package(doctest CONFIG REQUIRED)
 
-set(third_party_libs
-        BZip2::BZip2
-        ZLIB::ZLIB
-        cpr::cpr
+set(dependencies
         $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
         $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
         $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+        BZip2::BZip2
+        ZLIB::ZLIB
+        cpr::cpr
         nlohmann_json::nlohmann_json
+        doctest::doctest
 )
+
 target_link_libraries(
         ${PROJECT_NAME}
         PRIVATE
-        ${third_party_libs}
+        ${dependencies}
 )
