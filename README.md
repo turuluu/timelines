@@ -1,19 +1,21 @@
 Timelines
 =========
 
-WIP, Linux and Mac
+Present historical events and similar timeseries correlated factoids on a visual timeline.
+
+WIP, MacOS, Linux and Windows
 
 Requirements
 ------------
 
-* conan
+* vcpkg
 * CMake
 * Compiler that supports C++17 (recent version of g++, clang++ or Visual Studio >=2019)
 
 Dependencies
 -----------------------------------------------------
 
-Dependencies handled by conan
+Dependencies handled by vcpkg. Generating build files using cmake also downloads the dependencies.
 
 * SDL2
 * [cpr](https://github.com/whoshuu/cpr)
@@ -22,17 +24,6 @@ Dependencies handled by conan
 One way of building with C++17, SDL2 and cmake
 -----------------------------------------------------
 
-### Initial steps
-
-    # Conan installation and configuration
-    pip install conan
-    conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-    
-    # installing dependencies (See MacOs section for troubleshooting)
-    mkdir -p build
-    cd build
-    conan install .. --build=missing
-    
 ### *Nix / MacOS
 
 * example using ninja (for make, just drop the `-GNinja` flag and build with `make`)
@@ -48,14 +39,6 @@ One way of building with C++17, SDL2 and cmake
     cmake -G 'Visual Studio 16 2019' ..
 
     # Open build/main.sln and see additional notes for Windows below
-
-
-MacOs
------
-
-Might require forcing to build from source
-
-    conan install .. --build bzip2 --build libpng --build freetype --build sdl2_ttf
 
 Windows
 -----------------------------------------------

@@ -48,7 +48,7 @@ clear()
 static TTF_Font*
 get_title_font(int fontSize)
 {
-    return TTF_OpenFont("../timelines/details/vera-fonts/dejavuSansMono.ttf", fontSize);
+    return TTF_OpenFont("../src/details/vera-fonts/dejavuSansMono.ttf", fontSize);
 }
 
 static void
