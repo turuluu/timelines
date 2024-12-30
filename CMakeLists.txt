@@ -10,14 +10,18 @@ project(timelines)
 aux_source_directory(src SRC_LIST)
 aux_source_directory(src/details DETAILS_SRC_LIST)
 
-add_executable(${PROJECT_NAME}
-        ${SRC_LIST}
-        ${DETAILS_SRC_LIST}
+set(HEADERS
         src/headers.hpp
         src/details/csv/csv.h
         src/details/graphics.hpp
         src/details/graphics.hpp
         src/resource_mgr.hpp)
+
+add_executable(${PROJECT_NAME}
+        ${SRC_LIST}
+        ${DETAILS_SRC_LIST}
+        ${HEADERS}
+)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 find_package(BZip2 REQUIRED)
@@ -37,7 +41,6 @@ set(dependencies
         ZLIB::ZLIB
         cpr::cpr
         nlohmann_json::nlohmann_json
-        doctest::doctest
 )
 
 target_link_libraries(
@@ -45,3 +48,11 @@ target_link_libraries(
         PRIVATE
         ${dependencies}
 )
+
+add_library(${PROJECT_NAME}_lib
+        ${SRC_LIST}
+        ${DETAILS_SRC_LIST}
+        ${HEADERS}
+)
+target_link_libraries(${PROJECT_NAME}_lib ${dependencies})
+add_subdirectory(tests)
