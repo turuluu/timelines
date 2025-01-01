@@ -2,6 +2,7 @@
 
 #include "entities.hpp"
 #include "core.hpp"
+#include <exception>
 
 #if 0
 #include "doctest/doctest.h"
@@ -80,7 +81,10 @@ operator|(Entity e, int year)
     if (e.properties == Entity::Property::Has_start_year)
     {
         // end year should be after start year
-        assert(year > e.start_year);
+        // assert(year > e.start_year);
+
+        if (year < e.start_year)
+            throw std::logic_error("Entity's end year < start year");
 
         // year should remain within set limits
         std::cout << year_limits(year) << "\n";
