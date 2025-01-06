@@ -2,10 +2,10 @@
 
 #include "../src/headers.hpp"
 
+using namespace tls;
+
 TEST_CASE("Entity initialization")
 {
-    using namespace tls;
-
     // sanity checks
     Core core;
     core.add(Entity("foo") | 1900 | 1910);
@@ -19,8 +19,12 @@ TEST_CASE("Entity initialization")
 
 TEST_CASE("Logic errors")
 {
-    using namespace tls;
-
     Core core;
     CHECK_THROWS(core.add(Entity("foo") | 1900 | 1810));
+}
+
+TEST_CASE("calendars")
+{
+
+
 }

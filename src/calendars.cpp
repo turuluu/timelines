@@ -6,25 +6,25 @@
 
 namespace tls
 {
-tls::idx_t
-year_to_index(tls::year_t year)
+idx_t
+year_to_index(year_t year)
 {
-    const auto index = util::limit<tls::idx_t>(0, tls::spec::max_bins - 1, tls::spec::bins_split + year);
-    assert(index >= 0 && index < tls::spec::max_bins);
+    const auto index = util::limit<idx_t>(0, spec::max_bins - 1, spec::bins_split + year);
+    assert(index >= 0 && index < spec::max_bins);
     return index;
 }
 
-tls::year_t
-index_to_year(tls::idx_t index)
+year_t
+index_to_year(idx_t index)
 {
-    const tls::year_t year = index - tls::spec::bins_split;
+    const year_t year = index - spec::bins_split;
     return year;
 }
 
-tls::year_t
-year_limits(tls::year_t year)
+year_t
+year_limits(year_t year)
 {
-    return util::limit<tls::year_t>(-tls::spec::bins_split, tls::spec::max_bins - tls::spec::bins_split, year);
+    return util::limit<year_t>(-spec::bins_split, spec::max_bins - spec::bins_split, year);
 }
 ////////////////////////////////////////////////////////////////////////////////
 

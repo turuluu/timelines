@@ -1,26 +1,39 @@
 - [◤] time/entity parser
   - [▣] fix doctest
-  - [ ] modularize for tests
-  - [ ] harness into tests for a feedback system
-  - [ ] hook up cpr
-  - [ ] requests to json (or csv)
+  - [◤] modularize for tests
+  - [◤] harness into tests for a feedback system
   - [ ] parse into entities
+- [ ] hook up cpr (https://github.com/libcpr/cpr
+- [ ] requests to json (or csv)
 - [ ] refactorings
   - [ ] free functions to reduce copypaste
+  - [ ] improve forwarding of entities
+  - [ ] move csv to deps
 - [ ] helpers
   - [ ] constexpr colours
   - [ ] nesting tiler
+  - [ ] debug print
 - [ ] cool stuff
+  - [ ] request using wikipedia (https://www.mediawiki.org/wiki/API:Main_page)
   - [ ] LLM to figure out what is event-entity data from crap
+    - [ ] local models
+      - [ ] ollama via sockets
+    - [ ] remote models
+      - [ ] authorization handling
 - [◤] controls
   - [◤] zoom gesture
     - [▣] it's now mapped to scroll up/down
     - [ ] pinch
 - [ ] path resolving for csv files
-- [ ] calendars - underlying timekeeping framework
+- [◤] calendars - underlying timekeeping framework
+  - [◤] time point structure
+  - [ ] conversion API broad strokes
+    - [ ] ISO 8601
+    - [ ] gregorian
+    - [ ] julian
+    - [ ] Holocene
 - [ ] multithreaded event, render, messages
 - [ ] create deps/ for all vcpkg installed libs
-- [ ] move csv to deps
 - [ ] replace sdl ttf with stf font or sth and include font as binary
 
 
