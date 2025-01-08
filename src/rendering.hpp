@@ -119,7 +119,11 @@ struct RenderingController
         constexpr double scale = 0.5e-2f;
         int rel_mid_point = (x - mid_x) * (delta_y * scale);
         *year_range = timescaled;
-        renderer->render_range(core.data, year_range);
+    }
+
+    void render()
+    {
+        renderer->render_range(core.data, &renderer->year_range);
     }
 
     void button_left_drag(MouseMove m, const float multiplier = 1.5f) const
@@ -135,7 +139,6 @@ struct RenderingController
         *year_range = adjusted;
         std::cout << "rel.range: " << std::to_string(year_range->start) << " - "
                   << std::to_string(year_range->end) << "\n";
-        renderer->render_range(core.data, year_range);
     }
 
     void toggle_renderer()

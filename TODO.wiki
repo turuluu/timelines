@@ -32,6 +32,15 @@
     - [ ] gregorian
     - [ ] julian
     - [ ] Holocene
+- [ ] web stack
+  - [ ] hook up emscripten
+    - [ ] sdl2 port
+    - [ ] vcpkg https://github.com/microsoft/vcpkg/discussions/40368
+  - [ ] AWS deployment etc.
+    - [ ] IAMs
+    - [ ] vpc
+    - [ ] instance
+    - [ ] database for time event cache
 - [ ] multithreaded event, render, messages
 - [ ] create deps/ for all vcpkg installed libs
 - [ ] replace sdl ttf with stf font or sth and include font as binary

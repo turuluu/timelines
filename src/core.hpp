@@ -13,4 +13,9 @@ struct Core
     Entities data;
     Years years;
 };
+
+struct Filter
+{
+
+};
 }

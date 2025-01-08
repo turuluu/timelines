@@ -10,7 +10,6 @@ Renderer::set_controller(RenderingController* controller)
 
 Core::Entities
 Renderer::select_from(const Core::Entities& entities) const
-
 {
     auto& years = controller->core.years;
     // TODO : views without copy, something that won't have invalidated entries..
@@ -28,9 +27,9 @@ Renderer::select_from(const Core::Entities& entities) const
 
     return selected_entities;
 }
+
 size_t
 Renderer::entities_in_interval(int start, int end) const
-
 {
     auto& years = controller->core.years;
     size_t max_entities_in_interval = 0;

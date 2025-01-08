@@ -70,6 +70,7 @@ struct Application
             event_handler->handle_events(events);
             ui->wait_until_next_frame();
             process_events();
+            ui->render();
             ui->last_frame_ms = ui->timer->get_ms_since_start();
         }
     }

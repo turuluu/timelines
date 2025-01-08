@@ -17,11 +17,11 @@
 // #define SDL_MAIN_HANDLED
 
 #include "calendars.hpp"
+#include "details/graphics.hpp"
 #include "details/utilities.hpp"
 #include "entities.hpp"
 #include "spec.hpp"
 #include "time_abstractions.hpp"
-
 
 namespace tls
 {
@@ -32,7 +32,7 @@ struct YearRange
     int end = 0;
 };
 
-static YearRange new_relative_year_range(const Sint32 xrel,
+static YearRange new_relative_year_range(const i32 xrel,
                         const YearRange* year_range,
                         const int_pixels_t relative_max = spec::screen_w)
 {
@@ -41,7 +41,7 @@ static YearRange new_relative_year_range(const Sint32 xrel,
     return { year_range->start+ scaled_x, year_range->end + scaled_x };
 }
 
-static YearRange new_scaled_year_range(const Sint32 value,
+static YearRange new_scaled_year_range(const i32 value,
                       const YearRange* year_range,
                       const int_pixels_t mid_x = (spec::screen_w / 2),
                       const int_pixels_t relative_max = spec::screen_w)
