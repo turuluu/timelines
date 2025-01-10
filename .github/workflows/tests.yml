@@ -1,4 +1,4 @@
-name: build-linux-clang-15
+name: build-timelines
 
 on:
   push:
@@ -6,27 +6,48 @@ on:
   # pull_request:
   #   branches: [ "master" ]
 
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-  CC: /usr/bin/clang-15
-  CXX: /usr/bin/clang++-15
-
 jobs:
-  build:
-    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
-    # You can convert this to a matrix build if you need cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
+  job:
+    name: ${{ matrix.platform }}-${{ github.workflow }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ macos-14-arm ]
+        include:
+          - platform: macos-14-arm
+            runner: 'macos-14-xlarge'
+            triplet: 'arm64-osx-14'
+    env:
+      VCPKG_INSTALLED_DIR: '${{ github.workspace }}/deps/vcpkg_installed/${{ matrix.platform }}'
+      VCPKG_DEFAULT_TRIPLET: '${{ matrix.triplet }}'
+      VCPKG_DEFAULT_HOST_TRIPLET: '${{ matrix.triplet }}'
+      VCPKG_OVERLAY_TRIPLETS: '${{ github.workspace }}/overlay/triplets'
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Update APT
-        run: sudo apt-get update
+      - name: Brew install
+        run: |
+          if [ "$RUNNER_OS" == "macOS" ]; then
+            brew install autoconf-archive automake libtool md4c cmake
+          fi
+        shell: bash
 
-      - name: Install Dependencies
-        run: sudo apt-get install clang-15 cmake ninja-build libyaml-cpp-dev
+      #- name: Run vcpkg
+      #  if: runner.os != 'Windows'
+      #  uses: lukka/run-vcpkg@v11
+      #  with:
+      #   vcpkgJsonGlob: 'vcpkg.json'
+      #   runVcpkgInstall: true
+      #
+      #- name: Run vcpkg
+      #  if: runner.os == 'Windows'
+      #  uses: lukka/run-vcpkg@v11
+      #  with:
+      #    vcpkgDirectory: 'c:\vcpkg'
+      #    vcpkgJsonGlob: 'vcpkg.json'
+      #    runVcpkgInstall: true
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
