@@ -4,9 +4,9 @@
 #include <deque>
 
 #include "calendars.hpp"
-#include "details/graphics.hpp"
-#include "details/utilities.hpp"
 #include "entities.hpp"
+#include "sdl/graphics.hpp"
+#include "utilities.hpp"
 #include "spec.hpp"
 #include "time_abstractions.hpp"
 

@@ -4,6 +4,7 @@
 
 namespace tls
 {
+// TODO : move these to core, inline sdl namespace, ...
 struct Events
 {
     bool should_quit{ false };

@@ -8,12 +8,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(timelines)
 
 aux_source_directory(src SRC_LIST)
-aux_source_directory(src/details DETAILS_SRC_LIST)
+aux_source_directory(src/sdl DETAILS_SRC_LIST)
 
 set(HEADERS
         src/headers.hpp
-        src/details/csv/csv.h
-        src/details/graphics.hpp
+        src/sdl/graphics.hpp
         src/core.hpp)
 
 add_executable(${PROJECT_NAME}

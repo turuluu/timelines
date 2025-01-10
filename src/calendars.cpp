@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cassert>
 
-#include "details/utilities.hpp"
 #include "calendars.hpp"
+#include "utilities.hpp"
 
 namespace tls
 {

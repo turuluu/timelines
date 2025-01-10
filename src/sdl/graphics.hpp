@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-#include "utilities.hpp"
+#include "../utilities.hpp"
 
 namespace tls
 {
@@ -65,7 +65,9 @@ clear()
 static TTF_Font*
 get_title_font(int fontSize)
 {
-    return TTF_OpenFont("../src/details/vera-fonts/dejavuSansMono.ttf", fontSize);
+    auto font = TTF_OpenFont("../fonts/vera-fonts/dejavuSansMono.ttf", fontSize);
+    assert(font);
+    return font;
 }
 
 static void

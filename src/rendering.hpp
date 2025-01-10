@@ -1,8 +1,8 @@
 #pragma once
 
 #include "core.hpp"
-#include "details/graphics.hpp"
-#include "details/utilities.hpp"
+#include "sdl/graphics.hpp"
+#include "utilities.hpp"
 
 namespace tls
 {

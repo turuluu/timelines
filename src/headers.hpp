@@ -1,10 +1,15 @@
 #pragma once
 
+// TODO : move this to include/
+
+// TODO : refactor cmakelists to include as INTERFACE
+#include "../deps/csv/csv.h"
+
 #include "calendars.hpp"
-#include "details/events.hpp"
-#include "details/utilities.hpp"
 #include "dot.hpp"
 #include "entities.hpp"
-#include "spec.hpp"
 #include "rendering.hpp"
+#include "sdl/events.hpp"
+#include "utilities.hpp"
+#include "spec.hpp"
 #include "time_abstractions.hpp"

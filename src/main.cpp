@@ -1,7 +1,7 @@
 // #include "test_runner.h"
-#include "details/csv/csv.h"
-#include "details/events.hpp"
 #include "rendering.hpp"
+#include "../deps/csv/csv.h"
+#include "sdl/events.hpp"
 #include "time_abstractions.hpp"
 
 #include <filesystem>

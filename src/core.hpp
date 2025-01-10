@@ -23,4 +23,5 @@ struct Filter
     std::function<bool(Entity)> predicate;
     std::vector<int> indices;
 };
+
 }
