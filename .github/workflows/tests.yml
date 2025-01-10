@@ -16,7 +16,6 @@ jobs:
         platform: [ macos-14-arm ]
         include:
           - platform: macos-14-arm
-            runner: 'macos-14-xlarge'
             triplet: 'arm64-osx-14'
     env:
       VCPKG_INSTALLED_DIR: '${{ github.workspace }}/deps/vcpkg_installed/${{ matrix.platform }}'
