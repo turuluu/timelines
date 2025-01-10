@@ -1,20 +1,7 @@
 #pragma once
 
 #include <cassert>
-#include <cstdlib>
 #include <deque>
-#include <iostream>
-#include <limits>
-#include <memory>
-#include <random>
-#include <set>
-#include <string>
-
-#include <SDL.h>
-
-// #include <emscripten.h>
-
-// #define SDL_MAIN_HANDLED
 
 #include "calendars.hpp"
 #include "details/graphics.hpp"

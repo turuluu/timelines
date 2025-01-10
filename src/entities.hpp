@@ -1,16 +1,8 @@
 #pragma once
 
-#include <algorithm>
-#include <iostream>
-#include <memory>
 #include <set>
-#include <utility>
 #include <vector>
 
-// Windows
-// #ifndef __PRETTY_FUNCTION__
-// #define __PRETTY_FUNCTION__ __FUNCSIG__
-// #endif
 namespace tls
 {
 static size_t ids = 0;
@@ -39,8 +31,8 @@ struct Entity
         Has_end_year = 0x4
     };
 
-    const std::string name;
     const size_t id;
+    std::string name;
     int start_year = 0;
     int end_year = 0;
     Property properties = Property::None;
@@ -56,15 +48,6 @@ Entity::Property operator&(Entity::Property lhs, Entity::Property rhs);
 
 Entity::Property operator|=(Entity::Property& lhs, Entity::Property rhs);
 
-/**
- * Creates an Entity object in the heap (new Entity) and
- * returns a reference to it. This can be then used with the
- * '|' operator:
- *   Entity& e = "Historical figure"_e | <birth year> | <year of demise>
- *
- * @param text
- * @return Reference to Entity allocated in heap
- */
 Entity operator""_e(const char* text, size_t);
 
 /**
@@ -77,9 +60,5 @@ Entity operator""_e(const char* text, size_t);
  * @return
  */
 Entity operator|(Entity e, int year);
-
-struct Core;
-void
-populate_entities_test(Core& core);
 
 }

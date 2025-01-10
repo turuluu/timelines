@@ -8,6 +8,7 @@ namespace tls
 struct Core
 {
     using Entities = std::vector<Entity>;
+    void add(Entity entity);
     void add(Entity&& entity);
 
     Entities data;
@@ -16,6 +17,7 @@ struct Core
 
 struct Filter
 {
-
+    std::function<bool(Entity)> predicate;
+    std::vector<int> indices;
 };
 }

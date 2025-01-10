@@ -8,6 +8,10 @@
 #include <SDL_render.h>
 #include <SDL_timer.h>
 
+//#ifdef __EMSCRIPTEN__
+// #include <emscripten.h>
+//#endif
+
 #include <iostream>
 
 #include "utilities.hpp"
@@ -36,9 +40,9 @@ static void
 clear()
 {
     // TODO : paint background
-    Uint8 grey = 0x30;
+    u8 grey = 0x30;
 
-    Uint8 r, gr, b, a;
+    u8 r, gr, b, a;
     SDL_GetRenderDrawColor(g.ren, &r, &gr, &b, &a);
     SDL_SetRenderDrawColor(g.ren, grey, grey, grey, 0xFF);
     SDL_RenderClear(g.ren);
@@ -131,9 +135,8 @@ render_text_2(TTF_Font* font,
     SDL_FreeSurface(msgSurface);
 }
 
-class ScopedGraphics
+struct ScopedGraphics
 {
-  public:
     /**
      * RAII for graphics
      */

@@ -17,18 +17,16 @@ main(int argc, char** argv)
     auto project_path = basepath.parent_path().parent_path();
     auto example_csv = project_path / "example.csv";
 
-    io::CSVReader<3> in(example_csv.string());
-
     // populate entities from csv
+    io::CSVReader<3> in(example_csv.string());
     in.read_header(io::ignore_extra_column, "name", "start", "end");
-    std::string name;
-    int startYear = 0;
-    int endYear = 0;
+
     Core core;
-    while(in.read_row(name, startYear, endYear)){
-        std::cout << "name: " << name << " s: " << startYear << " e: " << endYear << "\n";
-        auto e = Entity(name);
-        core.add(e | startYear | endYear);
+    core.data.reserve(20);
+    Entity tmp("", 0, 0);
+    while(in.read_row(tmp.name, tmp.start_year, tmp.end_year)){
+        std::cout << "name: " << tmp.name << " s: " << tmp.start_year << " e: " << tmp.end_year << "\n";
+        core.add(tmp);
     }
 
     // TODO : auto& ui = app.create<RenderingController>();
