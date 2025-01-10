@@ -22,6 +22,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        
+      - name: Setup XCode
+        if: runner.os == 'macOS'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: Brew install
         run: |
