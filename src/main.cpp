@@ -9,9 +9,6 @@
 int
 main(int argc, char** argv)
 {
-    using namespace tls;
-    ScopedGraphics sc_g(spec::screen_w, spec::screen_h);
-
     // path to csv
     auto basepath = std::filesystem::path(std::string(SDL_GetBasePath()));
     auto project_path = basepath.parent_path().parent_path();
@@ -20,6 +17,8 @@ main(int argc, char** argv)
     // populate entities from csv
     io::CSVReader<3> in(example_csv.string());
     in.read_header(io::ignore_extra_column, "name", "start", "end");
+
+    using namespace tls;
 
     Core core;
     core.data.reserve(20);
@@ -30,6 +29,7 @@ main(int argc, char** argv)
     }
 
     // TODO : auto& ui = app.create<RenderingController>();
+    ScopedGraphics sc_g(spec::screen_w, spec::screen_h);
     auto ui = new RenderingController(core);
     {
         // TODO : auto& rh = ui.create<Horizontal>();
@@ -51,7 +51,7 @@ main(int argc, char** argv)
 
     Application app(core);
     // TODO : app.create<sdl::EventHandler>();
-    app.own(new sdl::EventHandler());
+    app.own(new EventHandler());
     app.own(ui);
     app.loop();
 
