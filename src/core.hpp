@@ -8,8 +8,11 @@ namespace tls
 struct Core
 {
     using Entities = std::vector<Entity>;
-    void add(Entity entity);
-    void add(Entity&& entity);
+    template <typename... Args>
+    void add_entity(Args... args)
+    {
+        data.emplace_back(args...);
+    }
 
     Entities data;
     Years years;

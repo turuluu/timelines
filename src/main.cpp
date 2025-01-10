@@ -26,7 +26,7 @@ main(int argc, char** argv)
     Entity tmp("", 0, 0);
     while(in.read_row(tmp.name, tmp.start_year, tmp.end_year)){
         std::cout << "name: " << tmp.name << " s: " << tmp.start_year << " e: " << tmp.end_year << "\n";
-        core.add(tmp);
+        core.add_entity(tmp);
     }
 
     // TODO : auto& ui = app.create<RenderingController>();

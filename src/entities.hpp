@@ -40,25 +40,4 @@ struct Entity
     Dimensions bounds;
     Entity* parent = nullptr;
 };
-
-///////////////////////////
-Entity::Property operator|(Entity::Property lhs, Entity::Property rhs);
-
-Entity::Property operator&(Entity::Property lhs, Entity::Property rhs);
-
-Entity::Property operator|=(Entity::Property& lhs, Entity::Property rhs);
-
-Entity operator""_e(const char* text, size_t);
-
-/**
- * First usage will default to passing <start year> and second
- * to <end year>. When passing the end year, the pointer is emplaced
- * in a container passing the ownership to it.
- *
- * @param e
- * @param year
- * @return
- */
-Entity operator|(Entity e, int year);
-
 }
