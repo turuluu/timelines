@@ -341,6 +341,8 @@ struct Horizontal : Renderer
         lanes.resize(spec::max_bins);
 
         style = std::make_unique<HBoxStyle>();
+        style->font = font;
+        style->font_size = font_size;
     }
 
     ~Horizontal() override
@@ -436,8 +438,6 @@ struct Horizontal : Renderer
         }
 
         SDL_RenderPresent(g.ren);
-        // TODO : probably due to scope
-        //        SDL_Delay(50);
     }
 
     void test()
@@ -462,70 +462,4 @@ struct Horizontal : Renderer
     TTF_Font* font;
 };
 
-// render_range(..., auto max_h = screen_h - 80, screen_h)
-// static void
-// render_range(Renderer& renderer,
-//              Core::Entities& _entities,
-//              YearRange* year_range,
-//              int max_dim,
-//              int scale_nom)
-// {
-//     const auto render_start = year_range->start;
-//     const auto render_end = year_range->end;
-//
-//     assert(render_start <= render_end);
-//
-//     Core::Entities selected_entities = renderer.select_from(_entities);
-//
-//     auto max_entities_in_interval = renderer.entities_in_interval(render_start, render_end);
-//     if (max_entities_in_interval == 0)
-//         return;
-//
-//     auto h = max_dim / max_entities_in_interval;
-//
-//     clear();
-//
-//     assert(_entities.size() > 0);
-//     u8 colour_incr = 255 / _entities.size();
-//
-//     const auto render_start_pos = year_to_index(render_start);
-//     const auto render_end_pos = year_to_index(render_end);
-//     const auto interval = util::limit<int>(0, spec::max_bins, render_end_pos - render_start_pos);
-//     const double scale = scale_nom / (double)interval;
-//
-//     std::fill(renderer.lanes.begin(), renderer.lanes.end(), std::numeric_limits<uint8_t>::max());
-//
-//     for (auto& e : selected_entities)
-//     {
-//         renderer.draw_grid(render_start, render_end, scale);
-//
-//         const int entity_start = e.start_year;
-//         const int entity_end = e.end_year;
-//
-//         auto bound_start = std::max(entity_start, render_start);
-//         const int rect_start_x = year_to_index(bound_start) - render_start_pos;
-//
-//         auto bound_end = std::min(entity_end, render_end);
-//         const int rect_end_x = year_to_index(bound_end) - render_start_pos;
-//
-//         // non const part
-//         const size_t lane_idx = renderer.lane(max_entities_in_interval, entity_start, entity_end);
-//
-//         // TODO : method or lambda call
-//         SDL_Rect r;
-//         r.x = rect_start_x * scale;
-//         r.y = 10 + (h * lane_idx);
-//         r.w = (rect_end_x - rect_start_x) * scale;
-//         r.h = h;
-//
-//         const u8 fillColour = e.id * colour_incr;
-//         const u8 borderColour = fillColour + colour_incr;
-//
-//         renderer.render_entity_box(r, e, borderColour, fillColour);
-//     }
-//
-//     SDL_RenderPresent(g.ren);
-//     // TODO : probably due to scope
-//     //        SDL_Delay(50);
-// }
 }
