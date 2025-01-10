@@ -278,9 +278,6 @@ struct Vertical : Renderer
 
         for (auto& e : selected_entities)
         {
-            //            std::cout << "Entity found, rendering..\n";
-            // draw_grid(render_start, render_end, xScale);
-
             const int entity_start_year = e.start_year;
             const int entity_end_year = e.end_year;
 
@@ -293,16 +290,6 @@ struct Vertical : Renderer
             // non const part
             const size_t lane_index =
               lane(max_entities_in_interval, entity_start_year, entity_end_year);
-
-            //            e->bounds.x = 10 + (w * lane_index);
-            //            e->bounds.y = rect_start_y * scale_y;
-            //            e->bounds.h = (rect_end_y - rect_start_y) * scale_y;
-            //            e->bounds.w = w;
-
-            //            r.x = e->bounds.x;
-            //            r.y = e->bounds.y;
-            //            r.w = e->bounds.w;
-            //            r.h = e->bounds.h;
 
             SDL_Rect r;
             r.x = 10 + (w * lane_index);

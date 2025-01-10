@@ -1,5 +1,9 @@
 #pragma once
 
+// incrementally decoupling gfx lib
+#define USE_SDL 1
+
+#if USE_SDL
 #include <SDL_ttf.h>
 
 #include <SDL.h>
@@ -7,6 +11,7 @@
 #include <SDL_rect.h>
 #include <SDL_render.h>
 #include <SDL_timer.h>
+#endif
 
 //#ifdef __EMSCRIPTEN__
 // #include <emscripten.h>
@@ -17,6 +22,13 @@
 #include "utilities.hpp"
 
 namespace tls
+{
+
+#if USE_SDL
+inline
+#endif
+
+namespace sdl
 {
 // Using SDL types
 using i8 = Sint8;
@@ -29,6 +41,7 @@ using u16 = Uint16;
 using u32 = Uint32;
 using u64 = Uint64;
 
+// TODO : Dirty global for experimentation
 static struct Graphics
 {
     SDL_Window* win;
@@ -137,9 +150,6 @@ render_text_2(TTF_Font* font,
 
 struct ScopedGraphics
 {
-    /**
-     * RAII for graphics
-     */
     ScopedGraphics(const int screen_w, const int screen_h) { init(screen_w, screen_h); }
     ~ScopedGraphics() { destroy(); }
 
@@ -181,7 +191,7 @@ struct ScopedGraphics
                                  screen_h);
 
         // TODO : paint background
-        Uint8 grey = 0x30;
+        u8 grey = 0x30;
         SDL_SetRenderDrawColor(g.ren, grey, grey, grey, 0xFF);
         SDL_RenderClear(g.ren);
         SDL_RenderPresent(g.ren);
@@ -197,4 +207,5 @@ struct ScopedGraphics
         SDL_Quit();
     }
 };
+}
 }

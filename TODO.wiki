@@ -13,7 +13,7 @@
   - [ ] constexpr colours
   - [ ] nesting tiler
   - [ ] debug print
-- [ ] cool stuff
+- [ ] convenience stuff
   - [ ] request using wikipedia (https://www.mediawiki.org/wiki/API:Main_page)
   - [ ] LLM to figure out what is event-entity data from crap
     - [ ] local models
@@ -36,6 +36,7 @@
   - [ ] hook up emscripten
     - [ ] sdl2 port
     - [ ] vcpkg https://github.com/microsoft/vcpkg/discussions/40368
+  - [ ] dockerized container for local deployment (eval)
   - [ ] AWS deployment etc.
     - [ ] IAMs
     - [ ] vpc
