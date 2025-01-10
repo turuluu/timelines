@@ -24,7 +24,7 @@ if ((CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR))
     set(local_vcpkg "${CMAKE_CURRENT_SOURCE_DIR}/deps/vcpkg")
     # Sets up shop so that all dependencies can be found at .../include or .../lib
     set(VCPKG_INSTALLED_DIR "${local_vcpkg}_installed")
-    set(roti_vcpkg_platform_dir ${VCPKG_INSTALLED_DIR})
+    set(vcpkg_platform_dir ${VCPKG_INSTALLED_DIR})
     # Bootstrap vcpkg
     set(vcpkg_cmake_script "${local_vcpkg}/scripts/buildsystems/vcpkg.cmake")
     set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
