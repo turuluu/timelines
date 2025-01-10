@@ -13,10 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ macos-14-arm ]
-        include:
-          - platform: macos-14-arm
-            triplet: 'arm64-osx-14'
+        os: [ MacOS ]
     env:
       VCPKG_INSTALLED_DIR: '${{ github.workspace }}/deps/vcpkg_installed/${{ matrix.platform }}'
       VCPKG_DEFAULT_TRIPLET: '${{ matrix.triplet }}'
