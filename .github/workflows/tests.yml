@@ -31,7 +31,6 @@ jobs:
         shell: bash
 
       - name: Run vcpkg
-        if: os != 'Windows'
         uses: lukka/run-vcpkg@v11
         with:
          vcpkgJsonGlob: 'vcpkg.json'
