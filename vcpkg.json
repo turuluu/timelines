@@ -2,13 +2,14 @@
   "dependencies": [
     "zlib",
     "bzip2",
+    "freetype",
     "sdl2",
     "sdl2-ttf",
     "nlohmann-json",
     "doctest",
     {
       "name": "cpr",
-      "version>=": "1.10.2+3"
+      "version>=": "1.11.1"
     }
   ],
   "builtin-baseline": "a5d91f7d264786b42b0d6bb7b1d31a3f2842a39c"
