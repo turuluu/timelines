@@ -1,16 +1,16 @@
-#include <iostream>
 #include <cassert>
+#include <iostream>
 
-#include "entities.hpp"
 #include "calendars.hpp"
+#include "entities.hpp"
 #include "utilities.hpp"
 
 namespace tls
 {
 idx_t
-to_index(time_point_t year)
+to_index(time_point_t time_point)
 {
-    const auto index = util::limit<idx_t>(0, spec::max_bins - 1, spec::bins_split + year);
+    const auto index = util::limit<idx_t>(0, spec::max_bins - 1, spec::bins_split + time_point);
     assert(index >= 0 && index < spec::max_bins);
     return index;
 }
@@ -25,7 +25,9 @@ to_interval(idx_t index)
 time_point_t
 bin_limit(time_point_t time_point)
 {
-    return util::limit<time_point_t>(-spec::bins_split, spec::max_bins - spec::bins_split, time_point);
+    return util::limit<time_point_t>(-spec::bins_split,
+                                     spec::max_bins - spec::bins_split,
+                                     time_point);
 }
 ////////////////////////////////////////////////////////////////////////////////
 

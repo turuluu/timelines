@@ -9,7 +9,7 @@
 
 namespace tls
 {
-idx_t to_index(time_point_t year);
+idx_t to_index(time_point_t time_point);
 time_point_t to_interval(idx_t index);
 time_point_t bin_limit(time_point_t time_point);
 
