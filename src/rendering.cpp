@@ -97,10 +97,10 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval* interval_ptr)
         const int entity_start = e.interval.start;
         const int entity_end = e.interval.end;
 
-        auto start_bound = std::max(entity_start, rendering_interval.start);
+        auto start_bound = std::max(entity_start, interval_ptr->start);
         const int rect_start_y = to_index(start_bound) - render_start_y;
 
-        auto end_bound = std::min(entity_end, rendering_interval.end);
+        auto end_bound = std::min(entity_end, interval_ptr->end);
         const int rect_end_y = to_index(end_bound) - render_start_y;
 
         // non const part
