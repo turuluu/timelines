@@ -15,7 +15,7 @@ struct Core
     }
 
     Entities data;
-    Years years;
+    Intervals intervals;
 };
 
 struct Filter

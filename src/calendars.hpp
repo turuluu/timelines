@@ -4,14 +4,14 @@
 
 #include <array>
 
-#include "entities.hpp"
+// #include "entities.hpp"
 #include "spec.hpp"
 
 namespace tls
 {
-idx_t year_to_index(year_t year);
-year_t index_to_year(idx_t index);
-year_t year_limits(year_t year);
+idx_t to_index(time_point_t year);
+time_point_t to_interval(idx_t index);
+time_point_t bin_limit(time_point_t time_point);
 
 namespace calendar
 {
@@ -88,12 +88,13 @@ struct TimeSeries
 {
 };
 
-struct Years
+struct Entity;
+struct Intervals
 {
-    Years() = default;
-    ~Years();
+    Intervals() = default;
+    ~Intervals();
 
-    std::array<size_t, spec::max_bins> year_bins{ 0 };
+    std::array<size_t, spec::max_bins> interval_bins{ 0 };
 
     void insert(const Entity& e);
     void clear();

@@ -37,22 +37,22 @@ struct Renderer
 
     Core::Entities select_from(const Core::Entities& entities) const;
 
-    size_t entities_in_interval(int start, int end) const;
+    size_t entities_in_interval(Interval interval) const;
 
     size_t lane(size_t max_entities_in_interval, int start, int end)
     {
         size_t lane = 0;
         for (lane = 0; lane < max_entities_in_interval; ++lane)
         {
-            auto lanes_begin = std::begin(lanes) + year_to_index(start);
-            auto lanes_end = std::begin(lanes) + year_to_index(end);
+            auto lanes_begin = std::begin(lanes) + to_index(start);
+            auto lanes_end = std::begin(lanes) + to_index(end);
             if (std::all_of(lanes_begin,
                             lanes_end,
                             [&](u8 ui) { return (bool)u8(1 << lane & ui); }))
             {
                 // mark lane
-                auto marked_begin = std::begin(lanes) + year_to_index(start);
-                auto marked_end = std::begin(lanes) + year_to_index(end);
+                auto marked_begin = std::begin(lanes) + to_index(start);
+                auto marked_end = std::begin(lanes) + to_index(end);
                 for (auto vbi = marked_begin; vbi != marked_end; ++vbi)
                     *vbi = (*vbi) - (1 << lane);
                 break;
@@ -65,14 +65,14 @@ struct Renderer
 
     void set_controller(RenderingController* controller);
 
-    virtual void render_range(std::vector<Entity>& _entities, YearRange* yrRange) = 0;
+    virtual void render_range(std::vector<Entity>& _entities, Interval* interval) = 0;
 
-    virtual void draw_grid(int year_start, int year_end, const double scale_x) const {};
+    virtual void draw_grid(Interval interval, const double scale_x) const {};
 
     // TODO : consider other options, state in interface..
     std::unique_ptr<EntityStyle> style;
     RenderingController* controller;
-    YearRange year_range;
+    Interval rendering_interval;
     std::vector<u8> lanes;
     Flavour flavour = Flavour::Horizontal;
 };
@@ -110,23 +110,8 @@ struct VBoxStyle : EntityStyle
 
 struct HBoxStyle : EntityStyle
 {
-    void render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill) const override
-{
-        // fill
-        SDL_SetRenderDrawColor(g.ren,
-                               0x9F - (colour_fill * 0.5f),
-                               0x90 + (0xFF - colour_fill) * 0.2f,
-                               0xFF - (colour_fill * 0.8f),
-                               0x70);
-        SDL_RenderFillRect(g.ren, &r);
+    void render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill) const override;
 
-        // outline
-        SDL_SetRenderDrawColor(g.ren, 0xFF, 0xFF, 0xFF, 0x20);
-
-        SDL_RenderDrawRect(g.ren, &r);
-        SDL_Color color{ 255, 255, 255, 0x80 };
-        render_text_2(font, &color, &r, e.name.c_str(), font_size);
-}
 };
 
 struct RenderingController
@@ -155,18 +140,18 @@ struct RenderingController
             return;
 
         auto screen_dim = is_horizontal() ? spec::screen_w : spec::screen_h;
-        YearRange* year_range = &renderer->year_range;
-        YearRange timescaled = new_scaled_year_range(delta_y, year_range, x);
+        Interval* interval = &renderer->rendering_interval;
+        Interval timescaled = new_scaled_interval(delta_y, interval, x);
 
         // TODO : shift range when zooming in to keep center of zoom under the
         // mouse pointer
         const int mid_x = screen_dim / 2;
         constexpr double scale = 0.5e-2f;
         int rel_mid_point = (x - mid_x) * (delta_y * scale);
-        *year_range = timescaled;
+        *interval = timescaled;
     }
 
-    void render() { renderer->render_range(core.data, &renderer->year_range); }
+    void render() { renderer->render_range(core.data, &renderer->rendering_interval); }
 
     void button_left_drag(MouseMove m, const float multiplier = 1.5f) const
     {
@@ -176,8 +161,8 @@ struct RenderingController
         const i32 multiplied_value =
           is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
 
-        YearRange* year_range = &renderer->year_range;
-        YearRange adjusted = new_relative_year_range(multiplied_value, year_range);
+        Interval* year_range = &renderer->rendering_interval;
+        Interval adjusted = new_relative_interval(multiplied_value, year_range);
         *year_range = adjusted;
     }
 
@@ -185,7 +170,7 @@ struct RenderingController
     {
         toggle = !toggle;
         renderer = renderer_container[(int)toggle].get();
-        renderer->render_range(core.data, &renderer_container[!toggle]->year_range);
+        renderer->render_range(core.data, &renderer_container[!toggle]->rendering_interval);
     }
 
     void button_right_drag() {}
@@ -247,79 +232,8 @@ struct Vertical : Renderer
     }
 
     // TODO : feels quite repeated too..
-    void render_range(std::vector<Entity>& _entities, YearRange* yr_range) override
-    {
-        assert(!_entities.empty());
+    void render_range(std::vector<Entity>& _entities, Interval* interval_ptr) override;
 
-        const auto render_start = yr_range->start;
-        const auto render_end = yr_range->end;
-        assert(render_start <= render_end);
-
-        auto maxW = spec::screen_w / 2;
-
-        Core::Entities selected_entities = select_from(_entities);
-
-        auto max_entities_in_interval = entities_in_interval(render_start, render_end);
-        if (max_entities_in_interval == 0)
-            return;
-
-        auto w = maxW / max_entities_in_interval;
-
-        clear();
-
-        u8 colour_incr = 255 / _entities.size();
-
-        const auto render_start_y = year_to_index(render_start);
-        const auto render_end_y = year_to_index(render_end);
-        const auto interval = util::limit<int>(0, spec::max_bins, render_end_y - render_start_y);
-        const double scale_y = spec::screen_h / (double)interval;
-
-        std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
-
-        for (auto& e : selected_entities)
-        {
-            const int entity_start_year = e.start_year;
-            const int entity_end_year = e.end_year;
-
-            auto start_bound = std::max(entity_start_year, render_start);
-            const int rect_start_y = year_to_index(start_bound) - render_start_y;
-
-            auto end_bound = std::min(entity_end_year, render_end);
-            const int rect_end_y = year_to_index(end_bound) - render_start_y;
-
-            // non const part
-            const size_t lane_index =
-              lane(max_entities_in_interval, entity_start_year, entity_end_year);
-
-            SDL_Rect r;
-            r.x = 10 + (w * lane_index);
-            r.y = rect_start_y * scale_y;
-            r.h = (rect_end_y - rect_start_y) * scale_y;
-            r.w = w;
-            const u8 colour_fill = e.id * colour_incr;
-            const u8 colour_border = colour_fill + colour_incr;
-
-            style->render(r, e, colour_border, colour_fill);
-            SDL_RenderDrawLine(g.ren,
-                               r.x + r.w,
-                               r.y + font_size / 2,
-                               spec::screen_w / 2 + 20,
-                               r.y + font_size / 2);
-
-            SDL_Rect rt;
-            rt.x = spec::screen_w / 2 + 10;
-            rt.y = rect_start_y * scale_y;
-            rt.h = font_size;
-            rt.w = spec::screen_w / 2 - 20;
-
-            SDL_Color color{ 255, 255, 255, 0xDD };
-            render_text(font, &color, &rt, e.name.c_str(), font_size);
-        }
-
-        SDL_RenderPresent(g.ren);
-        // TODO : probably due to scope
-        //        SDL_Delay(50);
-    }
 
     size_t font_size;
     TTF_Font* font;
@@ -351,94 +265,9 @@ struct Horizontal : Renderer
             TTF_CloseFont(font);
     }
 
-    void draw_grid(int year_start, int year_end, const double scale_x) const override
-    {
-        const int interval = year_end - year_start;
-        int splits = interval / 8.0f;
-        splits = ((int)(splits / 10.0f)) * 10;
-        splits = splits > 0 ? splits : 1;
-        auto start_idx = year_to_index(year_range.start);
-        for (int i = year_start; i < year_end; ++i)
-        {
-            if (i % splits == 0)
-            {
-                SDL_SetRenderDrawColor(g.ren, 0x5F, 0x5F, 0x5F, 0x20);
-                const int x = (year_to_index(i) - start_idx) * scale_x;
-                SDL_RenderDrawLine(g.ren, x, 0, x, spec::screen_h);
+    void draw_grid(Interval interval, const double scale_x) const override;
 
-                const int label_w = 50;
-                const int label_h = 20;
-
-                SDL_Rect grid_label_bounds;
-                grid_label_bounds.x = x - (label_w / 2);
-                grid_label_bounds.y = spec::screen_h - label_h;
-                grid_label_bounds.w = label_w;
-                grid_label_bounds.h = label_h;
-
-                SDL_Color c{ 255, 255, 255, 100 };
-                render_text_2(font, &c, &grid_label_bounds, std::to_string(i).c_str(), 28);
-            }
-        }
-    }
-
-    void render_range(Core::Entities& _entities, YearRange* year_range) override
-    {
-        const auto render_start = year_range->start;
-        const auto render_end = year_range->end;
-
-        assert(render_start <= render_end);
-        auto max_h = spec::screen_h - 80;
-
-        Core::Entities selected_entities = select_from(_entities);
-
-        auto max_entities_in_interval = entities_in_interval(render_start, render_end);
-        if (max_entities_in_interval == 0)
-            return;
-
-        auto h = max_h / max_entities_in_interval;
-
-        clear();
-
-        assert(_entities.size() > 0);
-        u8 colour_incr = 255 / _entities.size();
-
-        const auto render_start_x = year_to_index(render_start);
-        const auto render_end_x = year_to_index(render_end);
-        const auto interval = util::limit<int>(0, spec::max_bins, render_end_x - render_start_x);
-        const double xScale = spec::screen_w / (double)interval;
-
-        std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
-
-        for (auto& e : selected_entities)
-        {
-            draw_grid(render_start, render_end, xScale);
-
-            const int entity_start = e.start_year;
-            const int entity_end = e.end_year;
-
-            auto bound_start = std::max(entity_start, render_start);
-            const int rect_start_x = year_to_index(bound_start) - render_start_x;
-
-            auto bound_end = std::min(entity_end, render_end);
-            const int rect_end_x = year_to_index(bound_end) - render_start_x;
-
-            // non const part
-            const size_t lane_idx = lane(max_entities_in_interval, entity_start, entity_end);
-
-            SDL_Rect r;
-            r.x = rect_start_x * xScale;
-            r.y = 10 + (h * lane_idx);
-            r.w = (rect_end_x - rect_start_x) * xScale;
-            r.h = h;
-
-            const u8 fill_colour = e.id * colour_incr;
-            const u8 border_colour = fill_colour + colour_incr;
-
-            style->render(r, e, border_colour, fill_colour);
-        }
-
-        SDL_RenderPresent(g.ren);
-    }
+    void render_range(Core::Entities& _entities, Interval* year_range) override;
 
     void test()
     {

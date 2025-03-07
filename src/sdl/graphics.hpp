@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 // incrementally decoupling gfx lib
 #define USE_SDL 1
 

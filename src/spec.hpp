@@ -9,7 +9,7 @@ using int_pixels_t = uint16_t;
 
 // Used for indices of years
 using idx_t = uint32_t;
-using year_t = int;
+using time_point_t = int;
 
 namespace spec
 {

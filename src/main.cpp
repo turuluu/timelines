@@ -2,7 +2,7 @@
 #include "rendering.hpp"
 #include "../deps/csv/csv.h"
 #include "sdl/events.hpp"
-#include "time_abstractions.hpp"
+#include "entities.hpp"
 
 #include <filesystem>
 
@@ -23,8 +23,8 @@ main(int argc, char** argv)
     Core core;
     core.data.reserve(20);
     Entity tmp("", 0, 0);
-    while(in.read_row(tmp.name, tmp.start_year, tmp.end_year)){
-        std::cout << "name: " << tmp.name << " s: " << tmp.start_year << " e: " << tmp.end_year << "\n";
+    while(in.read_row(tmp.name, tmp.interval.start, tmp.interval.end)){
+        std::cout << "name: " << tmp.name << " s: " << tmp.interval.start << " e: " << tmp.interval.end << "\n";
         core.add_entity(tmp);
     }
 
@@ -34,19 +34,19 @@ main(int argc, char** argv)
     {
         // TODO : auto& rh = ui.create<Horizontal>();
         auto renderer_h = ui->own(new Horizontal());
-        renderer_h->year_range.start = -430;
-        renderer_h->year_range.end = 0;
+        renderer_h->rendering_interval.start = -430;
+        renderer_h->rendering_interval.end = 0;
 
         auto renderer_v = ui->own(new Vertical());
-        renderer_v->year_range.start = -430;
-        renderer_v->year_range.end = 0;
+        renderer_v->rendering_interval.start = -430;
+        renderer_v->rendering_interval.end = 0;
 
         ui->timer = std::make_unique<sdl::Timer>();
         ui->set_refresh_rate(60);
         ui->set_current(renderer_v);
 
         // init scene
-        ui->renderer->render_range(core.data, &ui->renderer->year_range);
+        ui->renderer->render_range(core.data, &ui->renderer->rendering_interval);
     }
 
     Application app(core);

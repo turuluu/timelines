@@ -3,6 +3,8 @@
 #include <set>
 #include <vector>
 
+#include "time_abstractions.hpp"
+
 namespace tls
 {
 static size_t ids = 0;
@@ -33,8 +35,7 @@ struct Entity
 
     const size_t id;
     std::string name;
-    int start_year = 0;
-    int end_year = 0;
+    Interval interval;
     Property properties = Property::None;
 
     Dimensions bounds;

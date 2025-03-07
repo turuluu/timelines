@@ -43,13 +43,11 @@ struct with_line_n
 };
 struct with_interval
 {
-    void set_interval(int start, int end)
+    void set_interval(Interval interval)
     {
-        this->start = start;
-        this->end = end;
+        this->interval = interval;
     }
-    int start{};
-    int end{};
+    Interval interval{};
 };
 
 struct timescale_issue
@@ -65,8 +63,8 @@ struct timescale_issue
                       R"(%s:%zu\nEntity time scale issue with [start, end] := [%d, %d]\n)",
                       filename,
                       line_n,
-                      start,
-                      end);
+                      interval.start,
+                      interval.end);
     }
 };
 };
