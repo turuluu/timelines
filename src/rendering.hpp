@@ -95,16 +95,16 @@ struct VBoxStyle : EntityStyle
     void render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill) const override
     {
         // outline
-        SDL_SetRenderDrawColor(g.ren, 0xFF, 0xFF, 0xFF, 0x20);
-        SDL_RenderDrawRect(g.ren, &r);
+        SDL_SetRenderDrawColor(Graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
+        SDL_RenderDrawRect(Graphics::get().ren, &r);
 
         // fill
-        SDL_SetRenderDrawColor(g.ren,
+        SDL_SetRenderDrawColor(Graphics::get().ren,
                                0x9F - (colour_fill * 0.5f),
                                0x90 + (0xFF - colour_fill) * 0.2f,
                                0xFF - (colour_fill * 0.8f),
                                0x70);
-        SDL_RenderFillRect(g.ren, &r);
+        SDL_RenderFillRect(Graphics::get().ren, &r);
     }
 };
 
@@ -215,8 +215,8 @@ struct Vertical : Renderer
         assert(font != nullptr);
 
         // TODO : clean up to their own wrapper
-        SDL_SetRenderDrawColor(g.ren, 0x00, 0x00, 0x00, 0x00);
-        SDL_RenderClear(g.ren);
+        SDL_SetRenderDrawColor(Graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
+        SDL_RenderClear(Graphics::get().ren);
 
         lanes.resize(spec::max_bins);
 
@@ -249,8 +249,8 @@ struct Horizontal : Renderer
 
         assert(font != nullptr);
 
-        SDL_SetRenderDrawColor(g.ren, 0x00, 0x00, 0x00, 0x00);
-        SDL_RenderClear(g.ren);
+        SDL_SetRenderDrawColor(Graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
+        SDL_RenderClear(Graphics::get().ren);
 
         lanes.resize(spec::max_bins);
 
@@ -278,14 +278,14 @@ struct Horizontal : Renderer
         r.h = 100;
 
         // outline
-        SDL_SetRenderDrawColor(g.ren, 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_RenderDrawRect(g.ren, &r);
+        SDL_SetRenderDrawColor(Graphics::get().ren, 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_RenderDrawRect(Graphics::get().ren, &r);
 
         // fill
-        SDL_RenderFillRect(g.ren, &r);
+        SDL_RenderFillRect(Graphics::get().ren, &r);
 
         SDL_Color color{ 255, 255, 255 };
-        SDL_RenderPresent(g.ren);
+        SDL_RenderPresent(Graphics::get().ren);
     }
     size_t font_size;
     TTF_Font* font;

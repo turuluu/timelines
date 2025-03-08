@@ -49,17 +49,17 @@ void
 HBoxStyle::render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill) const
 {
     // fill
-    SDL_SetRenderDrawColor(g.ren,
+    SDL_SetRenderDrawColor(Graphics::get().ren,
                            0x9F - (colour_fill * 0.5f),
                            0x90 + (0xFF - colour_fill) * 0.2f,
                            0xFF - (colour_fill * 0.8f),
                            0x70);
-    SDL_RenderFillRect(g.ren, &r);
+    SDL_RenderFillRect(Graphics::get().ren, &r);
 
     // outline
-    SDL_SetRenderDrawColor(g.ren, 0xFF, 0xFF, 0xFF, 0x20);
+    SDL_SetRenderDrawColor(Graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
 
-    SDL_RenderDrawRect(g.ren, &r);
+    SDL_RenderDrawRect(Graphics::get().ren, &r);
     SDL_Color color{ 255, 255, 255, 0x80 };
     render_text_2(font, &color, &r, e.name.c_str(), font_size);
 }
@@ -115,7 +115,7 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval* interval_ptr)
         const u8 colour_border = colour_fill + colour_incr;
 
         style->render(r, e, colour_border, colour_fill);
-        SDL_RenderDrawLine(g.ren,
+        SDL_RenderDrawLine(Graphics::get().ren,
                            r.x + r.w,
                            r.y + font_size / 2,
                            spec::screen_w / 2 + 20,
@@ -131,7 +131,7 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval* interval_ptr)
         render_text(font, &color, &rt, e.name.c_str(), font_size);
     }
 
-    SDL_RenderPresent(g.ren);
+    SDL_RenderPresent(Graphics::get().ren);
     // TODO : probably due to scope
     //        SDL_Delay(50);
 }
@@ -193,7 +193,7 @@ Horizontal::render_range(Core::Entities& _entities, Interval* year_range)
         style->render(r, e, border_colour, fill_colour);
     }
 
-    SDL_RenderPresent(g.ren);
+    SDL_RenderPresent(Graphics::get().ren);
 }
 
 void
@@ -208,9 +208,9 @@ Horizontal::draw_grid(Interval interval, const double scale_x) const
     {
         if (i % splits == 0)
         {
-            SDL_SetRenderDrawColor(g.ren, 0x5F, 0x5F, 0x5F, 0x20);
+            SDL_SetRenderDrawColor(Graphics::get().ren, 0x5F, 0x5F, 0x5F, 0x20);
             const int x = (to_index(i) - start_idx) * scale_x;
-            SDL_RenderDrawLine(g.ren, x, 0, x, spec::screen_h);
+            SDL_RenderDrawLine(Graphics::get().ren, x, 0, x, spec::screen_h);
 
             const int label_w = 50;
             const int label_h = 20;
