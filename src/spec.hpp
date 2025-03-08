@@ -7,7 +7,7 @@ namespace tls
 
 using int_pixels_t = uint16_t;
 
-// Used for indices of years
+// Used for indices of time points
 using idx_t = uint32_t;
 using time_point_t = int;
 

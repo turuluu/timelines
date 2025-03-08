@@ -18,8 +18,8 @@ to_index(time_point_t time_point)
 time_point_t
 to_interval(idx_t index)
 {
-    const time_point_t year = index - spec::bins_split;
-    return year;
+    const time_point_t time_point = index - spec::bins_split;
+    return time_point;
 }
 
 time_point_t

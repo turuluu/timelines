@@ -29,8 +29,8 @@ struct Entity
     {
         None = 0x0,
         Has_name_and_id = 0x1,
-        Has_start_year = 0x2,
-        Has_end_year = 0x4
+        Has_start = 0x2,
+        Has_end = 0x4
     };
 
     const size_t id;

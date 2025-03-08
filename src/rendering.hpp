@@ -65,7 +65,7 @@ struct Renderer
 
     void set_controller(RenderingController* controller);
 
-    virtual void render_range(std::vector<Entity>& _entities, Interval* interval) = 0;
+    virtual void render_range(std::vector<Entity>& _entities, Interval interval) = 0;
 
     virtual void draw_grid(Interval interval, const double scale_x) const {};
 
@@ -140,7 +140,7 @@ struct RenderingController
             return;
 
         auto screen_dim = is_horizontal() ? spec::screen_w : spec::screen_h;
-        Interval* interval = &renderer->rendering_interval;
+        auto& interval = renderer->rendering_interval;
         Interval timescaled = new_scaled_interval(delta_y, interval, x);
 
         // TODO : shift range when zooming in to keep center of zoom under the
@@ -148,10 +148,10 @@ struct RenderingController
         const int mid_x = screen_dim / 2;
         constexpr double scale = 0.5e-2f;
         int rel_mid_point = (x - mid_x) * (delta_y * scale);
-        *interval = timescaled;
+        interval = timescaled;
     }
 
-    void render() { renderer->render_range(core.data, &renderer->rendering_interval); }
+    void render() { renderer->render_range(core.data, renderer->rendering_interval); }
 
     void button_left_drag(MouseMove m, const float multiplier = 1.5f) const
     {
@@ -161,16 +161,16 @@ struct RenderingController
         const i32 multiplied_value =
           is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
 
-        Interval* year_range = &renderer->rendering_interval;
-        Interval adjusted = new_relative_interval(multiplied_value, year_range);
-        *year_range = adjusted;
+        auto& interval = renderer->rendering_interval;
+        Interval adjusted = new_relative_interval(multiplied_value, interval);
+        interval = adjusted;
     }
 
     void toggle_renderer()
     {
         toggle = !toggle;
         renderer = renderer_container[(int)toggle].get();
-        renderer->render_range(core.data, &renderer_container[!toggle]->rendering_interval);
+        renderer->render_range(core.data, renderer_container[!toggle]->rendering_interval);
     }
 
     void button_right_drag() {}
@@ -232,7 +232,7 @@ struct Vertical : Renderer
     }
 
     // TODO : feels quite repeated too..
-    void render_range(std::vector<Entity>& _entities, Interval* interval_ptr) override;
+    void render_range(std::vector<Entity>& _entities, Interval interval) override;
 
 
     size_t font_size;
@@ -267,7 +267,7 @@ struct Horizontal : Renderer
 
     void draw_grid(Interval interval, const double scale_x) const override;
 
-    void render_range(Core::Entities& _entities, Interval* year_range) override;
+    void render_range(Core::Entities& _entities, Interval interval) override;
 
     void test()
     {

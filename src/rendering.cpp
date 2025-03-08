@@ -65,17 +65,17 @@ HBoxStyle::render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill)
 }
 
 void
-Vertical::render_range(std::vector<Entity>& _entities, Interval* interval_ptr)
+Vertical::render_range(std::vector<Entity>& _entities, Interval interval)
 {
     assert(!_entities.empty());
 
-    assert(interval_ptr->start <= interval_ptr->end);
+    assert(interval.start <= interval.end);
 
     auto maxW = spec::screen_w / 2;
 
     Core::Entities selected_entities = select_from(_entities);
 
-    auto max_entities_in_interval = entities_in_interval(*interval_ptr);
+    auto max_entities_in_interval = entities_in_interval(interval);
     if (max_entities_in_interval == 0)
         return;
 
@@ -85,10 +85,10 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval* interval_ptr)
 
     u8 colour_incr = 255 / _entities.size();
 
-    const auto render_start_y = to_index(interval_ptr->start);
-    const auto render_end_y = to_index(interval_ptr->end);
-    const auto time_point = util::limit<int>(0, spec::max_bins, render_end_y - render_start_y);
-    const double scale_y = spec::screen_h / (double)time_point;
+    const auto bin_start = to_index(interval.start);
+    const auto bin_end = to_index(interval.end);
+    const auto bin_len = util::limit<int>(0, spec::max_bins, bin_end - bin_start);
+    const double scale_y = spec::screen_h / (double)bin_len;
 
     std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
 
@@ -97,11 +97,11 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval* interval_ptr)
         const int entity_start = e.interval.start;
         const int entity_end = e.interval.end;
 
-        auto start_bound = std::max(entity_start, interval_ptr->start);
-        const int rect_start_y = to_index(start_bound) - render_start_y;
+        auto start_bound = std::max(entity_start, interval.start);
+        const int rect_start_y = to_index(start_bound) - bin_start;
 
-        auto end_bound = std::min(entity_end, interval_ptr->end);
-        const int rect_end_y = to_index(end_bound) - render_start_y;
+        auto end_bound = std::min(entity_end, interval.end);
+        const int rect_end_y = to_index(end_bound) - bin_start;
 
         // non const part
         const size_t lane_index = lane(max_entities_in_interval, entity_start, entity_end);
@@ -137,10 +137,10 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval* interval_ptr)
 }
 
 void
-Horizontal::render_range(Core::Entities& _entities, Interval* year_range)
+Horizontal::render_range(Core::Entities& _entities, Interval interval)
 {
-    const auto render_start = year_range->start;
-    const auto render_end = year_range->end;
+    const auto render_start = interval.start;
+    const auto render_end = interval.end;
 
     assert(render_start <= render_end);
     auto max_h = spec::screen_h - 80;

@@ -46,7 +46,7 @@ main(int argc, char** argv)
         ui->set_current(renderer_v);
 
         // init scene
-        ui->renderer->render_range(core.data, &ui->renderer->rendering_interval);
+        ui->renderer->render_range(core.data, ui->renderer->rendering_interval);
     }
 
     Application app(core);
