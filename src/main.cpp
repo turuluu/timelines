@@ -30,29 +30,28 @@ main(int argc, char** argv)
 
     // TODO : auto& ui = app.create<RenderingController>();
     ScopedGraphics sc_g(spec::screen_w, spec::screen_h);
-    auto ui = new RenderingController(core);
-    {
-        // TODO : auto& rh = ui.create<Horizontal>();
-        auto renderer_h = ui->own(new Horizontal());
-        renderer_h->rendering_interval.start = -430;
-        renderer_h->rendering_interval.end = 0;
-
-        auto renderer_v = ui->own(new Vertical());
-        renderer_v->rendering_interval.start = -430;
-        renderer_v->rendering_interval.end = 0;
-
-        ui->timer = std::make_unique<sdl::Timer>();
-        ui->set_refresh_rate(60);
-        ui->set_current(renderer_v);
-
-        // init scene
-        ui->renderer->render_range(core.data, ui->renderer->rendering_interval);
-    }
 
     Application app(core);
-    // TODO : app.create<sdl::EventHandler>();
-    app.own(new EventHandler());
-    app.own(ui);
+    auto& ui = app.make<RenderingController>(core);
+    {
+        // TODO : auto& rh = ui.create<Horizontal>();
+        auto& renderer_h = ui.make<Horizontal>();
+        renderer_h.rendering_interval.start = -430;
+        renderer_h.rendering_interval.end = 0;
+
+        auto& renderer_v = ui.make<Vertical>();
+        renderer_v.rendering_interval.start = -430;
+        renderer_v.rendering_interval.end = 0;
+
+        ui.timer = std::make_unique<Timer>();
+        ui.set_refresh_rate(60);
+        ui.set_current(renderer_v);
+
+        // init scene
+        ui.render();
+    }
+
+    app.make<EventHandler>();
     app.loop();
 
     return 0;

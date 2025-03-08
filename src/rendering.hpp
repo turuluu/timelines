@@ -3,6 +3,7 @@
 #include "core.hpp"
 #include "sdl/graphics.hpp"
 #include "utilities.hpp"
+#include <list>
 
 namespace tls
 {
@@ -28,6 +29,16 @@ struct EntityStyle;
 struct Renderer
 {
     using EntityPtr = std::unique_ptr<Entity>;
+
+    Renderer()
+      : id(gen_id())
+    {
+    }
+    static int gen_id()
+    {
+        static int id = 0;
+        return id++;
+    }
 
     enum class Flavour : int
     {
@@ -69,7 +80,18 @@ struct Renderer
 
     virtual void draw_grid(Interval interval, const double scale_x) const {};
 
+    friend bool operator==(const Renderer& lhs, const Renderer& rhs)
+    {
+        return lhs.id == rhs.id;
+    }
+
+    friend bool operator!=(const Renderer& lhs, const Renderer& rhs)
+    {
+        return !(lhs == rhs);
+    }
+
     // TODO : consider other options, state in interface..
+    const int id;
     std::unique_ptr<EntityStyle> style;
     RenderingController* controller;
     Interval rendering_interval;
@@ -111,7 +133,6 @@ struct VBoxStyle : EntityStyle
 struct HBoxStyle : EntityStyle
 {
     void render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill) const override;
-
 };
 
 struct RenderingController
@@ -121,8 +142,8 @@ struct RenderingController
     {
     }
 
-    bool is_horizontal() const { return renderer->flavour == Renderer::Flavour::Horizontal; }
-    bool is_vertical() const { return renderer->flavour == Renderer::Flavour::Vertical; }
+    bool is_horizontal() const { return get_renderer().flavour == Renderer::Flavour::Horizontal; }
+    bool is_vertical() const { return get_renderer().flavour == Renderer::Flavour::Vertical; }
     void set_refresh_rate(size_t refresh_rate) { frame_interval_ms = 1000 / refresh_rate; }
     void wait_until_next_frame() const
     {
@@ -134,13 +155,13 @@ struct RenderingController
             timer->wait_ms(frame_interval_ms - elapsed_ms);
     }
 
-    void scroll_y(int delta_y, int x, int y) const
+    void scroll_y(int delta_y, int x, int y)
     {
-        if (renderer == nullptr)
+        if (renderer_idx < 0)
             return;
 
         auto screen_dim = is_horizontal() ? spec::screen_w : spec::screen_h;
-        auto& interval = renderer->rendering_interval;
+        auto& interval = get_renderer().rendering_interval;
         Interval timescaled = new_scaled_interval(delta_y, interval, x);
 
         // TODO : shift range when zooming in to keep center of zoom under the
@@ -151,47 +172,62 @@ struct RenderingController
         interval = timescaled;
     }
 
-    void render() { renderer->render_range(core.data, renderer->rendering_interval); }
-
-    void button_left_drag(MouseMove m, const float multiplier = 1.5f) const
+    void render()
     {
-        if (renderer == nullptr)
+        get_renderer().render_range(core.data, get_renderer().rendering_interval);
+    }
+
+    void button_left_drag(MouseMove m, const float multiplier = 1.5f)
+    {
+        if (!is_renderer_set())
             return;
 
         const i32 multiplied_value =
           is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
 
-        auto& interval = renderer->rendering_interval;
+        auto& interval = get_renderer().rendering_interval;
         Interval adjusted = new_relative_interval(multiplied_value, interval);
         interval = adjusted;
     }
 
+    bool is_renderer_set() const { return renderer_idx >= 0; }
+
     void toggle_renderer()
     {
         toggle = !toggle;
-        renderer = renderer_container[(int)toggle].get();
-        renderer->render_range(core.data, renderer_container[!toggle]->rendering_interval);
+        renderer_idx = (int)toggle;
+        get_renderer().render_range(core.data, renderer_container[!toggle]->rendering_interval);
     }
 
     void button_right_drag() {}
 
-    void set_current(Renderer* renderer_ptr)
+    void set_current(Renderer& renderer_ref)
     {
-        auto it =
-          std::find_if(renderer_container.begin(),
-                       renderer_container.end(),
-                       [&renderer_ptr](auto& uniq_ptr) { return uniq_ptr.get() == renderer_ptr; });
+        int i = 0;
+        while (i < renderer_container.size() && *renderer_container[i] != renderer_ref)
+            ++i;
 
-        if (it != renderer_container.end())
-            renderer = it->get();
-        // TODO : error handling
+        assert(i < renderer_container.size());
+        renderer_idx = i;
     }
 
-    Renderer* own(Renderer* new_renderer)
+    const Renderer& get_renderer() const
     {
+        assert(is_renderer_set());
+        return *renderer_container[renderer_idx];
+    }
+    Renderer& get_renderer()
+    {
+        assert(is_renderer_set());
+        return *renderer_container[renderer_idx];
+    }
+
+    template<typename T>
+    T& make()
+    {
+        auto& new_renderer = renderer_container.emplace_back(std::make_unique<T>());
         new_renderer->set_controller(this);
-        renderer_container.emplace_back(new_renderer);
-        return renderer_container.back().get();
+        return (T&)*new_renderer;
     }
 
     Core& core;
@@ -200,7 +236,7 @@ struct RenderingController
     size_t last_frame_ms{};
     std::unique_ptr<ITimer> timer;
     std::vector<std::unique_ptr<Renderer>> renderer_container;
-    Renderer* renderer = nullptr;
+    int renderer_idx = -1;
 };
 
 struct Vertical : Renderer
@@ -233,7 +269,6 @@ struct Vertical : Renderer
 
     // TODO : feels quite repeated too..
     void render_range(std::vector<Entity>& _entities, Interval interval) override;
-
 
     size_t font_size;
     TTF_Font* font;

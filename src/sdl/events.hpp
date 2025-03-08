@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../rendering.hpp"
+#include <list>
 
 namespace tls
 {
@@ -18,6 +19,8 @@ struct IEventHandler
     virtual ~IEventHandler() { printf("Event Handler DTOR\n"); }
     virtual void handle_events(Events& events) = 0;
 };
+struct Handler
+{};
 struct Application
 {
     Application(Core& core)
@@ -27,8 +30,48 @@ struct Application
 
     ~Application() { printf("Application DTOR\n"); }
 
-    void own(IEventHandler* specific_event_handler) { event_handler.reset(specific_event_handler); }
-    void own(RenderingController* controller_ptr) { ui.reset(controller_ptr); }
+    enum class Handler: int
+    {
+        Event,
+        UI,
+    };
+
+    // template <typename T, typename... Args>
+    // T& make_handler(Args... args)
+    // {
+    // }
+    //
+    template <typename T, typename... Args>
+    T& make(Args&... args)
+    {
+        if constexpr (std::is_base_of<IEventHandler, T>::value)
+        {
+            event_handler = std::make_unique<T>();
+            return *dynamic_cast<T*>(event_handler.get());
+        }
+        if constexpr (std::is_base_of<RenderingController, T>::value)
+        {
+            ui = std::make_unique<T>(std::forward<Args&...>(args...));
+            return *ui;
+        }
+    }
+
+    /*
+    template <>
+    IEventHandler& make<IEventHandler>()
+    {
+        return *event_handler;
+    }
+
+    template <>
+    RenderingController& make<RenderingController>(Core& core)
+    {
+        ui = std::make_unique<RenderingController>(core);
+        return *ui;
+    }*/
+
+    // placeholder
+    std::list<std::unique_ptr<Handler>> handlers;
 
     void process_events()
     {
@@ -65,9 +108,11 @@ struct Application
     }
     void loop()
     {
+        static int counter = 0;
         ui->last_frame_ms = ui->timer->get_ms_since_start();
         while (is_running)
         {
+            std::cout << counter++ << std::endl;
             event_handler->handle_events(events);
             ui->wait_until_next_frame();
             process_events();
@@ -83,6 +128,9 @@ struct Application
     std::unique_ptr<RenderingController> ui;
 };
 
+#if USE_SDL
+inline
+#endif
 namespace sdl
 {
 struct EventHandler : IEventHandler
