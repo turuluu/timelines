@@ -10,19 +10,19 @@ Renderer::set_controller(RenderingController* controller)
     this->controller = controller;
 }
 
-Core::Entities
+std::vector<std::reference_wrapper<const Entity>>
 Renderer::select_from(const Core::Entities& entities) const
 {
     auto& intervals = controller->core.intervals;
     // TODO : views without copy, something that won't have invalidated entries..
     // Queus, lists?
-    Core::Entities selected_entities;
+    std::vector<std::reference_wrapper<const Entity>> selected_entities;
     intervals.clear();
     for (auto& e : entities)
     {
         if (e.interval.start < rendering_interval.end && e.interval.end > rendering_interval.start)
         {
-            selected_entities.push_back(e);
+            selected_entities.emplace_back(e);
             intervals.insert(e);
         }
     }
@@ -65,7 +65,7 @@ HBoxStyle::render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill)
 }
 
 void
-Vertical::render_range(std::vector<Entity>& _entities, Interval interval)
+Vertical::render_range(Core::Entities& _entities, Interval interval)
 {
     assert(!_entities.empty());
 
@@ -73,7 +73,7 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval interval)
 
     auto maxW = spec::screen_w / 2;
 
-    Core::Entities selected_entities = select_from(_entities);
+    auto selected_entities = select_from(_entities);
 
     auto max_entities_in_interval = entities_in_interval(interval);
     if (max_entities_in_interval == 0)
@@ -92,10 +92,10 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval interval)
 
     std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
 
-    for (auto& e : selected_entities)
+    for (const auto& e : selected_entities)
     {
-        const int entity_start = e.interval.start;
-        const int entity_end = e.interval.end;
+        const int entity_start = e.get().interval.start;
+        const int entity_end = e.get().interval.end;
 
         auto start_bound = std::max(entity_start, interval.start);
         const int rect_start_y = to_index(start_bound) - bin_start;
@@ -111,7 +111,7 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval interval)
         r.y = rect_start_y * scale_y;
         r.h = (rect_end_y - rect_start_y) * scale_y;
         r.w = w;
-        const u8 colour_fill = e.id * colour_incr;
+        const u8 colour_fill = e.get().id * colour_incr;
         const u8 colour_border = colour_fill + colour_incr;
 
         style->render(r, e, colour_border, colour_fill);
@@ -128,12 +128,10 @@ Vertical::render_range(std::vector<Entity>& _entities, Interval interval)
         rt.w = spec::screen_w / 2 - 20;
 
         SDL_Color color{ 255, 255, 255, 0xDD };
-        render_text(font, &color, &rt, e.name.c_str(), font_size);
+        render_text(font, &color, &rt, e.get().name.c_str(), font_size);
     }
 
     SDL_RenderPresent(Graphics::get().ren);
-    // TODO : probably due to scope
-    //        SDL_Delay(50);
 }
 
 void
@@ -145,7 +143,7 @@ Horizontal::render_range(Core::Entities& _entities, Interval interval)
     assert(render_start <= render_end);
     auto max_h = spec::screen_h - 80;
 
-    Core::Entities selected_entities = select_from(_entities);
+    auto selected_entities = select_from(_entities);
 
     auto max_entities_in_interval = entities_in_interval(rendering_interval);
     if (max_entities_in_interval == 0)
@@ -169,8 +167,8 @@ Horizontal::render_range(Core::Entities& _entities, Interval interval)
     {
         draw_grid(rendering_interval, xScale);
 
-        const int entity_start = e.interval.start;
-        const int entity_end = e.interval.end;
+        const int entity_start = e.get().interval.start;
+        const int entity_end = e.get().interval.end;
 
         auto bound_start = std::max(entity_start, render_start);
         const int rect_start_x = to_index(bound_start) - render_start_x;
@@ -187,7 +185,7 @@ Horizontal::render_range(Core::Entities& _entities, Interval interval)
         r.w = (rect_end_x - rect_start_x) * xScale;
         r.h = h;
 
-        const u8 fill_colour = e.id * colour_incr;
+        const u8 fill_colour = e.get().id * colour_incr;
         const u8 border_colour = fill_colour + colour_incr;
 
         style->render(r, e, border_colour, fill_colour);

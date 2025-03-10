@@ -9,7 +9,7 @@ struct Core
 {
     using Entities = std::vector<Entity>;
     template <typename... Args>
-    void add_entity(Args... args)
+    void add_entity(Args&... args)
     {
         data.emplace_back(args...);
     }

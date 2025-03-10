@@ -112,9 +112,9 @@ struct Application
         ui->last_frame_ms = ui->timer->get_ms_since_start();
         while (is_running)
         {
-            std::cout << counter++ << std::endl;
-            event_handler->handle_events(events);
+            // std::cout << counter++ << std::endl;
             ui->wait_until_next_frame();
+            event_handler->handle_events(events);
             process_events();
             ui->render();
             ui->last_frame_ms = ui->timer->get_ms_since_start();

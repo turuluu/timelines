@@ -46,7 +46,8 @@ struct Renderer
         Vertical = 2
     };
 
-    Core::Entities select_from(const Core::Entities& entities) const;
+    std::vector<std::reference_wrapper<const Entity>> select_from(
+      const Core::Entities& entities) const;
 
     size_t entities_in_interval(Interval interval) const;
 
@@ -80,15 +81,9 @@ struct Renderer
 
     virtual void draw_grid(Interval interval, const double scale_x) const {};
 
-    friend bool operator==(const Renderer& lhs, const Renderer& rhs)
-    {
-        return lhs.id == rhs.id;
-    }
+    friend bool operator==(const Renderer& lhs, const Renderer& rhs) { return lhs.id == rhs.id; }
 
-    friend bool operator!=(const Renderer& lhs, const Renderer& rhs)
-    {
-        return !(lhs == rhs);
-    }
+    friend bool operator!=(const Renderer& lhs, const Renderer& rhs) { return !(lhs == rhs); }
 
     // TODO : consider other options, state in interface..
     const int id;
@@ -172,10 +167,7 @@ struct RenderingController
         interval = timescaled;
     }
 
-    void render()
-    {
-        get_renderer().render_range(core.data, get_renderer().rendering_interval);
-    }
+    void render() { get_renderer().render_range(core.data, get_renderer().rendering_interval); }
 
     void button_left_drag(MouseMove m, const float multiplier = 1.5f)
     {
