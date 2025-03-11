@@ -31,17 +31,17 @@ bin_limit(time_point_t time_point)
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-Intervals::~Intervals() { std::cout << "DTOR " << __PRETTY_FUNCTION__ << "\n"; }
+intervals::~intervals() { std::cout << "DTOR " << __PRETTY_FUNCTION__ << "\n"; }
 
 void
-Intervals::insert(const Entity& e)
+intervals::insert(const entity& e)
 {
     for (auto i = to_index(e.interval.start); i < to_index(e.interval.end); ++i)
         ++interval_bins[i];
 }
 
 void
-Intervals::clear()
+intervals::clear()
 {
     std::fill(interval_bins.begin(), interval_bins.end(), 0);
 }

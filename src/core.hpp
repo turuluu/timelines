@@ -5,22 +5,24 @@
 namespace tls
 {
 
-struct Core
+struct core
 {
-    using Entities = std::vector<Entity>;
+    using entities = std::vector<entity>;
+
     template <typename... Args>
-    void add_entity(Args&... args)
+    void add_entity(Args... args)
     {
+        // data.emplace_back(std::forward<Args...>(args...));
         data.emplace_back(args...);
     }
 
-    Entities data;
-    Intervals intervals;
+    entities data;
+    intervals intervals;
 };
 
 struct Filter
 {
-    std::function<bool(Entity)> predicate;
+    std::function<bool(entity)> predicate;
     std::vector<int> indices;
 };
 

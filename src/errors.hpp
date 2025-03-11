@@ -43,11 +43,11 @@ struct with_line_n
 };
 struct with_interval
 {
-    void set_interval(Interval interval)
+    void set_interval(interval interval)
     {
         this->interval = interval;
     }
-    Interval interval{};
+    interval interval{};
 };
 
 struct timescale_issue

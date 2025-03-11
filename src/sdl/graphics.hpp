@@ -43,11 +43,11 @@ using u16 = Uint16;
 using u32 = Uint32;
 using u64 = Uint64;
 
-struct Graphics
+struct graphics
 {
-    static Graphics& get()
+    static graphics& get()
     {
-        static Graphics instance;
+        static graphics instance;
         return instance;
     }
 
@@ -63,16 +63,16 @@ clear()
     u8 grey = 0x30;
 
     u8 r, gr, b, a;
-    SDL_GetRenderDrawColor(Graphics::get().ren, &r, &gr, &b, &a);
-    SDL_SetRenderDrawColor(Graphics::get().ren, grey, grey, grey, 0xFF);
-    SDL_RenderClear(Graphics::get().ren);
-    SDL_SetRenderDrawColor(Graphics::get().ren, r, gr, b, a);
+    SDL_GetRenderDrawColor(graphics::get().ren, &r, &gr, &b, &a);
+    SDL_SetRenderDrawColor(graphics::get().ren, grey, grey, grey, 0xFF);
+    SDL_RenderClear(graphics::get().ren);
+    SDL_SetRenderDrawColor(graphics::get().ren, r, gr, b, a);
 }
 
 static TTF_Font*
-get_title_font(int fontSize)
+get_title_font(int font_size)
 {
-    auto font = TTF_OpenFont("../fonts/vera-fonts/dejavuSansMono.ttf", fontSize);
+    auto font = TTF_OpenFont("../fonts/vera-fonts/dejavuSansMono.ttf", font_size);
     assert(font);
     return font;
 }
@@ -80,7 +80,7 @@ get_title_font(int fontSize)
 static void
 render_text(TTF_Font* font,
             SDL_Color* color,
-            SDL_Rect* msgBounds,
+            SDL_Rect* msg_bounds,
             const char* text,
             int ptsize = 40)
 {
@@ -90,37 +90,37 @@ render_text(TTF_Font* font,
         return;
     }
 
-    SDL_Surface* msgSurface;
-    if (!(msgSurface = TTF_RenderUTF8_Solid(font, text, *color)))
+    SDL_Surface* msg_surface;
+    if (!(msg_surface = TTF_RenderUTF8_Solid(font, text, *color)))
     {
         std::cout << __PRETTY_FUNCTION__ << ": " << TTF_GetError << "\n";
         return;
     }
 
-    const int ptsizeSmooth = ptsize / 2;
+    const int pt_size_smooth = ptsize / 2;
     const int cstrL = util::length(text);
-    const int cstrW = cstrL * (ptsizeSmooth / 2);
+    const int cstrW = cstrL * (pt_size_smooth / 2);
 
-    SDL_Rect msgBox;
-    int margins = -1 * ptsizeSmooth;
-    int offsetMsgBoundsW = msgBounds->w + (2 * margins);
-    int offsetMsgBoundsX = msgBounds->x - offsetMsgBoundsW - margins;
-    msgBox.w = std::min(cstrW, offsetMsgBoundsW);
-    msgBox.h = ptsizeSmooth;
-    msgBox.x = msgBounds->x - margins; // + std::max(offsetMsgBoundsW - cstrW, 0) / 2;
-    msgBox.y = msgBounds->y + std::max(msgBounds->h - msgBox.h, 0) / 2;
-    //        SDL_BlitSurface(msgSurface, NULL, screenSurface, msgBounds);
-    SDL_Texture* msgTexture = SDL_CreateTextureFromSurface(Graphics::get().ren, msgSurface);
-    SDL_RenderCopy(Graphics::get().ren, msgTexture, NULL, &msgBox);
+    SDL_Rect msg_box;
+    int margins = -1 * pt_size_smooth;
+    int offset_msg_bounds_w = msg_bounds->w + (2 * margins);
+    int offsetMsgBoundsX = msg_bounds->x - offset_msg_bounds_w - margins;
+    msg_box.w = std::min(cstrW, offset_msg_bounds_w);
+    msg_box.h = pt_size_smooth;
+    msg_box.x = msg_bounds->x - margins; // + std::max(offset_msg_bounds_w - cstrW, 0) / 2;
+    msg_box.y = msg_bounds->y + std::max(msg_bounds->h - msg_box.h, 0) / 2;
+    //        SDL_BlitSurface(msg_surface, NULL, screenSurface, msgBounds);
+    SDL_Texture* msg_texture = SDL_CreateTextureFromSurface(graphics::get().ren, msg_surface);
+    SDL_RenderCopy(graphics::get().ren, msg_texture, NULL, &msg_box);
 
-    SDL_DestroyTexture(msgTexture);
-    SDL_FreeSurface(msgSurface);
+    SDL_DestroyTexture(msg_texture);
+    SDL_FreeSurface(msg_surface);
 }
 
 static void
 render_text_2(TTF_Font* font,
               SDL_Color* color,
-              SDL_Rect* msgBounds,
+              SDL_Rect* msg_bounds,
               const char* text,
               int ptsize = 40)
 {
@@ -130,37 +130,37 @@ render_text_2(TTF_Font* font,
         return;
     }
 
-    SDL_Surface* msgSurface;
-    if (!(msgSurface = TTF_RenderUTF8_Solid(font, text, *color)))
+    SDL_Surface* msg_surface;
+    if (!(msg_surface = TTF_RenderUTF8_Solid(font, text, *color)))
     {
         std::cout << __PRETTY_FUNCTION__ << ": " << TTF_GetError << "\n";
         return;
     }
 
-    const int ptsizeSmooth = ptsize / 2;
+    const int pt_size_smooth = ptsize / 2;
     const int cstrL = util::length(text);
-    const int cstrW = cstrL * (ptsizeSmooth / 2);
+    const int cstrW = cstrL * (pt_size_smooth / 2);
 
     SDL_Rect msgBox;
-    int margins = 2 * ptsizeSmooth;
-    int offsetMsgBoundsW = msgBounds->w + (2 * margins);
-    int offsetMsgBoundsX = msgBounds->x - offsetMsgBoundsW - margins;
-    msgBox.w = std::min(cstrW, offsetMsgBoundsW);
-    msgBox.h = ptsizeSmooth;
-    msgBox.x = msgBounds->x - margins + std::max(offsetMsgBoundsW - cstrW, 0) / 2;
-    msgBox.y = msgBounds->y + std::max(msgBounds->h - msgBox.h, 0) / 2;
-    //        SDL_BlitSurface(msgSurface, NULL, screenSurface, msgBounds);
-    SDL_Texture* msgTexture = SDL_CreateTextureFromSurface(Graphics::get().ren, msgSurface);
-    SDL_RenderCopy(Graphics::get().ren, msgTexture, NULL, &msgBox);
+    int margins = 2 * pt_size_smooth;
+    int offset_msg_bounds_w = msg_bounds->w + (2 * margins);
+    int offsetMsgBoundsX = msg_bounds->x - offset_msg_bounds_w - margins;
+    msgBox.w = std::min(cstrW, offset_msg_bounds_w);
+    msgBox.h = pt_size_smooth;
+    msgBox.x = msg_bounds->x - margins + std::max(offset_msg_bounds_w - cstrW, 0) / 2;
+    msgBox.y = msg_bounds->y + std::max(msg_bounds->h - msgBox.h, 0) / 2;
+    //        SDL_BlitSurface(msg_surface, NULL, screenSurface, msgBounds);
+    SDL_Texture* msg_texture = SDL_CreateTextureFromSurface(graphics::get().ren, msg_surface);
+    SDL_RenderCopy(graphics::get().ren, msg_texture, NULL, &msgBox);
 
-    SDL_DestroyTexture(msgTexture);
-    SDL_FreeSurface(msgSurface);
+    SDL_DestroyTexture(msg_texture);
+    SDL_FreeSurface(msg_surface);
 }
 
-struct ScopedGraphics
+struct scoped_graphics
 {
-    ScopedGraphics(const int screen_w, const int screen_h) { init(screen_w, screen_h); }
-    ~ScopedGraphics() { destroy(); }
+    scoped_graphics(const int screen_w, const int screen_h) { init(screen_w, screen_h); }
+    ~scoped_graphics() { destroy(); }
 
     void init(const int screen_w, const int screen_h)
     {
@@ -176,24 +176,24 @@ struct ScopedGraphics
             exit(2);
         }
 
-        Graphics::get().win = SDL_CreateWindow("Timelines", 0, 0, screen_w, screen_h, SDL_WINDOW_SHOWN);
-        if (Graphics::get().win == nullptr)
+        graphics::get().win = SDL_CreateWindow("Timelines", 0, 0, screen_w, screen_h, SDL_WINDOW_SHOWN);
+        if (graphics::get().win == nullptr)
         {
             std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
             exit(EXIT_FAILURE);
         }
-        SDL_SetWindowFullscreen(Graphics::get().win, 0);
+        SDL_SetWindowFullscreen(graphics::get().win, 0);
         SDL_ShowCursor(1);
 
-        Graphics::get().ren = SDL_CreateRenderer(Graphics::get().win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-        if (Graphics::get().ren == nullptr)
+        graphics::get().ren = SDL_CreateRenderer(graphics::get().win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        if (graphics::get().ren == nullptr)
         {
             std::cout << "SDL_CreateRenderer Error" << SDL_GetError() << std::endl;
             exit(EXIT_FAILURE);
         }
-        SDL_SetRenderDrawBlendMode(Graphics::get().ren, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawBlendMode(graphics::get().ren, SDL_BLENDMODE_BLEND);
 
-        Graphics::get().bg = SDL_CreateTexture(Graphics::get().ren,
+        graphics::get().bg = SDL_CreateTexture(graphics::get().ren,
                                  SDL_PIXELFORMAT_RGBA8888,
                                  SDL_TEXTUREACCESS_TARGET,
                                  screen_w,
@@ -201,18 +201,18 @@ struct ScopedGraphics
 
         // TODO : paint background
         u8 grey = 0x30;
-        SDL_SetRenderDrawColor(Graphics::get().ren, grey, grey, grey, 0xFF);
-        SDL_RenderClear(Graphics::get().ren);
-        SDL_RenderPresent(Graphics::get().ren);
+        SDL_SetRenderDrawColor(graphics::get().ren, grey, grey, grey, 0xFF);
+        SDL_RenderClear(graphics::get().ren);
+        SDL_RenderPresent(graphics::get().ren);
     }
 
     void destroy()
     {
         TTF_Quit();
 
-        SDL_DestroyTexture(Graphics::get().bg);
-        SDL_DestroyRenderer(Graphics::get().ren);
-        SDL_DestroyWindow(Graphics::get().win);
+        SDL_DestroyTexture(graphics::get().bg);
+        SDL_DestroyRenderer(graphics::get().ren);
+        SDL_DestroyWindow(graphics::get().win);
         SDL_Quit();
     }
 };

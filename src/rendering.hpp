@@ -7,9 +7,9 @@
 
 namespace tls
 {
-struct ITimer
+struct timer_ifc
 {
-    virtual ~ITimer() = default;
+    virtual ~timer_ifc() = default;
     virtual void wait_ms(size_t delay_ms) const = 0;
 
     /**
@@ -18,17 +18,17 @@ struct ITimer
     [[nodiscard]] virtual size_t get_ms_since_start() const = 0;
 };
 
-struct MouseMove
+struct mouse_move
 {
     i32 x;
     i32 y;
 };
 
-struct RenderingController;
-struct EntityStyle;
+struct rendering_controller;
+struct entity_style;
 struct Renderer
 {
-    using EntityPtr = std::unique_ptr<Entity>;
+    using EntityPtr = std::unique_ptr<entity>;
 
     Renderer()
       : id(gen_id())
@@ -46,10 +46,10 @@ struct Renderer
         Vertical = 2
     };
 
-    std::vector<std::reference_wrapper<const Entity>> select_from(
-      const Core::Entities& entities) const;
+    std::vector<std::reference_wrapper<const entity>> select_from(
+      const core::entities& entities) const;
 
-    size_t entities_in_interval(Interval interval) const;
+    size_t entities_in_interval(interval interval) const;
 
     size_t lane(size_t max_entities_in_interval, int start, int end)
     {
@@ -75,11 +75,11 @@ struct Renderer
 
     virtual ~Renderer() = default;
 
-    void set_controller(RenderingController* controller);
+    void set_controller(rendering_controller* controller);
 
-    virtual void render_range(std::vector<Entity>& _entities, Interval interval) = 0;
+    virtual void render_range(std::vector<entity>& _entities, interval interval) = 0;
 
-    virtual void draw_grid(Interval interval, const double scale_x) const {};
+    virtual void draw_grid(interval interval, const double scale_x) const {};
 
     friend bool operator==(const Renderer& lhs, const Renderer& rhs) { return lhs.id == rhs.id; }
 
@@ -87,52 +87,48 @@ struct Renderer
 
     // TODO : consider other options, state in interface..
     const int id;
-    std::unique_ptr<EntityStyle> style;
-    RenderingController* controller;
-    Interval rendering_interval;
+    std::unique_ptr<entity_style> style;
+    rendering_controller* controller;
+    interval rendering_interval;
     std::vector<u8> lanes;
     Flavour flavour = Flavour::Horizontal;
 };
 
-struct ThreadPool
+struct entity_style
 {
-};
-
-struct EntityStyle
-{
-    virtual ~EntityStyle() = default;
-    virtual void render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill) const = 0;
+    virtual ~entity_style() = default;
+    virtual void render(SDL_Rect r, const entity& e, u8 colour_border, u8 colour_fill) const = 0;
 
     size_t font_size;
     TTF_Font* font;
 };
 
-struct VBoxStyle : EntityStyle
+struct VBoxStyle : entity_style
 {
-    void render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill) const override
+    void render(SDL_Rect r, const entity& e, u8 colour_border, u8 colour_fill) const override
     {
         // outline
-        SDL_SetRenderDrawColor(Graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
-        SDL_RenderDrawRect(Graphics::get().ren, &r);
+        SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
+        SDL_RenderDrawRect(graphics::get().ren, &r);
 
         // fill
-        SDL_SetRenderDrawColor(Graphics::get().ren,
+        SDL_SetRenderDrawColor(graphics::get().ren,
                                0x9F - (colour_fill * 0.5f),
                                0x90 + (0xFF - colour_fill) * 0.2f,
                                0xFF - (colour_fill * 0.8f),
                                0x70);
-        SDL_RenderFillRect(Graphics::get().ren, &r);
+        SDL_RenderFillRect(graphics::get().ren, &r);
     }
 };
 
-struct HBoxStyle : EntityStyle
+struct HBoxStyle : entity_style
 {
-    void render(SDL_Rect r, const Entity& e, u8 colour_border, u8 colour_fill) const override;
+    void render(SDL_Rect r, const entity& e, u8 colour_border, u8 colour_fill) const override;
 };
 
-struct RenderingController
+struct rendering_controller
 {
-    explicit RenderingController(Core& core)
+    explicit rendering_controller(core& core)
       : core(core)
     {
     }
@@ -157,7 +153,7 @@ struct RenderingController
 
         auto screen_dim = is_horizontal() ? spec::screen_w : spec::screen_h;
         auto& interval = get_renderer().rendering_interval;
-        Interval timescaled = new_scaled_interval(delta_y, interval, x);
+        struct interval timescaled = new_scaled_interval(delta_y, interval, x);
 
         // TODO : shift range when zooming in to keep center of zoom under the
         // mouse pointer
@@ -169,7 +165,7 @@ struct RenderingController
 
     void render() { get_renderer().render_range(core.data, get_renderer().rendering_interval); }
 
-    void button_left_drag(MouseMove m, const float multiplier = 1.5f)
+    void button_left_drag(mouse_move m, const float multiplier = 1.5f)
     {
         if (!is_renderer_set())
             return;
@@ -178,7 +174,7 @@ struct RenderingController
           is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
 
         auto& interval = get_renderer().rendering_interval;
-        Interval adjusted = new_relative_interval(multiplied_value, interval);
+        struct interval adjusted = new_relative_interval(multiplied_value, interval);
         interval = adjusted;
     }
 
@@ -222,11 +218,11 @@ struct RenderingController
         return (T&)*new_renderer;
     }
 
-    Core& core;
+    core& core;
     bool toggle{ true };
     size_t frame_interval_ms{};
     size_t last_frame_ms{};
-    std::unique_ptr<ITimer> timer;
+    std::unique_ptr<timer_ifc> timer;
     std::vector<std::unique_ptr<Renderer>> renderer_container;
     int renderer_idx = -1;
 };
@@ -243,8 +239,8 @@ struct Vertical : Renderer
         assert(font != nullptr);
 
         // TODO : clean up to their own wrapper
-        SDL_SetRenderDrawColor(Graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
-        SDL_RenderClear(Graphics::get().ren);
+        SDL_SetRenderDrawColor(graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
+        SDL_RenderClear(graphics::get().ren);
 
         lanes.resize(spec::max_bins);
 
@@ -260,7 +256,7 @@ struct Vertical : Renderer
     }
 
     // TODO : feels quite repeated too..
-    void render_range(std::vector<Entity>& _entities, Interval interval) override;
+    void render_range(std::vector<entity>& _entities, interval interval) override;
 
     size_t font_size;
     TTF_Font* font;
@@ -276,8 +272,8 @@ struct Horizontal : Renderer
 
         assert(font != nullptr);
 
-        SDL_SetRenderDrawColor(Graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
-        SDL_RenderClear(Graphics::get().ren);
+        SDL_SetRenderDrawColor(graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
+        SDL_RenderClear(graphics::get().ren);
 
         lanes.resize(spec::max_bins);
 
@@ -292,9 +288,9 @@ struct Horizontal : Renderer
             TTF_CloseFont(font);
     }
 
-    void draw_grid(Interval interval, const double scale_x) const override;
+    void draw_grid(interval interval, const double scale_x) const override;
 
-    void render_range(Core::Entities& _entities, Interval interval) override;
+    void render_range(core::entities& _entities, interval interval) override;
 
     void test()
     {
@@ -305,14 +301,14 @@ struct Horizontal : Renderer
         r.h = 100;
 
         // outline
-        SDL_SetRenderDrawColor(Graphics::get().ren, 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_RenderDrawRect(Graphics::get().ren, &r);
+        SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_RenderDrawRect(graphics::get().ren, &r);
 
         // fill
-        SDL_RenderFillRect(Graphics::get().ren, &r);
+        SDL_RenderFillRect(graphics::get().ren, &r);
 
         SDL_Color color{ 255, 255, 255 };
-        SDL_RenderPresent(Graphics::get().ren);
+        SDL_RenderPresent(graphics::get().ren);
     }
     size_t font_size;
     TTF_Font* font;

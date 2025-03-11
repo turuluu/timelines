@@ -9,15 +9,15 @@
 namespace tls
 {
 
-struct Interval
+struct interval
 {
     int start = 0;
     int end = 0;
 };
 
-static Interval
+static interval
 new_relative_interval(const i32 xrel,
-                      const Interval& interval,
+                      const interval& interval,
                       const int_pixels_t relative_max = spec::screen_w)
 {
     float scale = (float)(interval.end - interval.start) / relative_max;
@@ -25,9 +25,9 @@ new_relative_interval(const i32 xrel,
     return { interval.start + scaled_x, interval.end + scaled_x };
 }
 
-static Interval
+static interval
 new_scaled_interval(const i32 value,
-                      const Interval& interval,
+                      const interval& interval,
                       const int_pixels_t mid_x = (spec::screen_w / 2),
                       const int_pixels_t relative_max = spec::screen_w)
 {

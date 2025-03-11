@@ -7,7 +7,7 @@ using namespace tls;
 TEST_CASE("Entity initialization")
 {
     // sanity checks
-    Core core;
+    struct core core;
 
     core.add_entity("Philip II of Macedon", -382, -336);
     core.add_entity("Alexander the Great", -356, -323);
@@ -20,7 +20,7 @@ TEST_CASE("Entity initialization")
 
 TEST_CASE("Logic errors")
 {
-    Core core;
+    core core;
     CHECK_THROWS(core.add_entity("foo", 1900, 1810));
 }
 

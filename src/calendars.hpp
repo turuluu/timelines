@@ -88,15 +88,15 @@ struct TimeSeries
 {
 };
 
-struct Entity;
-struct Intervals
+struct entity;
+struct intervals
 {
-    Intervals() = default;
-    ~Intervals();
+    intervals() = default;
+    ~intervals();
 
     std::array<size_t, spec::max_bins> interval_bins{ 0 };
 
-    void insert(const Entity& e);
+    void insert(const entity& e);
     void clear();
 };
 }

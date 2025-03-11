@@ -6,31 +6,31 @@
 namespace tls
 {
 // TODO : move these to core, inline sdl namespace, ...
-struct Events
+struct events
 {
     bool should_quit{ false };
     bool toggle_renderer{ false };
-    std::deque<MouseMove> mouse;
+    std::deque<mouse_move> mouse;
     std::deque<i32> wheel;
 };
 
-struct IEventHandler
+struct event_handler_ifc
 {
-    virtual ~IEventHandler() { printf("Event Handler DTOR\n"); }
-    virtual void handle_events(Events& events) = 0;
+    virtual ~event_handler_ifc() { printf("Event Handler DTOR\n"); }
+    virtual void handle_events(events& events) = 0;
 };
-struct Handler
+struct handler
 {};
-struct Application
+struct application
 {
-    Application(Core& core)
+    application(core& core)
       : core(core)
     {
     }
 
-    ~Application() { printf("Application DTOR\n"); }
+    ~application() { printf("Application DTOR\n"); }
 
-    enum class Handler: int
+    enum class handler_type: int
     {
         Event,
         UI,
@@ -44,12 +44,12 @@ struct Application
     template <typename T, typename... Args>
     T& make(Args&... args)
     {
-        if constexpr (std::is_base_of<IEventHandler, T>::value)
+        if constexpr (std::is_base_of<event_handler_ifc, T>::value)
         {
             event_handler = std::make_unique<T>();
             return *dynamic_cast<T*>(event_handler.get());
         }
-        if constexpr (std::is_base_of<RenderingController, T>::value)
+        if constexpr (std::is_base_of<rendering_controller, T>::value)
         {
             ui = std::make_unique<T>(std::forward<Args&...>(args...));
             return *ui;
@@ -71,7 +71,7 @@ struct Application
     }*/
 
     // placeholder
-    std::list<std::unique_ptr<Handler>> handlers;
+    std::list<std::unique_ptr<handler_type>> handlers;
 
     void process_events()
     {
@@ -96,7 +96,7 @@ struct Application
             ui->scroll_y(y_scroll_delta, x, y);
         }
 
-        MouseMove mouse_move_delta = { 0, 0 };
+        mouse_move mouse_move_delta = { 0, 0 };
         while (!events.mouse.empty())
         {
             mouse_move_delta.x += events.mouse.back().x;
@@ -121,11 +121,11 @@ struct Application
         }
     }
 
-    Core& core;
+    core& core;
     bool is_running{ true };
-    Events events;
-    std::unique_ptr<IEventHandler> event_handler;
-    std::unique_ptr<RenderingController> ui;
+    events events;
+    std::unique_ptr<event_handler_ifc> event_handler;
+    std::unique_ptr<rendering_controller> ui;
 };
 
 #if USE_SDL
@@ -133,9 +133,9 @@ inline
 #endif
 namespace sdl
 {
-struct EventHandler : IEventHandler
+struct event_handler : event_handler_ifc
 {
-    void handle_events(Events& events) override
+    void handle_events(events& events) override
     {
         SDL_Event e;
 
@@ -178,7 +178,7 @@ struct EventHandler : IEventHandler
     const float wheel_y_mult = 6.5f;
 };
 
-struct Timer : ITimer
+struct timer : timer_ifc
 {
     [[nodiscard]] size_t get_ms_since_start() const override { return SDL_GetTicks(); }
     void wait_ms(size_t ms) const override { SDL_Delay(ms); }

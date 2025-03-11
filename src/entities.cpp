@@ -7,14 +7,14 @@
 namespace tls
 {
 
-Entity::Entity(std::string _name)
+entity::entity(std::string _name)
   : name(std::move(_name))
   , id(ids++)
 {
     std::cout << "Creating " << name << ", id: " << ids - 1 << "\n";
 }
 
-Entity::Entity(std::string _name, int _start, int _end)
+entity::entity(std::string _name, int _start, int _end)
   : name(std::move(_name))
   , interval{_start, _end}
   , id(ids++)
@@ -31,6 +31,6 @@ Entity::Entity(std::string _name, int _start, int _end)
 
 }
 
-Entity::~Entity() { std::cout << "DTOR '" << name << "'\n"; }
+entity::~entity() { std::cout << "DTOR '" << name << "'\n"; }
 
 }

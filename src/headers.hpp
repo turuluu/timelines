@@ -10,6 +10,6 @@
 #include "entities.hpp"
 #include "rendering.hpp"
 #include "sdl/events.hpp"
-#include "utilities.hpp"
 #include "spec.hpp"
 #include "time_abstractions.hpp"
+#include "utilities.hpp"

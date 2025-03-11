@@ -1,8 +1,8 @@
 // #include "test_runner.h"
-#include "rendering.hpp"
 #include "../deps/csv/csv.h"
-#include "sdl/events.hpp"
 #include "entities.hpp"
+#include "rendering.hpp"
+#include "sdl/events.hpp"
 
 #include <filesystem>
 
@@ -20,19 +20,19 @@ main(int argc, char** argv)
 
     using namespace tls;
 
-    Core core;
+    core core;
     core.data.reserve(20);
-    Entity tmp("", 0, 0);
+    entity tmp("", 0, 0);
     while(in.read_row(tmp.name, tmp.interval.start, tmp.interval.end)){
         std::cout << "name: " << tmp.name << " s: " << tmp.interval.start << " e: " << tmp.interval.end << "\n";
         core.add_entity(tmp);
     }
 
     // TODO : auto& ui = app.create<RenderingController>();
-    ScopedGraphics sc_g(spec::screen_w, spec::screen_h);
+    scoped_graphics sc_g(spec::screen_w, spec::screen_h);
 
-    Application app(core);
-    auto& ui = app.make<RenderingController>(core);
+    application app(core);
+    auto& ui = app.make<rendering_controller>(core);
     {
         // TODO : auto& rh = ui.create<Horizontal>();
         auto& renderer_h = ui.make<Horizontal>();
@@ -43,7 +43,7 @@ main(int argc, char** argv)
         renderer_v.rendering_interval.start = -430;
         renderer_v.rendering_interval.end = 0;
 
-        ui.timer = std::make_unique<Timer>();
+        ui.timer = std::make_unique<timer>();
         ui.set_refresh_rate(60);
         ui.set_current(renderer_v);
 
@@ -51,7 +51,7 @@ main(int argc, char** argv)
         ui.render();
     }
 
-    app.make<EventHandler>();
+    app.make<event_handler>();
     app.loop();
 
     return 0;
