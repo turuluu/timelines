@@ -163,10 +163,9 @@ Horizontal::render_range(core::entities& _entities, interval interval)
 
     std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
 
+    draw_grid(rendering_interval, xScale);
     for (const auto& e : selected_entities)
     {
-        draw_grid(rendering_interval, xScale);
-
         const int entity_start = e.get().interval.start;
         const int entity_end = e.get().interval.end;
 
