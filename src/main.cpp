@@ -35,11 +35,11 @@ main(int argc, char** argv)
     auto& ui = app.make<rendering_controller>(core);
     {
         // TODO : auto& rh = ui.create<Horizontal>();
-        auto& renderer_h = ui.make<Horizontal>();
+        auto& renderer_h = ui.make<horizontal>();
         renderer_h.rendering_interval.start = -430;
         renderer_h.rendering_interval.end = 0;
 
-        auto& renderer_v = ui.make<Vertical>();
+        auto& renderer_v = ui.make<vertical>();
         renderer_v.rendering_interval.start = -430;
         renderer_v.rendering_interval.end = 0;
 

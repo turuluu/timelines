@@ -1,17 +1,18 @@
 #include "rendering.hpp"
 #include "entities.hpp"
 #include "time_abstractions.hpp"
+#include "vcpkg/buildtrees/curl/src/curl-8_0_1-5ac57a8964.clean/lib/curl_md5.h"
 
 namespace tls
 {
 void
-Renderer::set_controller(rendering_controller* controller)
+feng_shui::set_controller(rendering_controller* controller)
 {
     this->controller = controller;
 }
 
 std::vector<std::reference_wrapper<const entity>>
-Renderer::select_from(const core::entities& entities) const
+feng_shui::select_from(const core::entities& entities) const
 {
     auto& intervals = controller->core.intervals;
     // TODO : views without copy, something that won't have invalidated entries..
@@ -31,7 +32,7 @@ Renderer::select_from(const core::entities& entities) const
 }
 
 size_t
-Renderer::entities_in_interval(interval interval) const
+feng_shui::entities_in_interval(interval interval) const
 {
     auto& intervals = controller->core.intervals;
     size_t max_entities_in_interval = 0;
@@ -46,13 +47,143 @@ Renderer::entities_in_interval(interval interval) const
 }
 
 void
-HBoxStyle::render(SDL_Rect r, const entity& e, u8 colour_border, u8 colour_fill) const
+feng_shui::render_range(std::vector<entity>& entities, interval interval)
 {
+    assert(!entities.empty());
+
+    const auto render_start = interval.start;
+    const auto render_end = interval.end;
+    assert(render_start < render_end);
+
+    auto selected_entities = select_from(entities);
+
+    auto max_entities_in_interval = entities_in_interval(interval);
+    if (max_entities_in_interval == 0)
+        return;
+
+    style_info specs;
+    specs.font = font;
+    specs.font_size = font_size;
+    specs.max_d = max_dim();
+    specs.d = specs.max_d / max_entities_in_interval;
+
+    const auto bin_start = to_index(render_start);
+    const auto bin_end = to_index(render_end);
+    const auto bin_len = util::limit<int>(0, spec::max_bins, bin_end - bin_start);
+    specs.scale = get_scale(bin_len);
+
+    clear();
+    std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
+    draw_grid(rendering_interval, specs.scale);
+
+    u8 colour_incr = 255 / entities.size();
+    for (const auto& e : selected_entities)
+    {
+        const int entity_start = e.get().interval.start;
+        const int entity_end = e.get().interval.end;
+
+        auto start_bound = std::max(entity_start, render_start);
+        specs.rect_start = to_index(start_bound) - bin_start;
+
+        auto end_bound = std::min(entity_end, render_end);
+        specs.rect_end = to_index(end_bound) - bin_start;
+
+        // non const part
+        specs.lane_index = lane(max_entities_in_interval, entity_start, entity_end);
+        specs.colour.fill = e.get().id * colour_incr;
+        specs.colour.border = specs.colour.fill + colour_incr;
+
+        style->render(specs, e);
+    }
+
+    SDL_RenderPresent(graphics::get().ren);
+}
+
+rect
+stylist_v::lane_bounds(style_info bi)
+{
+    SDL_Rect r;
+    r.x = 10 + (bi.d * bi.lane_index);
+    r.y = bi.rect_start * bi.scale;
+    r.h = (bi.rect_end - bi.rect_start) * bi.scale;
+    r.w = bi.d;
+
+    return r;
+}
+
+rect
+stylist_v::text_bounds(style_info bi)
+{
+    SDL_Rect rt;
+    rt.x = bi.max_d + 10;
+    rt.y = bi.rect_start * bi.scale;
+    rt.h = bi.font_size;
+    rt.w = bi.max_d - 20;
+
+    return rt;
+}
+
+void
+stylist_v::render(style_info specs, const entity& e)
+{
+    auto r = lane_bounds(specs);
+    // indicator line connecting text and lane box
+    SDL_RenderDrawLine(graphics::get().ren,
+                       r.x + r.w,
+                       r.y + specs.font_size / 2,
+                       specs.max_d + 20,
+                       r.y + specs.font_size / 2);
+
+    // outline
+    SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
+    SDL_RenderDrawRect(graphics::get().ren, &r);
+
     // fill
     SDL_SetRenderDrawColor(graphics::get().ren,
-                           0x9F - (colour_fill * 0.5f),
-                           0x90 + (0xFF - colour_fill) * 0.2f,
-                           0xFF - (colour_fill * 0.8f),
+                           0x9F - (specs.colour.fill * 0.5f),
+                           0x90 + (0xFF - specs.colour.fill) * 0.2f,
+                           0xFF - (specs.colour.fill * 0.8f),
+                           0x70);
+    SDL_RenderFillRect(graphics::get().ren, &r);
+
+    auto rt = text_bounds(specs);
+    SDL_Color color{ 255, 255, 255, 0xDD };
+    render_text(specs.font, &color, &rt, e.name.c_str(), specs.font_size);
+}
+
+int
+vertical::max_dim()
+{
+    return spec::screen_w / 2;
+}
+
+double
+vertical::get_scale(double bin_len)
+{
+    return spec::screen_w / bin_len;
+}
+
+int
+horizontal::max_dim()
+{
+    return spec::screen_h - 80;
+}
+
+double
+horizontal::get_scale(double bin_len)
+{
+    return spec::screen_w / bin_len;
+}
+
+void
+stylist_h::render(style_info specs, const entity& e)
+{
+    auto r = lane_bounds(specs);
+    // fill
+    SDL_SetRenderDrawColor(graphics::get().ren,
+                           0x9F - (specs.colour.fill * 0.5f),
+                           0x90 + (0xFF - specs.colour.fill) * 0.2f,
+                           0xFF - (specs.colour.fill * 0.8f),
                            0x70);
     SDL_RenderFillRect(graphics::get().ren, &r);
 
@@ -61,140 +192,28 @@ HBoxStyle::render(SDL_Rect r, const entity& e, u8 colour_border, u8 colour_fill)
 
     SDL_RenderDrawRect(graphics::get().ren, &r);
     SDL_Color color{ 255, 255, 255, 0x80 };
-    render_text_2(font, &color, &r, e.name.c_str(), font_size);
+    render_text_2(specs.font, &color, &r, e.name.c_str(), specs.font_size);
 }
 
-void
-Vertical::render_range(core::entities& _entities, interval interval)
+rect
+stylist_h::lane_bounds(style_info bi)
 {
-    assert(!_entities.empty());
+    SDL_Rect r;
+    r.x = bi.rect_start * bi.scale;
+    r.y = 10 + (bi.d * bi.lane_index);
+    r.w = (bi.rect_end - bi.rect_start) * bi.scale;
+    r.h = bi.d;
 
-    assert(interval.start <= interval.end);
-
-    auto maxW = spec::screen_w / 2;
-
-    auto selected_entities = select_from(_entities);
-
-    auto max_entities_in_interval = entities_in_interval(interval);
-    if (max_entities_in_interval == 0)
-        return;
-
-    auto w = maxW / max_entities_in_interval;
-
-    clear();
-
-    u8 colour_incr = 255 / _entities.size();
-
-    const auto bin_start = to_index(interval.start);
-    const auto bin_end = to_index(interval.end);
-    const auto bin_len = util::limit<int>(0, spec::max_bins, bin_end - bin_start);
-    const double scale_y = spec::screen_h / (double)bin_len;
-
-    std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
-
-    for (const auto& e : selected_entities)
-    {
-        const int entity_start = e.get().interval.start;
-        const int entity_end = e.get().interval.end;
-
-        auto start_bound = std::max(entity_start, interval.start);
-        const int rect_start_y = to_index(start_bound) - bin_start;
-
-        auto end_bound = std::min(entity_end, interval.end);
-        const int rect_end_y = to_index(end_bound) - bin_start;
-
-        // non const part
-        const size_t lane_index = lane(max_entities_in_interval, entity_start, entity_end);
-
-        SDL_Rect r;
-        r.x = 10 + (w * lane_index);
-        r.y = rect_start_y * scale_y;
-        r.h = (rect_end_y - rect_start_y) * scale_y;
-        r.w = w;
-        const u8 colour_fill = e.get().id * colour_incr;
-        const u8 colour_border = colour_fill + colour_incr;
-
-        style->render(r, e, colour_border, colour_fill);
-        SDL_RenderDrawLine(graphics::get().ren,
-                           r.x + r.w,
-                           r.y + font_size / 2,
-                           spec::screen_w / 2 + 20,
-                           r.y + font_size / 2);
-
-        SDL_Rect rt;
-        rt.x = spec::screen_w / 2 + 10;
-        rt.y = rect_start_y * scale_y;
-        rt.h = font_size;
-        rt.w = spec::screen_w / 2 - 20;
-
-        SDL_Color color{ 255, 255, 255, 0xDD };
-        render_text(font, &color, &rt, e.get().name.c_str(), font_size);
-    }
-
-    SDL_RenderPresent(graphics::get().ren);
+    return r;
 }
 
-void
-Horizontal::render_range(core::entities& _entities, interval interval)
+rect
+stylist_h::text_bounds(style_info bi)
 {
-    const auto render_start = interval.start;
-    const auto render_end = interval.end;
-
-    assert(render_start <= render_end);
-    auto max_h = spec::screen_h - 80;
-
-    auto selected_entities = select_from(_entities);
-
-    auto max_entities_in_interval = entities_in_interval(rendering_interval);
-    if (max_entities_in_interval == 0)
-        return;
-
-    auto h = max_h / max_entities_in_interval;
-
-    clear();
-
-    assert(_entities.size() > 0);
-    u8 colour_incr = 255 / _entities.size();
-
-    const auto render_start_x = to_index(render_start);
-    const auto render_end_x = to_index(render_end);
-    const auto time_point = util::limit<int>(0, spec::max_bins, render_end_x - render_start_x);
-    const double xScale = spec::screen_w / (double)time_point;
-
-    std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
-
-    draw_grid(rendering_interval, xScale);
-    for (const auto& e : selected_entities)
-    {
-        const int entity_start = e.get().interval.start;
-        const int entity_end = e.get().interval.end;
-
-        auto bound_start = std::max(entity_start, render_start);
-        const int rect_start_x = to_index(bound_start) - render_start_x;
-
-        auto bound_end = std::min(entity_end, render_end);
-        const int rect_end_x = to_index(bound_end) - render_start_x;
-
-        // non const part
-        const size_t lane_idx = lane(max_entities_in_interval, entity_start, entity_end);
-
-        SDL_Rect r;
-        r.x = rect_start_x * xScale;
-        r.y = 10 + (h * lane_idx);
-        r.w = (rect_end_x - rect_start_x) * xScale;
-        r.h = h;
-
-        const u8 fill_colour = e.get().id * colour_incr;
-        const u8 border_colour = fill_colour + colour_incr;
-
-        style->render(r, e, border_colour, fill_colour);
-    }
-
-    SDL_RenderPresent(graphics::get().ren);
 }
 
 void
-Horizontal::draw_grid(interval interval, const double scale_x) const
+horizontal::draw_grid(interval interval, const double scale_x) const
 {
     const int length = interval.end - interval.start;
     int splits = length / 8.0f;

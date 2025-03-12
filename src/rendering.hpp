@@ -24,26 +24,49 @@ struct mouse_move
     i32 y;
 };
 
-struct rendering_controller;
-struct entity_style;
-struct Renderer
+using rect = SDL_Rect;
+struct colour
 {
-    using EntityPtr = std::unique_ptr<entity>;
+    u8 border = 255;
+    u8 fill = 255;
+};
+struct style_info
+{
+    colour colour;
+    int d;
+    int max_d;
+    int rect_start;
+    int rect_end;
+    double scale;
+    size_t lane_index;
 
-    Renderer()
+    size_t font_size;
+    TTF_Font* font;
+};
+
+struct rendering_controller;
+struct fashion_statement;
+struct feng_shui
+{
+    using entity_ptr = std::unique_ptr<entity>;
+
+    feng_shui()
       : id(gen_id())
+      , font_size(36)
+      , font{ get_title_font(font_size) }
     {
     }
+
     static int gen_id()
     {
         static int id = 0;
         return id++;
     }
 
-    enum class Flavour : int
+    enum class orientation : int
     {
-        Horizontal = 1,
-        Vertical = 2
+        horizontal = 1,
+        vertical = 2
     };
 
     std::vector<std::reference_wrapper<const entity>> select_from(
@@ -73,57 +96,59 @@ struct Renderer
         return lane;
     }
 
-    virtual ~Renderer() = default;
+    virtual ~feng_shui()
+    {
+        if (font != nullptr)
+            TTF_CloseFont(font);
+    }
 
     void set_controller(rendering_controller* controller);
 
-    virtual void render_range(std::vector<entity>& _entities, interval interval) = 0;
+    virtual int max_dim() = 0;
+
+    virtual double get_scale(double bin_len) = 0;
 
     virtual void draw_grid(interval interval, const double scale_x) const {};
 
-    friend bool operator==(const Renderer& lhs, const Renderer& rhs) { return lhs.id == rhs.id; }
+    virtual void render_range(std::vector<entity>& _entities, interval interval);
 
-    friend bool operator!=(const Renderer& lhs, const Renderer& rhs) { return !(lhs == rhs); }
+    friend bool operator==(const feng_shui& lhs, const feng_shui& rhs) { return lhs.id == rhs.id; }
+
+    friend bool operator!=(const feng_shui& lhs, const feng_shui& rhs) { return !(lhs == rhs); }
 
     // TODO : consider other options, state in interface..
     const int id;
-    std::unique_ptr<entity_style> style;
+    std::unique_ptr<fashion_statement> style;
     rendering_controller* controller;
     interval rendering_interval;
     std::vector<u8> lanes;
-    Flavour flavour = Flavour::Horizontal;
-};
+    orientation orientation = orientation::horizontal;
 
-struct entity_style
-{
-    virtual ~entity_style() = default;
-    virtual void render(SDL_Rect r, const entity& e, u8 colour_border, u8 colour_fill) const = 0;
-
+    // TODO : refactor to style
     size_t font_size;
     TTF_Font* font;
 };
 
-struct VBoxStyle : entity_style
+struct fashion_statement
 {
-    void render(SDL_Rect r, const entity& e, u8 colour_border, u8 colour_fill) const override
-    {
-        // outline
-        SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
-        SDL_RenderDrawRect(graphics::get().ren, &r);
-
-        // fill
-        SDL_SetRenderDrawColor(graphics::get().ren,
-                               0x9F - (colour_fill * 0.5f),
-                               0x90 + (0xFF - colour_fill) * 0.2f,
-                               0xFF - (colour_fill * 0.8f),
-                               0x70);
-        SDL_RenderFillRect(graphics::get().ren, &r);
-    }
+    virtual ~fashion_statement() = default;
+    virtual rect lane_bounds(style_info bi) = 0;
+    virtual rect text_bounds(style_info bi) = 0;
+    virtual void render(style_info specs, const entity& e) = 0;
 };
 
-struct HBoxStyle : entity_style
+struct stylist_v : fashion_statement
 {
-    void render(SDL_Rect r, const entity& e, u8 colour_border, u8 colour_fill) const override;
+    rect lane_bounds(style_info bi) override;
+    rect text_bounds(style_info bi) override;
+    void render(style_info specs, const entity& e) override;
+};
+
+struct stylist_h : fashion_statement
+{
+    rect lane_bounds(style_info bi) override;
+    rect text_bounds(style_info bi) override;
+    void render(style_info specs, const entity& e) override;
 };
 
 struct rendering_controller
@@ -133,8 +158,8 @@ struct rendering_controller
     {
     }
 
-    bool is_horizontal() const { return get_renderer().flavour == Renderer::Flavour::Horizontal; }
-    bool is_vertical() const { return get_renderer().flavour == Renderer::Flavour::Vertical; }
+    bool is_horizontal() const { return get_renderer().orientation == feng_shui::orientation::horizontal; }
+    bool is_vertical() const { return get_renderer().orientation == feng_shui::orientation::vertical; }
     void set_refresh_rate(size_t refresh_rate) { frame_interval_ms = 1000 / refresh_rate; }
     void wait_until_next_frame() const
     {
@@ -189,7 +214,7 @@ struct rendering_controller
 
     void button_right_drag() {}
 
-    void set_current(Renderer& renderer_ref)
+    void set_current(feng_shui& renderer_ref)
     {
         int i = 0;
         while (i < renderer_container.size() && *renderer_container[i] != renderer_ref)
@@ -199,12 +224,12 @@ struct rendering_controller
         renderer_idx = i;
     }
 
-    const Renderer& get_renderer() const
+    const feng_shui& get_renderer() const
     {
         assert(is_renderer_set());
         return *renderer_container[renderer_idx];
     }
-    Renderer& get_renderer()
+    feng_shui& get_renderer()
     {
         assert(is_renderer_set());
         return *renderer_container[renderer_idx];
@@ -223,18 +248,16 @@ struct rendering_controller
     size_t frame_interval_ms{};
     size_t last_frame_ms{};
     std::unique_ptr<timer_ifc> timer;
-    std::vector<std::unique_ptr<Renderer>> renderer_container;
+    std::vector<std::unique_ptr<feng_shui>> renderer_container;
     int renderer_idx = -1;
 };
 
-struct Vertical : Renderer
+struct vertical : feng_shui
 {
-    Vertical()
-      : font_size(36)
-      , font{ get_title_font(font_size) }
+    vertical()
     {
         std::cout << __PRETTY_FUNCTION__ << "\n";
-        flavour = Renderer::Flavour::Vertical;
+        orientation = orientation::vertical;
 
         assert(font != nullptr);
 
@@ -244,29 +267,16 @@ struct Vertical : Renderer
 
         lanes.resize(spec::max_bins);
 
-        style = std::make_unique<VBoxStyle>();
-        style->font = font;
-        style->font_size = font_size;
+        style = std::make_unique<stylist_v>();
     }
 
-    ~Vertical() override
-    {
-        if (font != nullptr)
-            TTF_CloseFont(font);
-    }
-
-    // TODO : feels quite repeated too..
-    void render_range(std::vector<entity>& _entities, interval interval) override;
-
-    size_t font_size;
-    TTF_Font* font;
+    int max_dim() override;
+    double get_scale(double bin_len) override;
 };
 
-struct Horizontal : Renderer
+struct horizontal : feng_shui
 {
-    Horizontal()
-      : font_size(36)
-      , font{ get_title_font(font_size) }
+    horizontal()
     {
         std::cout << __PRETTY_FUNCTION__ << "\n";
 
@@ -277,41 +287,12 @@ struct Horizontal : Renderer
 
         lanes.resize(spec::max_bins);
 
-        style = std::make_unique<HBoxStyle>();
-        style->font = font;
-        style->font_size = font_size;
+        style = std::make_unique<stylist_h>();
     }
 
-    ~Horizontal() override
-    {
-        if (font != nullptr)
-            TTF_CloseFont(font);
-    }
-
-    void draw_grid(interval interval, const double scale_x) const override;
-
-    void render_range(core::entities& _entities, interval interval) override;
-
-    void test()
-    {
-        SDL_Rect r;
-        r.x = 10;
-        r.y = 10;
-        r.w = 100;
-        r.h = 100;
-
-        // outline
-        SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_RenderDrawRect(graphics::get().ren, &r);
-
-        // fill
-        SDL_RenderFillRect(graphics::get().ren, &r);
-
-        SDL_Color color{ 255, 255, 255 };
-        SDL_RenderPresent(graphics::get().ren);
-    }
-    size_t font_size;
-    TTF_Font* font;
+    void draw_grid(interval interval, double scale_x) const override;
+    int max_dim() override;
+    double get_scale(double bin_len) override;
 };
 
 }
