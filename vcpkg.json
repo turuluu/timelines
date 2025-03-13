@@ -3,8 +3,8 @@
     "zlib",
     "bzip2",
     "freetype",
-    "sdl2",
-    "sdl2-ttf",
+    "sdl3",
+    "sdl3-ttf",
     "nlohmann-json",
     "doctest",
     {
@@ -12,5 +12,5 @@
       "version>=": "1.11.1"
     }
   ],
-  "builtin-baseline": "a5d91f7d264786b42b0d6bb7b1d31a3f2842a39c"
+  "builtin-baseline": "cf72b50294a4aa13e607a0c7b40280b933801698"
 }

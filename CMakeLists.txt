@@ -36,7 +36,7 @@ if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     # Clone the vcpkg submodule if not found and set cmake_toolchain
     # This should propagate "manifest" mode for vcpkg and further installation of dependencies
     set(VCPKG_MANIFEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-    include(Vcpkg)
+    include(vcpkg)
 endif ()
 
 project(timelines)
@@ -60,15 +60,15 @@ find_package(BZip2 REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(cpr CONFIG REQUIRED)
 find_package(freetype CONFIG REQUIRED)
-find_package(SDL2 CONFIG REQUIRED)
-find_package(SDL2_ttf CONFIG REQUIRED)
+find_package(SDL3 CONFIG REQUIRED)
+find_package(SDL3_ttf CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(doctest CONFIG REQUIRED)
 
 set(dependencies
-        $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-        $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-        $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+        $<TARGET_NAME_IF_EXISTS:SDL3::SDL3main>
+        $<IF:$<TARGET_EXISTS:SDL3::SDL3>,SDL3::SDL3,SDL3::SDL3-static>
+        $<IF:$<TARGET_EXISTS:SDL3_ttf::SDL3_ttf>,SDL3_ttf::SDL3_ttf,SDL3_ttf::SDL3_ttf-static>
         Freetype::Freetype
         BZip2::BZip2
         ZLIB::ZLIB
