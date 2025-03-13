@@ -45,12 +45,12 @@ struct style_info
 };
 
 struct rendering_controller;
-struct fashion_statement;
-struct feng_shui
+struct stylist_base;
+struct renderer
 {
     using entity_ptr = std::unique_ptr<entity>;
 
-    feng_shui()
+    renderer()
       : id(gen_id())
       , font_size(36)
       , font{ get_title_font(font_size) }
@@ -96,7 +96,7 @@ struct feng_shui
         return lane;
     }
 
-    virtual ~feng_shui()
+    virtual ~renderer()
     {
         if (font != nullptr)
             TTF_CloseFont(font);
@@ -112,13 +112,13 @@ struct feng_shui
 
     virtual void render_range(std::vector<entity>& _entities, interval interval);
 
-    friend bool operator==(const feng_shui& lhs, const feng_shui& rhs) { return lhs.id == rhs.id; }
+    friend bool operator==(const renderer& lhs, const renderer& rhs) { return lhs.id == rhs.id; }
 
-    friend bool operator!=(const feng_shui& lhs, const feng_shui& rhs) { return !(lhs == rhs); }
+    friend bool operator!=(const renderer& lhs, const renderer& rhs) { return !(lhs == rhs); }
 
     // TODO : consider other options, state in interface..
     const int id;
-    std::unique_ptr<fashion_statement> style;
+    std::unique_ptr<stylist_base> style;
     rendering_controller* controller;
     interval rendering_interval;
     std::vector<u8> lanes;
@@ -129,22 +129,22 @@ struct feng_shui
     TTF_Font* font;
 };
 
-struct fashion_statement
+struct stylist_base
 {
-    virtual ~fashion_statement() = default;
+    virtual ~stylist_base() = default;
     virtual rect lane_bounds(style_info bi) = 0;
     virtual rect text_bounds(style_info bi) = 0;
     virtual void render(style_info specs, const entity& e) = 0;
 };
 
-struct stylist_v : fashion_statement
+struct stylist_v : stylist_base
 {
-    rect lane_bounds(style_info bi) override;
-    rect text_bounds(style_info bi) override;
+    rect lane_bounds(style_info s) override;
+    rect text_bounds(style_info s) override;
     void render(style_info specs, const entity& e) override;
 };
 
-struct stylist_h : fashion_statement
+struct stylist_h : stylist_base
 {
     rect lane_bounds(style_info bi) override;
     rect text_bounds(style_info bi) override;
@@ -158,8 +158,8 @@ struct rendering_controller
     {
     }
 
-    bool is_horizontal() const { return get_renderer().orientation == feng_shui::orientation::horizontal; }
-    bool is_vertical() const { return get_renderer().orientation == feng_shui::orientation::vertical; }
+    bool is_horizontal() const { return get_renderer().orientation == renderer::orientation::horizontal; }
+    bool is_vertical() const { return get_renderer().orientation == renderer::orientation::vertical; }
     void set_refresh_rate(size_t refresh_rate) { frame_interval_ms = 1000 / refresh_rate; }
     void wait_until_next_frame() const
     {
@@ -214,7 +214,7 @@ struct rendering_controller
 
     void button_right_drag() {}
 
-    void set_current(feng_shui& renderer_ref)
+    void set_current(renderer& renderer_ref)
     {
         int i = 0;
         while (i < renderer_container.size() && *renderer_container[i] != renderer_ref)
@@ -224,12 +224,12 @@ struct rendering_controller
         renderer_idx = i;
     }
 
-    const feng_shui& get_renderer() const
+    const renderer& get_renderer() const
     {
         assert(is_renderer_set());
         return *renderer_container[renderer_idx];
     }
-    feng_shui& get_renderer()
+    renderer& get_renderer()
     {
         assert(is_renderer_set());
         return *renderer_container[renderer_idx];
@@ -248,11 +248,11 @@ struct rendering_controller
     size_t frame_interval_ms{};
     size_t last_frame_ms{};
     std::unique_ptr<timer_ifc> timer;
-    std::vector<std::unique_ptr<feng_shui>> renderer_container;
+    std::vector<std::unique_ptr<renderer>> renderer_container;
     int renderer_idx = -1;
 };
 
-struct vertical : feng_shui
+struct vertical : renderer
 {
     vertical()
     {
@@ -274,7 +274,7 @@ struct vertical : feng_shui
     double get_scale(double bin_len) override;
 };
 
-struct horizontal : feng_shui
+struct horizontal : renderer
 {
     horizontal()
     {

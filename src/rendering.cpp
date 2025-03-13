@@ -6,13 +6,13 @@
 namespace tls
 {
 void
-feng_shui::set_controller(rendering_controller* controller)
+renderer::set_controller(rendering_controller* controller)
 {
     this->controller = controller;
 }
 
 std::vector<std::reference_wrapper<const entity>>
-feng_shui::select_from(const core::entities& entities) const
+renderer::select_from(const core::entities& entities) const
 {
     auto& intervals = controller->core.intervals;
     // TODO : views without copy, something that won't have invalidated entries..
@@ -32,7 +32,7 @@ feng_shui::select_from(const core::entities& entities) const
 }
 
 size_t
-feng_shui::entities_in_interval(interval interval) const
+renderer::entities_in_interval(interval interval) const
 {
     auto& intervals = controller->core.intervals;
     size_t max_entities_in_interval = 0;
@@ -47,7 +47,7 @@ feng_shui::entities_in_interval(interval interval) const
 }
 
 void
-feng_shui::render_range(std::vector<entity>& entities, interval interval)
+renderer::render_range(std::vector<entity>& entities, interval interval)
 {
     assert(!entities.empty());
 
@@ -100,27 +100,27 @@ feng_shui::render_range(std::vector<entity>& entities, interval interval)
 }
 
 rect
-stylist_v::lane_bounds(style_info bi)
+stylist_v::lane_bounds(style_info s)
 {
     SDL_Rect r;
-    r.x = 10 + (bi.d * bi.lane_index);
-    r.y = bi.rect_start * bi.scale;
-    r.h = (bi.rect_end - bi.rect_start) * bi.scale;
-    r.w = bi.d;
+    r.x = 10 + (s.d * s.lane_index);
+    r.y = s.rect_start * s.scale;
+    r.h = (s.rect_end - s.rect_start) * s.scale;
+    r.w = s.d;
 
     return r;
 }
 
 rect
-stylist_v::text_bounds(style_info bi)
+stylist_v::text_bounds(style_info s)
 {
-    SDL_Rect rt;
-    rt.x = bi.max_d + 10;
-    rt.y = bi.rect_start * bi.scale;
-    rt.h = bi.font_size;
-    rt.w = bi.max_d - 20;
+    SDL_Rect r;
+    r.x = s.max_d + 10;
+    r.y = s.rect_start * s.scale;
+    r.h = s.font_size;
+    r.w = s.max_d - 20;
 
-    return rt;
+    return r;
 }
 
 void
