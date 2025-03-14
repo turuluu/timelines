@@ -1,7 +1,6 @@
 #include "rendering.hpp"
 #include "entities.hpp"
 #include "time_abstractions.hpp"
-#include "vcpkg/buildtrees/curl/src/curl-8_0_1-5ac57a8964.clean/lib/curl_md5.h"
 
 namespace tls
 {
@@ -99,10 +98,22 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
     SDL_RenderPresent(graphics::get().ren);
 }
 
+void rendering_controller::button_left_drag(mouse_move m, const float multiplier)
+{
+    if (!is_renderer_set())
+        return;
+
+    const i32 multiplied_value =
+      is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
+
+    auto& interval = get_renderer().rendering_interval;
+    struct interval adjusted = new_relative_interval(multiplied_value, interval);
+    interval = adjusted;
+}
 rect
 stylist_v::lane_bounds(style_info s)
 {
-    SDL_Rect r;
+    rect r;
     r.x = 10 + (s.d * s.lane_index);
     r.y = s.rect_start * s.scale;
     r.h = (s.rect_end - s.rect_start) * s.scale;
@@ -114,7 +125,7 @@ stylist_v::lane_bounds(style_info s)
 rect
 stylist_v::text_bounds(style_info s)
 {
-    SDL_Rect r;
+    rect r;
     r.x = s.max_d + 10;
     r.y = s.rect_start * s.scale;
     r.h = s.font_size;
@@ -128,7 +139,7 @@ stylist_v::render(style_info specs, const entity& e)
 {
     auto r = lane_bounds(specs);
     // indicator line connecting text and lane box
-    SDL_RenderDrawLine(graphics::get().ren,
+    SDL_RenderLine(graphics::get().ren,
                        r.x + r.w,
                        r.y + specs.font_size / 2,
                        specs.max_d + 20,
@@ -136,7 +147,7 @@ stylist_v::render(style_info specs, const entity& e)
 
     // outline
     SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
-    SDL_RenderDrawRect(graphics::get().ren, &r);
+    SDL_RenderRect(graphics::get().ren, &r);
 
     // fill
     SDL_SetRenderDrawColor(graphics::get().ren,
@@ -190,7 +201,7 @@ stylist_h::render(style_info specs, const entity& e)
     // outline
     SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
 
-    SDL_RenderDrawRect(graphics::get().ren, &r);
+    SDL_RenderRect(graphics::get().ren, &r);
     SDL_Color color{ 255, 255, 255, 0x80 };
     render_text_2(specs.font, &color, &r, e.name.c_str(), specs.font_size);
 }
@@ -198,7 +209,7 @@ stylist_h::render(style_info specs, const entity& e)
 rect
 stylist_h::lane_bounds(style_info bi)
 {
-    SDL_Rect r;
+    rect r;
     r.x = bi.rect_start * bi.scale;
     r.y = 10 + (bi.d * bi.lane_index);
     r.w = (bi.rect_end - bi.rect_start) * bi.scale;
@@ -226,12 +237,12 @@ horizontal::draw_grid(interval interval, const double scale_x) const
         {
             SDL_SetRenderDrawColor(graphics::get().ren, 0x5F, 0x5F, 0x5F, 0x20);
             const int x = (to_index(i) - start_idx) * scale_x;
-            SDL_RenderDrawLine(graphics::get().ren, x, 0, x, spec::screen_h);
+            SDL_RenderLine(graphics::get().ren, x, 0, x, spec::screen_h);
 
             const int label_w = 50;
             const int label_h = 20;
 
-            SDL_Rect grid_label_bounds;
+            rect grid_label_bounds;
             grid_label_bounds.x = x - (label_w / 2);
             grid_label_bounds.y = spec::screen_h - label_h;
             grid_label_bounds.w = label_w;

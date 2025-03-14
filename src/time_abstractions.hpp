@@ -2,7 +2,6 @@
 
 
 #include "calendars.hpp"
-#include "sdl/graphics.hpp"
 #include "spec.hpp"
 #include "utilities.hpp"
 
@@ -16,7 +15,7 @@ struct interval
 };
 
 static interval
-new_relative_interval(const i32 xrel,
+new_relative_interval(const float xrel,
                       const interval& interval,
                       const int_pixels_t relative_max = spec::screen_w)
 {
@@ -26,7 +25,7 @@ new_relative_interval(const i32 xrel,
 }
 
 static interval
-new_scaled_interval(const i32 value,
+new_scaled_interval(const float value,
                       const interval& interval,
                       const int_pixels_t mid_x = (spec::screen_w / 2),
                       const int_pixels_t relative_max = spec::screen_w)

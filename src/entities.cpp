@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 
 #include "core.hpp"
 #include "entities.hpp"

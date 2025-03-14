@@ -1,9 +1,10 @@
 #pragma once
 
+#include <list>
+
 #include "core.hpp"
 #include "sdl/graphics.hpp"
-#include "utilities.hpp"
-#include <list>
+#include "types.hpp"
 
 namespace tls
 {
@@ -18,18 +19,8 @@ struct timer_ifc
     [[nodiscard]] virtual size_t get_ms_since_start() const = 0;
 };
 
-struct mouse_move
-{
-    i32 x;
-    i32 y;
-};
 
-using rect = SDL_Rect;
-struct colour
-{
-    u8 border = 255;
-    u8 fill = 255;
-};
+
 struct style_info
 {
     colour colour;
@@ -190,18 +181,8 @@ struct rendering_controller
 
     void render() { get_renderer().render_range(core.data, get_renderer().rendering_interval); }
 
-    void button_left_drag(mouse_move m, const float multiplier = 1.5f)
-    {
-        if (!is_renderer_set())
-            return;
+    void button_left_drag(mouse_move m, const float multiplier = 1.5f);
 
-        const i32 multiplied_value =
-          is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
-
-        auto& interval = get_renderer().rendering_interval;
-        struct interval adjusted = new_relative_interval(multiplied_value, interval);
-        interval = adjusted;
-    }
 
     bool is_renderer_set() const { return renderer_idx >= 0; }
 

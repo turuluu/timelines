@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X deployment version")
+set(CMAKE_OSX_DEPLOYMENT_TARGET "15" CACHE STRING "Minimum OS X deployment version")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,7 +10,7 @@ if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
         set(VCPKG_TARGET_TRIPLET x64-windows)
     else ()
         if (FORCE_INTEL)
-            set(CMAKE_OSX_DEPLOYMENT_TARGET 11.0)
+            set(CMAKE_OSX_DEPLOYMENT_TARGET 15.0)
             set(VCPKG_TARGET_ARCHITECTURE "x64")
             set(VCPKG_TARGET_TRIPLET x64-osx)
         else ()
@@ -47,12 +47,12 @@ aux_source_directory(src/sdl DETAILS_SRC_LIST)
 set(HEADERS
         src/headers.hpp
         src/sdl/graphics.hpp
-        src/core.hpp)
+        src/core.hpp
+        src/types.hpp)
 
 add_executable(${PROJECT_NAME}
         ${SRC_LIST}
         ${DETAILS_SRC_LIST}
-        ${HEADERS}
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
@@ -67,7 +67,7 @@ find_package(doctest CONFIG REQUIRED)
 
 set(dependencies
         $<TARGET_NAME_IF_EXISTS:SDL3::SDL3main>
-        $<IF:$<TARGET_EXISTS:SDL3::SDL3>,SDL3::SDL3,SDL3::SDL3-static>
+        SDL3::SDL3
         $<IF:$<TARGET_EXISTS:SDL3_ttf::SDL3_ttf>,SDL3_ttf::SDL3_ttf,SDL3_ttf::SDL3_ttf-static>
         Freetype::Freetype
         BZip2::BZip2

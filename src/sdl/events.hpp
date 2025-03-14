@@ -1,7 +1,11 @@
 #pragma once
 
-#include "../rendering.hpp"
 #include <list>
+#include <deque>
+
+#include "../core.hpp"
+#include "../types.hpp"
+#include "../rendering.hpp"
 
 namespace tls
 {
@@ -11,7 +15,7 @@ struct events
     bool should_quit{ false };
     bool toggle_renderer{ false };
     std::deque<mouse_move> mouse;
-    std::deque<i32> wheel;
+    std::deque<float> wheel;
 };
 
 struct event_handler_ifc
@@ -91,7 +95,7 @@ struct application
         }
         if (y_scroll_delta != 0)
         {
-            int x = 0, y = 0;
+            float x = 0, y = 0;
             SDL_GetMouseState(&x, &y);
             ui->scroll_y(y_scroll_delta, x, y);
         }
@@ -143,9 +147,9 @@ struct event_handler : event_handler_ifc
         {
             switch (e.type)
             {
-                case SDL_QUIT:
+                case SDL_EVENT_QUIT:
                     break;
-                case SDL_MOUSEMOTION:
+                case SDL_EVENT_MOUSE_MOTION:
                     if (e.motion.state == 1)
                     {
                         events.mouse.push_back({ e.motion.xrel, e.motion.yrel });
@@ -155,18 +159,18 @@ struct event_handler : event_handler_ifc
                         events.wheel.push_back(-e.motion.yrel);
                     }
                     break;
-                case SDL_KEYDOWN:
-                    switch (e.key.keysym.sym)
+                case SDL_EVENT_KEY_DOWN:
+                    switch (e.key.key)
                     {
-                        case SDLK_q:
+                        case SDLK_Q:
                             events.should_quit = true;
                             break;
-                        case SDLK_t:
+                        case SDLK_T:
                             events.toggle_renderer = true;
                             break;
                     }
                     break;
-                case SDL_MOUSEWHEEL:
+                case SDL_EVENT_MOUSE_WHEEL:
                     if (e.wheel.y != 0)
                         events.wheel.push_back(e.wheel.y * wheel_y_mult);
 
