@@ -45,5 +45,5 @@
 - [ ] multithreaded event, render, messages
 - [ ] create deps/ for all vcpkg installed libs
 - [ ] replace sdl ttf with stf font or sth and include font as binary
-
+- [ ] license display
 
