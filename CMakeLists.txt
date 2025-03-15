@@ -41,6 +41,7 @@ endif ()
 
 project(timelines)
 
+
 aux_source_directory(src SRC_LIST)
 aux_source_directory(src/sdl DETAILS_SRC_LIST)
 
@@ -48,8 +49,12 @@ set(HEADERS
         src/headers.hpp
         src/sdl/graphics.hpp
         src/core.hpp
-        src/types.hpp)
+        src/types.hpp
+        src/app.hpp
+        src/app.cpp
+        src/sdl/graphics.cpp)
 
+add_compile_definitions(USE_SDL=1)
 add_executable(${PROJECT_NAME}
         ${SRC_LIST}
         ${DETAILS_SRC_LIST}
@@ -66,14 +71,13 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_package(doctest CONFIG REQUIRED)
 
 set(dependencies
-        $<TARGET_NAME_IF_EXISTS:SDL3::SDL3main>
-        SDL3::SDL3
-        $<IF:$<TARGET_EXISTS:SDL3_ttf::SDL3_ttf>,SDL3_ttf::SDL3_ttf,SDL3_ttf::SDL3_ttf-static>
         Freetype::Freetype
         BZip2::BZip2
         ZLIB::ZLIB
         cpr::cpr
         nlohmann_json::nlohmann_json
+        SDL3_ttf::SDL3_ttf
+        SDL3::SDL3
 )
 
 target_include_directories(
@@ -85,7 +89,7 @@ target_include_directories(
 
 target_link_libraries(
         ${PROJECT_NAME}
-        PRIVATE
+        PUBLIC
         ${dependencies}
 )
 

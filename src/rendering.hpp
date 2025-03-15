@@ -1,24 +1,15 @@
 #pragma once
 
 #include <list>
+#include <cassert>
+#include <iosfwd>
 
 #include "core.hpp"
-#include "sdl/graphics.hpp"
 #include "types.hpp"
 
+struct TTF_Font;
 namespace tls
 {
-struct timer_ifc
-{
-    virtual ~timer_ifc() = default;
-    virtual void wait_ms(size_t delay_ms) const = 0;
-
-    /**
-     * time delta since initiation
-     */
-    [[nodiscard]] virtual size_t get_ms_since_start() const = 0;
-};
-
 
 
 struct style_info
@@ -41,12 +32,7 @@ struct renderer
 {
     using entity_ptr = std::unique_ptr<entity>;
 
-    renderer()
-      : id(gen_id())
-      , font_size(36)
-      , font{ get_title_font(font_size) }
-    {
-    }
+    renderer();
 
     static int gen_id()
     {
@@ -87,11 +73,7 @@ struct renderer
         return lane;
     }
 
-    virtual ~renderer()
-    {
-        if (font != nullptr)
-            TTF_CloseFont(font);
-    }
+    virtual ~renderer();
 
     void set_controller(rendering_controller* controller);
 
@@ -235,21 +217,7 @@ struct rendering_controller
 
 struct vertical : renderer
 {
-    vertical()
-    {
-        std::cout << __PRETTY_FUNCTION__ << "\n";
-        orientation = orientation::vertical;
-
-        assert(font != nullptr);
-
-        // TODO : clean up to their own wrapper
-        SDL_SetRenderDrawColor(graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
-        SDL_RenderClear(graphics::get().ren);
-
-        lanes.resize(spec::max_bins);
-
-        style = std::make_unique<stylist_v>();
-    }
+    vertical();
 
     int max_dim() override;
     double get_scale(double bin_len) override;
@@ -257,19 +225,7 @@ struct vertical : renderer
 
 struct horizontal : renderer
 {
-    horizontal()
-    {
-        std::cout << __PRETTY_FUNCTION__ << "\n";
-
-        assert(font != nullptr);
-
-        SDL_SetRenderDrawColor(graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
-        SDL_RenderClear(graphics::get().ren);
-
-        lanes.resize(spec::max_bins);
-
-        style = std::make_unique<stylist_h>();
-    }
+    horizontal();
 
     void draw_grid(interval interval, double scale_x) const override;
     int max_dim() override;

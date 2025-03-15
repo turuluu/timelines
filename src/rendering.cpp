@@ -1,9 +1,22 @@
 #include "rendering.hpp"
+#include "sdl/graphics.hpp"
 #include "entities.hpp"
 #include "time_abstractions.hpp"
 
 namespace tls
 {
+renderer::renderer()
+: id(gen_id())
+, font_size(36)
+, font{ get_title_font(font_size) }
+{
+}
+
+renderer::~renderer()
+{
+    destroy_font(font);
+}
+
 void
 renderer::set_controller(rendering_controller* controller)
 {
@@ -98,7 +111,8 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
     SDL_RenderPresent(graphics::get().ren);
 }
 
-void rendering_controller::button_left_drag(mouse_move m, const float multiplier)
+void
+rendering_controller::button_left_drag(mouse_move m, const float multiplier)
 {
     if (!is_renderer_set())
         return;
@@ -140,10 +154,10 @@ stylist_v::render(style_info specs, const entity& e)
     auto r = lane_bounds(specs);
     // indicator line connecting text and lane box
     SDL_RenderLine(graphics::get().ren,
-                       r.x + r.w,
-                       r.y + specs.font_size / 2,
-                       specs.max_d + 20,
-                       r.y + specs.font_size / 2);
+                   r.x + r.w,
+                   r.y + specs.font_size / 2,
+                   specs.max_d + 20,
+                   r.y + specs.font_size / 2);
 
     // outline
     SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
@@ -160,6 +174,22 @@ stylist_v::render(style_info specs, const entity& e)
     auto rt = text_bounds(specs);
     SDL_Color color{ 255, 255, 255, 0xDD };
     render_text(specs.font, &color, &rt, e.name.c_str(), specs.font_size);
+}
+
+vertical::vertical()
+{
+    std::cout << __PRETTY_FUNCTION__ << "\n";
+    orientation = orientation::vertical;
+
+    assert(font != nullptr);
+
+    // TODO : clean up to their own wrapper
+    SDL_SetRenderDrawColor(graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
+    SDL_RenderClear(graphics::get().ren);
+
+    lanes.resize(spec::max_bins);
+
+    style = std::make_unique<stylist_v>();
 }
 
 int
@@ -221,6 +251,21 @@ stylist_h::lane_bounds(style_info bi)
 rect
 stylist_h::text_bounds(style_info bi)
 {
+    return {};
+}
+
+horizontal::horizontal()
+{
+    std::cout << __PRETTY_FUNCTION__ << "\n";
+
+    assert(font != nullptr);
+
+    SDL_SetRenderDrawColor(graphics::get().ren, 0x00, 0x00, 0x00, 0x00);
+    SDL_RenderClear(graphics::get().ren);
+
+    lanes.resize(spec::max_bins);
+
+    style = std::make_unique<stylist_h>();
 }
 
 void

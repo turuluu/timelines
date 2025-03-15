@@ -3,6 +3,9 @@
 #include "entities.hpp"
 #include "rendering.hpp"
 #include "sdl/events.hpp"
+#include "sdl/graphics.hpp"
+#include "types.hpp"
+#include "app.hpp"
 
 #include <filesystem>
 
