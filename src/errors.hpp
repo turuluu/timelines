@@ -43,10 +43,7 @@ struct with_line_n
 };
 struct with_interval
 {
-    void set_interval(interval interval)
-    {
-        this->interval = interval;
-    }
+    void set_interval(interval interval) { this->interval = interval; }
     interval interval{};
 };
 
@@ -67,6 +64,6 @@ struct timescale_issue
                       interval.end);
     }
 };
-};
+}; // namespace error
 
-}
+} // namespace tls

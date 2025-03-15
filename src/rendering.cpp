@@ -296,4 +296,4 @@ horizontal::draw_grid(interval interval, const double scale_x) const
         }
     }
 }
-}
+} // namespace tls

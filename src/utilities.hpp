@@ -26,7 +26,7 @@ to_string(T... obj)
 
 std::string get_thread_id();
 
-}
+} // namespace util
 
 // Thread, Stack, Location debug print helper
 #define TSL_PRINT_ENABLED 0

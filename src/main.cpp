@@ -39,7 +39,7 @@ is_path_valid(const std::filesystem::path& path)
     return std::filesystem::exists(path) &&
            (std::filesystem::is_regular_file(path) || std::filesystem::is_symlink(path));
 }
-}
+} // namespace util
 
 int
 main(int argc, char** argv)

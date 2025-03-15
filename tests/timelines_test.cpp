@@ -24,8 +24,4 @@ TEST_CASE("Logic errors")
     CHECK_THROWS(core.add_entity("foo", 1900, 1810));
 }
 
-TEST_CASE("calendars")
-{
-
-
-}
+TEST_CASE("calendars") {}

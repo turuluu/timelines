@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "calendars.hpp"
 #include "spec.hpp"
 #include "utilities.hpp"
@@ -26,9 +25,9 @@ new_relative_interval(const float xrel,
 
 static interval
 new_scaled_interval(const float value,
-                      const interval& interval,
-                      const int_pixels_t mid_x = (spec::screen_w / 2),
-                      const int_pixels_t relative_max = spec::screen_w)
+                    const interval& interval,
+                    const int_pixels_t mid_x = (spec::screen_w / 2),
+                    const int_pixels_t relative_max = spec::screen_w)
 {
     const float mid_point = 1.0f - ((float)mid_x / relative_max);
     constexpr float scale = 1e-2f;
@@ -41,4 +40,4 @@ new_scaled_interval(const float value,
     const int new_end = bin_limit((int)(((end - mid) * timescale) + mid));
     return { new_start, new_end };
 }
-}
+} // namespace tls

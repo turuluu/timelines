@@ -162,4 +162,4 @@ scoped_graphics::destroy()
     SDL_Quit();
 }
 }
-}
+} // namespace tls

@@ -6,7 +6,6 @@
 #include "../deps/csv/csv.h"
 
 #include "calendars.hpp"
-#include "dot.hpp"
 #include "entities.hpp"
 #include "rendering.hpp"
 #include "sdl/events.hpp"

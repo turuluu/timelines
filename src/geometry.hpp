@@ -9,7 +9,7 @@ namespace tls
 #if USE_SDL
 inline
 #endif
-namespace sdl
+  namespace sdl
 {
 using i8 = Sint8;
 using i16 = Sint16;
@@ -23,4 +23,4 @@ using u64 = Uint64;
 
 using rect = SDL_FRect;
 }
-}
+} // namespace tls

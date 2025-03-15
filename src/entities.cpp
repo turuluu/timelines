@@ -17,7 +17,7 @@ entity::entity(std::string _name)
 
 entity::entity(std::string _name, int _start, int _end)
   : name(std::move(_name))
-  , interval{_start, _end}
+  , interval{ _start, _end }
   , id(ids++)
 {
     if (interval.start > interval.end)
@@ -29,9 +29,8 @@ entity::entity(std::string _name, int _start, int _end)
         err.set_interval(interval);
         throw err;
     }
-
 }
 
 entity::~entity() { std::cout << "DTOR '" << name << "'\n"; }
 
-}
+} // namespace tls

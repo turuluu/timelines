@@ -25,4 +25,4 @@ struct timer : timer_ifc
     void wait_ms(size_t ms) const override;
 };
 }
-}
+} // namespace tls

@@ -21,4 +21,4 @@ length(const char* cstr)
 
     return _length;
 }
-}
+} // namespace util

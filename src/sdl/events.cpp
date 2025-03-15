@@ -45,8 +45,7 @@ event_handler::handle_events(events& events)
                     events.wheel.push_back(e.wheel.y * wheel_y_mult);
 
                 break;
-            default:
-                ;
+            default:;
         }
     }
 }
@@ -63,4 +62,4 @@ timer::wait_ms(size_t ms) const
     SDL_Delay(ms);
 }
 }
-}
+} // namespace tls

@@ -45,4 +45,4 @@ intervals::clear()
 {
     std::fill(interval_bins.begin(), interval_bins.end(), 0);
 }
-}
+} // namespace tls

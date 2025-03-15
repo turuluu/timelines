@@ -59,4 +59,4 @@ application::loop()
         ui->last_frame_ms = ui->timer->get_ms_since_start();
     }
 }
-}
+} // namespace tls

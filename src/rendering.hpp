@@ -236,4 +236,4 @@ struct horizontal : renderer
     double get_scale(double bin_len) override;
 };
 
-}
+} // namespace tls

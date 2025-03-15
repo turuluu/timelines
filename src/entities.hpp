@@ -41,4 +41,4 @@ struct entity
     dimensions bounds;
     entity* parent = nullptr;
 };
-}
+} // namespace tls

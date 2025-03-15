@@ -47,7 +47,7 @@ struct Base
 struct JulianCalendar : Base<Type::Julian>
 {
 };
-}
+} // namespace calendar
 
 enum class Granularity : int
 {
@@ -98,4 +98,4 @@ struct intervals
     void insert(const entity& e);
     void clear();
 };
-}
+} // namespace tls

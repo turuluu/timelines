@@ -8,7 +8,7 @@ struct core
 {
     using entities = std::vector<entity>;
 
-    template <typename... Args>
+    template<typename... Args>
     void add_entity(Args... args)
     {
         data.emplace_back(args...);
@@ -23,4 +23,4 @@ struct Filter
     std::function<bool(entity)> predicate;
     std::vector<int> indices;
 };
-}
+} // namespace tls

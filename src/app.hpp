@@ -43,4 +43,4 @@ struct application
     std::unique_ptr<event_handler_ifc> event_handler;
     std::unique_ptr<rendering_controller> ui;
 };
-}
+} // namespace tls

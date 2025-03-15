@@ -41,4 +41,4 @@ struct timer_ifc
      */
     [[nodiscard]] virtual size_t get_ms_since_start() const = 0;
 };
-}
+} // namespace tls

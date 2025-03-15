@@ -77,4 +77,4 @@ struct scoped_graphics
     void destroy();
 };
 }
-}
+} // namespace tls
