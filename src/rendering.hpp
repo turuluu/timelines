@@ -1,8 +1,8 @@
 #pragma once
 
-#include <list>
 #include <cassert>
 #include <iosfwd>
+#include <list>
 
 #include "core.hpp"
 #include "types.hpp"
@@ -10,7 +10,6 @@
 struct TTF_Font;
 namespace tls
 {
-
 
 struct style_info
 {
@@ -131,8 +130,14 @@ struct rendering_controller
     {
     }
 
-    bool is_horizontal() const { return get_renderer().orientation == renderer::orientation::horizontal; }
-    bool is_vertical() const { return get_renderer().orientation == renderer::orientation::vertical; }
+    bool is_horizontal() const
+    {
+        return get_renderer().orientation == renderer::orientation::horizontal;
+    }
+    bool is_vertical() const
+    {
+        return get_renderer().orientation == renderer::orientation::vertical;
+    }
     void set_refresh_rate(size_t refresh_rate) { frame_interval_ms = 1000 / refresh_rate; }
     void wait_until_next_frame() const
     {
@@ -164,7 +169,6 @@ struct rendering_controller
     void render() { get_renderer().render_range(core.data, get_renderer().rendering_interval); }
 
     void button_left_drag(mouse_move m, const float multiplier = 1.5f);
-
 
     bool is_renderer_set() const { return renderer_idx >= 0; }
 

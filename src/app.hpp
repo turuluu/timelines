@@ -6,11 +6,6 @@
 
 namespace tls
 {
-// TODO : move these to core, inline sdl namespace, ...
-
-struct handler
-{
-};
 struct application
 {
     application(core& core);
@@ -38,9 +33,6 @@ struct application
         }
     }
 
-    // placeholder
-    std::list<std::unique_ptr<handler_type>> handlers;
-
     void process_events();
 
     void loop();
@@ -51,5 +43,4 @@ struct application
     std::unique_ptr<event_handler_ifc> event_handler;
     std::unique_ptr<rendering_controller> ui;
 };
-
 }

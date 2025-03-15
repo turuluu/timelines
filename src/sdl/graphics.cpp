@@ -19,7 +19,8 @@ get_title_font(int font_size)
     return font;
 }
 
-void destroy_font(TTF_Font* font)
+void
+destroy_font(TTF_Font* font)
 {
     if (font != nullptr)
         TTF_CloseFont(font);
@@ -114,7 +115,6 @@ scoped_graphics::init(const int screen_w, const int screen_h)
     if (!TTF_Init())
     {
         std::cout << __PRETTY_FUNCTION__ << ": TTF_Init error" << "\n";
-        // printf("TTF_Init: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
 

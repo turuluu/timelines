@@ -1,5 +1,5 @@
-#include "sdl/graphics.hpp"
 #include "app.hpp"
+#include "sdl/graphics.hpp"
 
 namespace tls
 {
@@ -9,7 +9,8 @@ application::application(struct core& core)
 }
 application::~application() { printf("Application DTOR\n"); }
 
-void application::process_events()
+void
+application::process_events()
 {
     is_running = !events.should_quit;
 
@@ -43,7 +44,8 @@ void application::process_events()
         ui->button_left_drag(mouse_move_delta);
 }
 
-void application::loop()
+void
+application::loop()
 {
     static int counter = 0;
     ui->last_frame_ms = ui->timer->get_ms_since_start();

@@ -41,10 +41,6 @@ endif ()
 
 project(timelines)
 
-
-aux_source_directory(src SRC_LIST)
-aux_source_directory(src/sdl DETAILS_SRC_LIST)
-
 set(HEADERS
         src/headers.hpp
         src/sdl/graphics.hpp
@@ -53,6 +49,10 @@ set(HEADERS
         src/app.hpp
         src/app.cpp
         src/sdl/graphics.cpp)
+
+# Sources
+aux_source_directory(src SRC_LIST)
+aux_source_directory(src/sdl DETAILS_SRC_LIST)
 
 add_compile_definitions(USE_SDL=1)
 add_executable(${PROJECT_NAME}
@@ -89,7 +89,7 @@ target_include_directories(
 
 target_link_libraries(
         ${PROJECT_NAME}
-        PUBLIC
+        PRIVATE
         ${dependencies}
 )
 

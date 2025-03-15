@@ -1,23 +1,10 @@
 #pragma once
 #include <deque>
-// #include <SDL3/SDL_stdinc.h>
-#include <SDL3/SDL_rect.h>
+
+#include "geometry.hpp"
 
 namespace tls
 {
-// Using SDL types
-using i8 = Sint8;
-using i16 = Sint16;
-using i32 = Sint32;
-using i64 = Sint64;
-
-using u8 = Uint8;
-using u16 = Uint16;
-using u32 = Uint32;
-using u64 = Uint64;
-
-using rect = SDL_FRect;
-
 struct colour
 {
     u8 border = 255;
@@ -43,6 +30,7 @@ struct event_handler_ifc
     virtual ~event_handler_ifc() { printf("Event Handler DTOR\n"); }
     virtual void handle_events(events& events) = 0;
 };
+
 struct timer_ifc
 {
     virtual ~timer_ifc() = default;
@@ -53,5 +41,4 @@ struct timer_ifc
      */
     [[nodiscard]] virtual size_t get_ms_since_start() const = 0;
 };
-
 }

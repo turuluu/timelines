@@ -45,6 +45,8 @@ event_handler::handle_events(events& events)
                     events.wheel.push_back(e.wheel.y * wheel_y_mult);
 
                 break;
+            default:
+                ;
         }
     }
 }
@@ -54,6 +56,7 @@ timer::get_ms_since_start() const
 {
     return SDL_GetTicks();
 }
+
 void
 timer::wait_ms(size_t ms) const
 {

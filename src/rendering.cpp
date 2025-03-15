@@ -1,21 +1,18 @@
 #include "rendering.hpp"
-#include "sdl/graphics.hpp"
 #include "entities.hpp"
+#include "sdl/graphics.hpp"
 #include "time_abstractions.hpp"
 
 namespace tls
 {
 renderer::renderer()
-: id(gen_id())
-, font_size(36)
-, font{ get_title_font(font_size) }
+  : id(gen_id())
+  , font_size(36)
+  , font{ get_title_font(font_size) }
 {
 }
 
-renderer::~renderer()
-{
-    destroy_font(font);
-}
+renderer::~renderer() { destroy_font(font); }
 
 void
 renderer::set_controller(rendering_controller* controller)
@@ -124,6 +121,7 @@ rendering_controller::button_left_drag(mouse_move m, const float multiplier)
     struct interval adjusted = new_relative_interval(multiplied_value, interval);
     interval = adjusted;
 }
+
 rect
 stylist_v::lane_bounds(style_info s)
 {
