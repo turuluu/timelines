@@ -1,3 +1,6 @@
 [submodule "deps/vcpkg"]
 	path = deps/vcpkg
 	url = https://github.com/Microsoft/vcpkg.git
+[submodule "deps/utlz"]
+	path = deps/utlz
+	url = https://github.com/turuluu/utlz.git

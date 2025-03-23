@@ -78,7 +78,7 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
 
     const auto bin_start = to_index(render_start);
     const auto bin_end = to_index(render_end);
-    const auto bin_len = util::limit<int>(0, spec::max_bins, bin_end - bin_start);
+    const auto bin_len = utlz::limit<int>(0, spec::max_bins, bin_end - bin_start);
     specs.scale = get_scale(bin_len);
 
     clear();

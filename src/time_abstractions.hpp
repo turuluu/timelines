@@ -1,8 +1,9 @@
 #pragma once
 
+#include <utlz.hpp>
+
 #include "calendars.hpp"
 #include "spec.hpp"
-#include "utilities.hpp"
 
 namespace tls
 {
@@ -31,7 +32,7 @@ new_scaled_interval(const float value,
 {
     const float mid_point = 1.0f - ((float)mid_x / relative_max);
     constexpr float scale = 1e-2f;
-    const float timescale = 1.0 - util::limit(-0.9f, 0.9f, scale * (float)value);
+    const float timescale = 1.0 - utlz::limit(-0.9f, 0.9f, scale * (float)value);
     const float start = interval.start;
     const float mid = (interval.start + interval.end) * mid_point;
     const float end = interval.end;

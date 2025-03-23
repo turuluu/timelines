@@ -11,4 +11,3 @@
 #include "sdl/events.hpp"
 #include "spec.hpp"
 #include "time_abstractions.hpp"
-#include "utilities.hpp"

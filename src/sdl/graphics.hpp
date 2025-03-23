@@ -16,8 +16,6 @@
 
 #include "../types.hpp"
 
-#include "../utilities.hpp"
-
 struct TTF_Font;
 namespace tls
 {

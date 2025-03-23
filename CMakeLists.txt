@@ -59,6 +59,7 @@ add_executable(${PROJECT_NAME}
         ${SRC_LIST}
         ${DETAILS_SRC_LIST}
 )
+add_subdirectory(deps/utlz)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 find_package(BZip2 REQUIRED)
@@ -78,6 +79,7 @@ set(dependencies
         nlohmann_json::nlohmann_json
         SDL3_ttf::SDL3_ttf
         SDL3::SDL3
+        utlz
 )
 
 target_include_directories(

@@ -1,3 +1,4 @@
+#include <utlz.hpp>
 #include "graphics.hpp"
 
 #include <SDL3_ttf/SDL_ttf.h>
@@ -43,7 +44,7 @@ render_text(TTF_Font* font, SDL_Color* color, rect* msg_bounds, const char* text
     }
 
     const int pt_size_smooth = ptsize / 2;
-    const int cstrL = util::length(text);
+    const int cstrL = utlz::length(text);
     const int cstrW = cstrL * (pt_size_smooth / 2);
 
     SDL_FRect msg_box;
@@ -77,7 +78,7 @@ render_text_2(TTF_Font* font, SDL_Color* color, rect* msg_bounds, const char* te
     }
 
     const int pt_size_smooth = ptsize / 2;
-    const int cstrL = util::length(text);
+    const int cstrL = utlz::length(text);
     const int cstrW = cstrL * (pt_size_smooth / 2);
 
     SDL_FRect msgBox;
