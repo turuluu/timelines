@@ -1,4 +1,4 @@
-#include <utlz.hpp>
+#include <utlz/all.hpp>
 #include "graphics.hpp"
 
 #include <SDL3_ttf/SDL_ttf.h>

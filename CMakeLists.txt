@@ -79,14 +79,13 @@ set(dependencies
         nlohmann_json::nlohmann_json
         SDL3_ttf::SDL3_ttf
         SDL3::SDL3
-        utlz
+        turuluu::utlz
 )
 
 target_include_directories(
         ${PROJECT_NAME}
         PUBLIC
         ${vcpkg_installed_dir}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/deps
 )
 
 target_link_libraries(
