@@ -8,7 +8,7 @@ namespace tls
 {
 struct application
 {
-    application(core& core);
+    explicit application(core& core);
 
     ~application();
 

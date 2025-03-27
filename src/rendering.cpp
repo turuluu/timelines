@@ -176,7 +176,7 @@ stylist_v::render(style_info specs, const entity& e)
 
 vertical::vertical()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    utlz::dbg("CTOR ", __PRETTY_FUNCTION__);
     orientation = orientation::vertical;
 
     assert(font != nullptr);
@@ -254,7 +254,7 @@ stylist_h::text_bounds(style_info bi)
 
 horizontal::horizontal()
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    utlz::dbg("CTOR ", __PRETTY_FUNCTION__);
 
     assert(font != nullptr);
 

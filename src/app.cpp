@@ -7,7 +7,7 @@ application::application(struct core& core)
   : core(core)
 {
 }
-application::~application() { printf("Application DTOR\n"); }
+application::~application() { utlz::dbg("Application DTOR\n"); }
 
 void
 application::process_events()
@@ -47,11 +47,9 @@ application::process_events()
 void
 application::loop()
 {
-    static int counter = 0;
     ui->last_frame_ms = ui->timer->get_ms_since_start();
     while (is_running)
     {
-        // std::cout << counter++ << std::endl;
         ui->wait_until_next_frame();
         event_handler->handle_events(events);
         process_events();

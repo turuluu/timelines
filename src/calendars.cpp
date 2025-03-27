@@ -12,7 +12,7 @@ idx_t
 to_index(time_point_t time_point)
 {
     const auto index = utlz::limit<idx_t>(0, spec::max_bins - 1, spec::bins_split + time_point);
-    assert(index >= 0 && index < spec::max_bins);
+    assert(index < spec::max_bins);
     return index;
 }
 
@@ -32,7 +32,7 @@ bin_limit(time_point_t time_point)
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-intervals::~intervals() { std::cout << "DTOR " << __PRETTY_FUNCTION__ << "\n"; }
+intervals::~intervals() { utlz::dbg("DTOR ", __PRETTY_FUNCTION__); }
 
 void
 intervals::insert(const entity& e)

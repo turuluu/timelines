@@ -1,5 +1,5 @@
-#include <utlz/all.hpp>
 #include "graphics.hpp"
+#include <utlz/all.hpp>
 
 #include <SDL3_ttf/SDL_ttf.h>
 
@@ -50,7 +50,6 @@ render_text(TTF_Font* font, SDL_Color* color, rect* msg_bounds, const char* text
     SDL_FRect msg_box;
     int margins = -1 * pt_size_smooth;
     int offset_msg_bounds_w = msg_bounds->w + (2 * margins);
-    int offsetMsgBoundsX = msg_bounds->x - offset_msg_bounds_w - margins;
     msg_box.w = std::min(cstrW, offset_msg_bounds_w);
     msg_box.h = pt_size_smooth;
     msg_box.x = msg_bounds->x - margins; // + std::max(offset_msg_bounds_w - cstrW, 0) / 2;
@@ -89,7 +88,6 @@ render_text_2(TTF_Font* font, SDL_Color* color, rect* msg_bounds, const char* te
     msgBox.h = pt_size_smooth;
     msgBox.x = msg_bounds->x - margins + std::max(offset_msg_bounds_w - cstrW, 0) / 2;
     msgBox.y = msg_bounds->y + std::max((float)msg_bounds->h - msgBox.h, 0.0f) / 2;
-    //        SDL_BlitSurface(msg_surface, NULL, screenSurface, msgBounds);
     SDL_Texture* msg_texture = SDL_CreateTextureFromSurface(graphics::get().ren, msg_surface);
     SDL_RenderTexture(graphics::get().ren, msg_texture, NULL, &msgBox);
 

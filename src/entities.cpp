@@ -12,7 +12,7 @@ entity::entity(std::string _name)
   : name(std::move(_name))
   , id(ids++)
 {
-    std::cout << "Creating " << name << ", id: " << ids - 1 << "\n";
+    utlz::dbg("Creating ", name, ", id: ", ids - 1);
 }
 
 entity::entity(std::string _name, int _start, int _end)
@@ -31,6 +31,6 @@ entity::entity(std::string _name, int _start, int _end)
     }
 }
 
-entity::~entity() { std::cout << "DTOR '" << name << "'\n"; }
+entity::~entity() { utlz::dbg("DTOR '", name, "'"); }
 
 } // namespace tls

@@ -18,8 +18,7 @@ populate_entities_from_csv(tls::core& dst, const std::filesystem::path& path)
     tls::entity tmp("", 0, 0);
     while (in.read_row(tmp.name, tmp.interval.start, tmp.interval.end))
     {
-        std::cout << "name: " << tmp.name << " s: " << tmp.interval.start
-                  << " e: " << tmp.interval.end << "\n";
+        utlz::dbg("name: ", tmp.name, " s: ", tmp.interval.start, " e: ", tmp.interval.end);
         dst.add_entity(tmp);
     }
 }
