@@ -1,7 +1,9 @@
 #include "graphics.hpp"
 #include <utlz/all.hpp>
 
+#if USE_SDL
 #include <SDL3_ttf/SDL_ttf.h>
+#endif
 
 namespace tls
 {
