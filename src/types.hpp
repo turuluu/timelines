@@ -3,6 +3,19 @@
 
 #include "geometry.hpp"
 
+// #if USE_SDL
+// struct TTF_Font;
+// namespace tls
+// {
+// using font = TTF_Font;
+// }
+// #else
+// namespace tls
+// {
+// struct font;
+// }
+// #endif
+
 namespace tls
 {
 struct colour

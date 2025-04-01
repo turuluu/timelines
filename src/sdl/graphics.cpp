@@ -12,7 +12,7 @@ inline
   namespace sdl
 {
 
-TTF_Font*
+font*
 get_title_font(int font_size)
 {
     auto font = TTF_OpenFont("../fonts/vera-fonts/dejavuSansMono.ttf", font_size);

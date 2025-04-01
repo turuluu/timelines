@@ -6,8 +6,8 @@
 
 #include "core.hpp"
 #include "types.hpp"
+#include "backend.hpp"
 
-struct TTF_Font;
 namespace tls
 {
 
@@ -22,7 +22,7 @@ struct style_info
     size_t lane_index;
 
     size_t font_size;
-    TTF_Font* font;
+    font* font;
 };
 
 struct rendering_controller;
@@ -98,7 +98,7 @@ struct renderer
 
     // TODO : refactor to style
     size_t font_size;
-    TTF_Font* font;
+    font* font;
 };
 
 struct stylist_base

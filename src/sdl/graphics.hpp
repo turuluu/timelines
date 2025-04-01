@@ -15,17 +15,16 @@
 #endif
 
 #include "../types.hpp"
+#include "SDL3_ttf/SDL_ttf.h"
 
-struct TTF_Font;
 namespace tls
 {
-
 #if USE_SDL
 inline
 #endif
   namespace sdl
 {
-
+using font = TTF_Font;
 struct graphics
 {
     static graphics& get()
@@ -51,16 +50,11 @@ clear()
     SDL_RenderClear(graphics::get().ren);
     SDL_SetRenderDrawColor(graphics::get().ren, r, gr, b, a);
 }
+font* get_title_font(int font_size);
+void destroy_font(font* font);
+void render_text(font* font, SDL_Color* color, rect* msg_bounds, const char* text, int ptsize = 40);
 
-TTF_Font* get_title_font(int font_size);
-void destroy_font(TTF_Font* font);
-void render_text(TTF_Font* font,
-                 SDL_Color* color,
-                 rect* msg_bounds,
-                 const char* text,
-                 int ptsize = 40);
-
-void render_text_2(TTF_Font* font,
+void render_text_2(font* font,
                    SDL_Color* color,
                    rect* msg_bounds,
                    const char* text,
@@ -75,4 +69,5 @@ struct scoped_graphics
     void destroy();
 };
 }
+
 } // namespace tls
