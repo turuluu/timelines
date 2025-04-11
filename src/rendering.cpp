@@ -331,7 +331,7 @@ stylist_v_line::render(style_info specs, const entity& e)
     draw_lane_dots(specs, r);
 
     // indicator line connecting text and lane box
-    draw_line(point{ r.x + r.w, r.y + specs.font_size / 2 },
+    draw_line(point{ r.x + r.w / 2 + 1.0f, r.y + specs.font_size / 2 },
               point{ (float)specs.max_d + 20, r.y + specs.font_size / 2 },
               color{ 0x77, 0x77 });
 
