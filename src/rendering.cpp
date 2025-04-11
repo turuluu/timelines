@@ -62,7 +62,7 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
 
     const auto render_start = interval.start;
     const auto render_end = interval.end;
-    assert(render_start < render_end);
+    assert(render_start <= render_end);
 
     auto selected_entities = select_from(entities);
 

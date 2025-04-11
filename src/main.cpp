@@ -47,7 +47,7 @@ main(int argc, char** argv)
 
     std::filesystem::path csv_path;
     if (argc < 2)
-        csv_path = util::get_project_path() / "example.csv";
+        csv_path = util::get_project_path() / "examples/example_prehistoric.csv";
     else
         csv_path = argv[1];
     if (!util::is_path_valid(csv_path))
@@ -65,17 +65,19 @@ main(int argc, char** argv)
     application app(core);
     auto& ui = app.make<rendering_controller>(core);
     {
+        auto start = -1000;
+        auto end = 1000;
         auto& renderer_h = ui.make<horizontal>();
-        renderer_h.rendering_interval.start = -430;
-        renderer_h.rendering_interval.end = 0;
+        renderer_h.rendering_interval.start = start;
+        renderer_h.rendering_interval.end = end;
 
         auto& renderer_v = ui.make<vertical>();
-        renderer_v.rendering_interval.start = -430;
-        renderer_v.rendering_interval.end = 0;
+        renderer_v.rendering_interval.start = start;
+        renderer_v.rendering_interval.end = end;
 
         ui.timer = std::make_unique<timer>();
         ui.set_refresh_rate(60);
-        ui.set_current(renderer_v);
+        ui.set_current(renderer_h);
 
         // init scene
         ui.render();
