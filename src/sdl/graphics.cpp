@@ -1,5 +1,6 @@
 #include "graphics.hpp"
 #include <utlz/all.hpp>
+#include <filesystem>
 
 #if USE_SDL
 #include <SDL3_ttf/SDL_ttf.h>
@@ -29,7 +30,11 @@ void clear()
 font*
 get_title_font(int font_size)
 {
-    auto font = TTF_OpenFont("../fonts/vera-fonts/dejavuSansMono.ttf", font_size);
+    auto font_path = std::string(CMAKE_ROOT);
+    font_path.append("/fonts/vera-fonts/dejavuSansMono.ttf");
+    assert(std::filesystem::exists(font_path));
+
+    auto font = TTF_OpenFont(font_path.c_str(), font_size);
     assert(font);
     return font;
 }

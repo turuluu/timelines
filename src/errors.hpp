@@ -43,8 +43,12 @@ struct with_line_n
 };
 struct with_interval
 {
-    void set_interval(interval interval) { this->interval = interval; }
-    interval interval{};
+    void set_interval(interval interval)
+    {
+        this->int_erval = std::make_pair<int, int>(interval.start.time_since_epoch().count(),
+                                                   interval.end.time_since_epoch().count());
+    }
+    std::pair<int, int> int_erval;
 };
 
 struct timescale_issue
@@ -60,8 +64,8 @@ struct timescale_issue
                       R"(%s:%zu\nEntity time scale issue with [start, end] := [%d, %d]\n)",
                       filename,
                       line_n,
-                      interval.start,
-                      interval.end);
+                      int_erval.first,
+                      int_erval.second);
     }
 };
 }; // namespace error

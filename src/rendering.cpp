@@ -1,12 +1,13 @@
 #include "rendering.hpp"
 #include "entities.hpp"
 #include "sdl/graphics.hpp"
-#include "time_abstractions.hpp"
+#include "time.hpp"
 
 namespace tls
 {
 renderer::renderer()
   : id(gen_id())
+  , controller(nullptr)
   , font_size(36)
   , font{ get_title_font(font_size) }
 {
@@ -23,36 +24,35 @@ renderer::set_controller(rendering_controller* controller)
 std::vector<std::reference_wrapper<const entity>>
 renderer::select_from(const core::entities& entities) const
 {
-    auto& intervals = controller->core.intervals;
+    // auto& intervals = controller->core.intervals;
     // TODO : views without copy, something that won't have invalidated entries..
     // Queus, lists?
-    std::vector<std::reference_wrapper<const entity>> selected_entities;
-    intervals.clear();
-    for (auto& e : entities)
+    std::vector<std::reference_wrapper<const entity>> selected;
+    // intervals.clear();
+    for (const auto& e : entities)
     {
-        if (e.interval.start < rendering_interval.end && e.interval.end > rendering_interval.start)
+        if (e.interval.start <= rendering_interval.end &&
+            e.interval.end >= rendering_interval.start)
         {
-            selected_entities.emplace_back(e);
-            intervals.insert(e);
+            selected.push_back(std::cref(e));
+            // intervals.insert(e);
         }
     }
 
-    return selected_entities;
+    return selected;
 }
 
 size_t
 renderer::entities_in_interval(interval interval) const
 {
-    auto& intervals = controller->core.intervals;
-    size_t max_entities_in_interval = 0;
-    for (auto i = interval.start; i < interval.end; ++i)
-        max_entities_in_interval =
-          std::max(intervals.interval_bins[to_index(i)], max_entities_in_interval);
+    // auto& intervals = controller->core.intervals;
+    // size_t max_entities_in_interval = 0;
+    size_t count = 0;
+    for (const auto& e : controller->core.data)
+        if (e.interval.start >= interval.start && e.interval.end <= interval.end)
+            ++count;
 
-    if (max_entities_in_interval == 0)
-        std::cout << "no entities in time frame..\n";
-
-    return max_entities_in_interval;
+    return count;
 }
 
 void
@@ -88,8 +88,8 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
     u8 colour_incr = 255 / entities.size();
     for (const auto& e : selected_entities)
     {
-        const int entity_start = e.get().interval.start;
-        const int entity_end = e.get().interval.end;
+        const auto entity_start = e.get().interval.start;
+        const auto entity_end = e.get().interval.end;
 
         auto start_bound = std::max(entity_start, render_start);
         specs.rect_start = to_index(start_bound) - bin_start;
@@ -233,7 +233,7 @@ stylist_h::render(style_info specs, const entity& e)
     SDL_RenderRect(graphics::get().ren, &r);
 
     color text_color{ 255, 255 };
-    auto offset = rect{r.x, r.y - specs.font_size / 2, r.w, r.h};
+    auto offset = rect{ r.x, r.y - specs.font_size / 2, r.w, r.h };
     render_text_2(specs.font, &text_color, &offset, e.name.c_str(), specs.font_size);
 }
 
@@ -272,12 +272,16 @@ horizontal::horizontal()
 void
 horizontal::draw_grid(interval interval, const double scale_x) const
 {
-    const int length = interval.end - interval.start;
+    return;
+#if 0
+    const auto start = interval.start.time_since_epoch().count();
+    const auto end = interval.end.time_since_epoch().count();
+    const auto length = end - start;
     int splits = length / 8.0f;
     splits = ((int)(splits / 10.0f)) * 10;
     splits = splits > 0 ? splits : 1;
     auto start_idx = to_index(interval.start);
-    for (int i = interval.start; i < interval.end; ++i)
+    for (int i = start; i < end; ++i)
     {
         if (i % splits == 0)
         {
@@ -298,6 +302,7 @@ horizontal::draw_grid(interval interval, const double scale_x) const
             render_text_2(font, &c, &grid_label_bounds, std::to_string(i).c_str(), 28);
         }
     }
+#endif
 }
 
 rect
@@ -386,7 +391,7 @@ stylist_h_line::render(style_info specs, const entity& e)
     draw_lane_dots(specs, r);
 
     color text_color{ 255, 255 };
-    auto offset = rect{r.x, r.y - specs.font_size / 2, r.w, r.h};
+    auto offset = rect{ r.x, r.y - specs.font_size / 2, r.w, r.h };
     render_text_2(specs.font, &text_color, &offset, e.name.c_str(), specs.font_size);
 }
 

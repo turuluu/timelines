@@ -15,11 +15,19 @@ populate_entities_from_csv(tls::core& dst, const std::filesystem::path& path)
     io::CSVReader<3> in(path.string());
     in.read_header(io::ignore_extra_column, "name", "start", "end");
 
-    tls::entity tmp("", 0, 0);
-    while (in.read_row(tmp.name, tmp.interval.start, tmp.interval.end))
+    std::string name;
+    int start_year, end_year;
+    while (in.read_row(name, start_year, end_year))
     {
-        utlz::dbg("name: ", tmp.name, " s: ", tmp.interval.start, " e: ", tmp.interval.end);
-        dst.add_entity(tmp);
+        auto start = tls::clock::from_years(start_year);
+        auto end = tls::clock::from_years(end_year);
+        utlz::dbg("name: ",
+                  name,
+                  " s: ",
+                  start.time_since_epoch().count(),
+                  " e: ",
+                  end.time_since_epoch().count());
+        dst.add_entity(name, start, end);
     }
 }
 
@@ -65,8 +73,8 @@ main(int argc, char** argv)
     application app(core);
     auto& ui = app.make<rendering_controller>(core);
     {
-        auto start = -1000;
-        auto end = 1000;
+        auto start = clock::from_iso(-430);
+        auto end = clock::from_iso(0);
         auto& renderer_h = ui.make<horizontal>();
         renderer_h.rendering_interval.start = start;
         renderer_h.rendering_interval.end = end;

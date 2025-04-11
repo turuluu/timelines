@@ -3,12 +3,13 @@
 #include <set>
 #include <vector>
 
-#include "time_abstractions.hpp"
+#include "time.hpp"
 
 namespace tls
 {
 static size_t ids = 0;
 
+// TODO : replace with rect
 struct dimensions
 {
     int x = 0;
@@ -21,7 +22,7 @@ struct entity
 {
     explicit entity(std::string _name);
 
-    entity(std::string _name, int _start, int _end);
+    entity(std::string _name, time_point start, time_point end);
 
     ~entity();
 

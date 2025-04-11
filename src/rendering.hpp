@@ -4,9 +4,9 @@
 #include <iosfwd>
 #include <list>
 
+#include "backend.hpp"
 #include "core.hpp"
 #include "types.hpp"
-#include "backend.hpp"
 
 namespace tls
 {
@@ -50,7 +50,7 @@ struct renderer
 
     size_t entities_in_interval(interval interval) const;
 
-    size_t lane(size_t max_entities_in_interval, int start, int end)
+    size_t lane(size_t max_entities_in_interval, time_point start, time_point end)
     {
         size_t lane = 0;
         for (lane = 0; lane < max_entities_in_interval; ++lane)
@@ -178,11 +178,13 @@ struct rendering_controller
         auto& interval = get_renderer().rendering_interval;
         struct interval timescaled = new_scaled_interval(delta_y, interval, x);
 
+        /*
         // TODO : shift range when zooming in to keep center of zoom under the
         // mouse pointer
         const int mid_x = screen_dim / 2;
         constexpr double scale = 0.5e-2f;
         int rel_mid_point = (x - mid_x) * (delta_y * scale);
+        */
         interval = timescaled;
     }
 

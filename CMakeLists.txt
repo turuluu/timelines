@@ -17,13 +17,15 @@ set(HEADERS
         src/app.hpp
         src/app.cpp
         src/sdl/graphics.cpp
-        src/backend.hpp)
+        src/backend.hpp
+        src/time.cpp)
 
 # Sources
 aux_source_directory(src SRC_LIST)
 aux_source_directory(src/sdl DETAILS_SRC_LIST)
 
 add_compile_definitions(USE_SDL=1)
+add_compile_definitions(CMAKE_ROOT=\"${CMAKE_CURRENT_SOURCE_DIR}\")
 add_executable(${PROJECT_NAME}
         ${SRC_LIST}
         ${DETAILS_SRC_LIST}

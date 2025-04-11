@@ -15,7 +15,7 @@ entity::entity(std::string _name)
     utlz::dbg("Creating ", name, ", id: ", ids - 1);
 }
 
-entity::entity(std::string _name, int _start, int _end)
+entity::entity(std::string _name, time_point _start, time_point _end)
   : name(std::move(_name))
   , interval{ _start, _end }
   , id(ids++)

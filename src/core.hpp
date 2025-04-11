@@ -1,9 +1,11 @@
 #pragma once
 
-#include "time_abstractions.hpp"
+#include "calendars.hpp"
+#include "time.hpp"
 
 namespace tls
 {
+struct entity;
 struct core
 {
     using entities = std::vector<entity>;
