@@ -18,7 +18,7 @@ struct core
     intervals intervals;
 };
 
-struct Filter
+struct filter
 {
     std::function<bool(entity)> predicate;
     std::vector<int> indices;

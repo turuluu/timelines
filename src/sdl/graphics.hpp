@@ -38,20 +38,10 @@ struct graphics
     SDL_Texture* bg;
 };
 
-static void
-clear()
-{
-    // TODO : paint background
-    u8 grey = 0x30;
-
-    u8 r, gr, b, a;
-    SDL_GetRenderDrawColor(graphics::get().ren, &r, &gr, &b, &a);
-    SDL_SetRenderDrawColor(graphics::get().ren, grey, grey, grey, 0xFF);
-    SDL_RenderClear(graphics::get().ren);
-    SDL_SetRenderDrawColor(graphics::get().ren, r, gr, b, a);
-}
-font* get_title_font(int font_size);
+void clear();
 void destroy_font(font* font);
+font* get_title_font(int font_size);
+
 void render_text(font* font, SDL_Color* color, rect* msg_bounds, const char* text, int ptsize = 40);
 
 void render_text_2(font* font,

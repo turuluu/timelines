@@ -14,6 +14,18 @@ inline
   namespace sdl
 {
 
+void clear()
+{
+    // TODO : paint background
+    u8 grey = 0x30;
+
+    u8 r, gr, b, a;
+    SDL_GetRenderDrawColor(graphics::get().ren, &r, &gr, &b, &a);
+    SDL_SetRenderDrawColor(graphics::get().ren, grey, grey, grey, 0xFF);
+    SDL_RenderClear(graphics::get().ren);
+    SDL_SetRenderDrawColor(graphics::get().ren, r, gr, b, a);
+}
+
 font*
 get_title_font(int font_size)
 {

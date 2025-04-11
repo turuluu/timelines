@@ -3,7 +3,6 @@
 #include <array>
 
 #include "calendars.hpp"
-// #include "entities.hpp"
 #include "spec.hpp"
 
 namespace tls
@@ -14,16 +13,16 @@ time_point_t bin_limit(time_point_t time_point);
 
 namespace calendar
 {
-enum class Type : unsigned
+enum class calendar_type : unsigned
 {
-    Iso8601 = 0, // Normalized value
-    Gregorian,
-    Julian,
-    Islamic,
-    Hebrew,
-    Coptic,
-    SolarHijri,
-    Bengali,
+    io8601 = 0, // Normalized value
+    gregorian,
+    julian,
+    islamic,
+    hebrew,
+    coptic,
+    solar_hijri,
+    bengali,
 };
 
 /**
@@ -38,53 +37,49 @@ enum class Type : unsigned
  * Byzantine calendar	9 January 7533
  */
 template<auto Index>
-struct Base
+struct calendar_base
 {
     static constexpr auto type = Index;
 };
 
 //
-struct JulianCalendar : Base<Type::Julian>
+struct julian_calendar : calendar_base<calendar_type::julian>
 {
 };
 } // namespace calendar
 
-enum class Granularity : int
+enum class granularity : int
 {
-    Metric = -1, // metrics can be scaled in base 10
-    Seconds = 0, // target normalization default for final
-    Minutes,
-    Hours,
-    Days,
-    Weeks,
-    Months,
-    Years, // wip normalization for experimentation
+    metric = -1, // metrics can be scaled in base 10
+    seconds = 0, // target normalization default for final
+    minutes,
+    hours,
+    days,
+    weeks,
+    months,
+    years, // wip normalization for experimentation
 };
 
 template<typename IntType, auto DefaultGranularity>
-struct TimePointT
+struct time_point_base
 {
     using type = IntType;
 
     type t{};
     type offset{}; // year 0 in ISO8601 calendar
-    Granularity granularity{ DefaultGranularity };
+    granularity granularity{ DefaultGranularity };
 };
 
 constexpr unsigned long start_of_the_universe_years_since_year_0 = 13'800'000'000UL;
 
 // ISO 8601
-struct Time : TimePointT<size_t, Granularity::Years>
+struct time : time_point_base<size_t, granularity::years>
 {
-    Time()
+    time()
     {
         t = 1;
         offset = start_of_the_universe_years_since_year_0;
     }
-};
-
-struct TimeSeries
-{
 };
 
 struct entity;
