@@ -46,7 +46,7 @@ void render_text(font* font, const color* color, rect* msg_bounds, const char* t
 
 void render_text_2(font* font,
                    const color* color,
-                   rect* msg_bounds,
+                   rect* text_bounds,
                    const char* text,
                    int ptsize = 40);
 

@@ -75,7 +75,7 @@ void render_text(font* font, const color* color, rect* msg_bounds, const char* t
     SDL_DestroySurface(msg_surface);
 }
 
-void render_text_2(font* font, const color* color, rect* msg_bounds, const char* text, int ptsize)
+void render_text_2(font* font, const color* color, rect* text_bounds, const char* text, int ptsize)
 {
     if (font == nullptr || text == nullptr)
     {
@@ -92,19 +92,18 @@ void render_text_2(font* font, const color* color, rect* msg_bounds, const char*
     }
 
     const int pt_size_smooth = ptsize / 2;
-    const int cstrL = utlz::length(text);
-    const int cstrW = cstrL * (pt_size_smooth / 2);
+    const int cstr_l = utlz::length(text);
+    const int cstr_w = cstr_l * (pt_size_smooth / 2);
 
-    SDL_FRect msgBox;
+    SDL_FRect text_box;
     int margins = 2 * pt_size_smooth;
-    int offset_msg_bounds_w = msg_bounds->w + (2 * margins);
-    int offsetMsgBoundsX = msg_bounds->x - offset_msg_bounds_w - margins;
-    msgBox.w = std::min(cstrW, offset_msg_bounds_w);
-    msgBox.h = pt_size_smooth;
-    msgBox.x = msg_bounds->x - margins + std::max(offset_msg_bounds_w - cstrW, 0) / 2;
-    msgBox.y = msg_bounds->y + std::max((float)msg_bounds->h - msgBox.h, 0.0f) / 2;
+    int offset_bounds_w = text_bounds->w + (2 * margins);
+    text_box.w = std::min(cstr_w, offset_bounds_w);
+    text_box.h = pt_size_smooth;
+    text_box.x = text_bounds->x - margins + std::max(offset_bounds_w - cstr_w, 0) / 2;
+    text_box.y = text_bounds->y + std::max((float)text_bounds->h - text_box.h, 0.0f) / 2;
     SDL_Texture* msg_texture = SDL_CreateTextureFromSurface(graphics::get().ren, msg_surface);
-    SDL_RenderTexture(graphics::get().ren, msg_texture, NULL, &msgBox);
+    SDL_RenderTexture(graphics::get().ren, msg_texture, NULL, &text_box);
 
     SDL_DestroyTexture(msg_texture);
     SDL_DestroySurface(msg_surface);

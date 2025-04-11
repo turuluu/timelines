@@ -233,7 +233,8 @@ stylist_h::render(style_info specs, const entity& e)
     SDL_RenderRect(graphics::get().ren, &r);
 
     color text_color{ 255, 255 };
-    render_text_2(specs.font, &text_color, &r, e.name.c_str(), specs.font_size);
+    auto offset = rect{r.x, r.y - specs.font_size / 2, r.w, r.h};
+    render_text_2(specs.font, &text_color, &offset, e.name.c_str(), specs.font_size);
 }
 
 rect
@@ -385,7 +386,8 @@ stylist_h_line::render(style_info specs, const entity& e)
     draw_lane_dots(specs, r);
 
     color text_color{ 255, 255 };
-    render_text_2(specs.font, &text_color, &r, e.name.c_str(), specs.font_size);
+    auto offset = rect{r.x, r.y - specs.font_size / 2, r.w, r.h};
+    render_text_2(specs.font, &text_color, &offset, e.name.c_str(), specs.font_size);
 }
 
 void
