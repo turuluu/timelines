@@ -5,7 +5,7 @@
 
 namespace tls
 {
-struct colour
+struct color
 {
     u8 border = 255;
     u8 fill = 255;

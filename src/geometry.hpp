@@ -22,5 +22,6 @@ using u32 = Uint32;
 using u64 = Uint64;
 
 using rect = SDL_FRect;
+using point = SDL_FPoint;
 }
 } // namespace tls

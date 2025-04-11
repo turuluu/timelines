@@ -99,8 +99,8 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
 
         // non const part
         specs.lane_index = lane(max_entities_in_interval, entity_start, entity_end);
-        specs.colour.fill = e.get().id * colour_incr;
-        specs.colour.border = specs.colour.fill + colour_incr;
+        specs.color.fill = e.get().id * colour_incr;
+        specs.color.border = specs.color.fill + colour_incr;
 
         style->render(specs, e);
     }
@@ -150,6 +150,7 @@ void
 stylist_v::render(style_info specs, const entity& e)
 {
     auto r = lane_bounds(specs);
+
     // indicator line connecting text and lane box
     SDL_RenderLine(graphics::get().ren,
                    r.x + r.w,
@@ -163,15 +164,15 @@ stylist_v::render(style_info specs, const entity& e)
 
     // fill
     SDL_SetRenderDrawColor(graphics::get().ren,
-                           0x9F - (specs.colour.fill * 0.5f),
-                           0x90 + (0xFF - specs.colour.fill) * 0.2f,
-                           0xFF - (specs.colour.fill * 0.8f),
+                           0x9F - (specs.color.fill * 0.5f),
+                           0x90 + (0xFF - specs.color.fill) * 0.2f,
+                           0xFF - (specs.color.fill * 0.8f),
                            0x70);
     SDL_RenderFillRect(graphics::get().ren, &r);
 
     auto rt = text_bounds(specs);
-    SDL_Color color{ 255, 255, 255, 0xDD };
-    render_text(specs.font, &color, &rt, e.name.c_str(), specs.font_size);
+    color text_color{ 255, 255 };
+    render_text(specs.font, &text_color, &rt, e.name.c_str(), specs.font_size);
 }
 
 vertical::vertical()
@@ -187,7 +188,7 @@ vertical::vertical()
 
     lanes.resize(spec::max_bins);
 
-    style = std::make_unique<stylist_v>();
+    style = std::make_unique<stylist_v_line>();
 }
 
 int
@@ -218,20 +219,21 @@ void
 stylist_h::render(style_info specs, const entity& e)
 {
     auto r = lane_bounds(specs);
+
     // fill
     SDL_SetRenderDrawColor(graphics::get().ren,
-                           0x9F - (specs.colour.fill * 0.5f),
-                           0x90 + (0xFF - specs.colour.fill) * 0.2f,
-                           0xFF - (specs.colour.fill * 0.8f),
+                           0x9F - (specs.color.fill * 0.5f),
+                           0x90 + (0xFF - specs.color.fill) * 0.2f,
+                           0xFF - (specs.color.fill * 0.8f),
                            0x70);
     SDL_RenderFillRect(graphics::get().ren, &r);
 
     // outline
     SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
-
     SDL_RenderRect(graphics::get().ren, &r);
-    SDL_Color color{ 255, 255, 255, 0x80 };
-    render_text_2(specs.font, &color, &r, e.name.c_str(), specs.font_size);
+
+    color text_color{ 255, 255 };
+    render_text_2(specs.font, &text_color, &r, e.name.c_str(), specs.font_size);
 }
 
 rect
@@ -263,7 +265,7 @@ horizontal::horizontal()
 
     lanes.resize(spec::max_bins);
 
-    style = std::make_unique<stylist_h>();
+    style = std::make_unique<stylist_h_line>();
 }
 
 void
@@ -291,9 +293,117 @@ horizontal::draw_grid(interval interval, const double scale_x) const
             grid_label_bounds.w = label_w;
             grid_label_bounds.h = label_h;
 
-            SDL_Color c{ 255, 255, 255, 100 };
+            color c{ 255, 255 };
             render_text_2(font, &c, &grid_label_bounds, std::to_string(i).c_str(), 28);
         }
     }
+}
+
+rect
+stylist_v_line::lane_bounds(style_info s)
+{
+    rect r;
+    r.x = 10 + (s.d * s.lane_index);
+    r.y = s.rect_start * s.scale;
+    r.h = (s.rect_end - s.rect_start) * s.scale;
+    r.w = s.d;
+    return r;
+}
+
+rect
+stylist_v_line::text_bounds(style_info s)
+{
+    rect r;
+    r.x = s.max_d + 10;
+    r.y = s.rect_start * s.scale;
+    r.h = s.font_size;
+    r.w = s.max_d - 20;
+    return r;
+}
+
+void
+stylist_v_line::render(style_info specs, const entity& e)
+{
+    auto r = lane_bounds(specs);
+
+    // timeline-line
+    draw_lane_line(specs, r);
+    draw_lane_dots(specs, r);
+
+    // indicator line connecting text and lane box
+    draw_line(point{ r.x + r.w, r.y + specs.font_size / 2 },
+              point{ (float)specs.max_d + 20, r.y + specs.font_size / 2 },
+              color{ 0x77, 0x77 });
+
+    auto rt = text_bounds(specs);
+    color text_color{ 255, 255 };
+    render_text(specs.font, &text_color, &rt, e.name.c_str(), specs.font_size);
+}
+
+void
+stylist_v_line::draw_lane_line(style_info specs, rect bounds)
+{
+    color line_color{ 255, 255 };
+    float center_x = bounds.x + bounds.w / 2;
+    draw_line(point{ center_x, bounds.y }, point{ center_x, bounds.y + bounds.h }, line_color);
+}
+
+void
+stylist_v_line::draw_lane_dots(style_info specs, rect bounds)
+{
+    color dot_color{ 255, 255 };
+    float center_x = bounds.x + bounds.w / 2;
+    float dot_radius = 3.0f;
+
+    draw_filled_circle(center_x, bounds.y, dot_radius, dot_color);
+    draw_filled_circle(center_x, bounds.y + bounds.h, dot_radius, dot_color);
+}
+
+rect
+stylist_h_line::lane_bounds(style_info bi)
+{
+    rect r;
+    r.x = bi.rect_start * bi.scale;
+    r.y = 10 + (bi.d * bi.lane_index);
+    r.w = (bi.rect_end - bi.rect_start) * bi.scale;
+    r.h = bi.d;
+    return r;
+}
+
+rect
+stylist_h_line::text_bounds(style_info bi)
+{
+    return {};
+}
+
+void
+stylist_h_line::render(style_info specs, const entity& e)
+{
+    auto r = lane_bounds(specs);
+
+    draw_lane_line(specs, r);
+    draw_lane_dots(specs, r);
+
+    color text_color{ 255, 255 };
+    render_text_2(specs.font, &text_color, &r, e.name.c_str(), specs.font_size);
+}
+
+void
+stylist_h_line::draw_lane_line(style_info specs, rect bounds)
+{
+    color line_color{ 255, 255 };
+    float center_y = bounds.y + bounds.h / 2;
+    draw_line(point{ bounds.x, center_y }, point{ bounds.x + bounds.w, center_y }, line_color);
+}
+
+void
+stylist_h_line::draw_lane_dots(style_info specs, rect bounds)
+{
+    color dot_color{ 255, 255 };
+    float center_y = bounds.y + bounds.h / 2;
+    float dot_radius = 3.0f;
+
+    draw_filled_circle(bounds.x, center_y, dot_radius, dot_color);
+    draw_filled_circle(bounds.x + bounds.w, center_y, dot_radius, dot_color);
 }
 } // namespace tls
