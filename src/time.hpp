@@ -41,11 +41,12 @@ struct clock
         return time_point(duration(years /** 365.25 * 24 * 60 * 60 + seconds_since_big_bang*/));
     }
 
-    static time_point interpolate(const time_point& tp0, const time_point& tp1, float ratio)
+    static time_point interpolate(const time_point& tp0,
+                                  const time_point& tp1,
+                                  time_point::rep ratio)
     {
-        auto d0 = tp0.time_since_epoch().count();
-        auto d1 = tp1.time_since_epoch().count();
-        auto interpolated = d0 + (d1 - d0) * ratio;
+        auto interpolated =
+          utlz::lerp(ratio, tp0.time_since_epoch().count(), tp1.time_since_epoch().count());
 
         auto x = time_point(duration(interpolated));
         return x;

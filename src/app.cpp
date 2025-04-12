@@ -21,28 +21,28 @@ application::process_events()
     }
 
     wheel_move event{0,0,0};
-    while (!events.wheel.empty())
+    while (!events.zoom.empty())
     {
-        auto& last = events.wheel.back();
+        auto& last = events.zoom.back();
         event.mouse_x = last.mouse_x;
         event.mouse_y = last.mouse_y;
         event.wheel_delta += last.wheel_delta;
-        events.wheel.pop_back();
+        events.zoom.pop_back();
     }
     if (event.wheel_delta != 0)
     {
-        ui->scroll_y(event);
+        ui->zoom(event);
     }
 
     mouse_move mouse_move_delta = { 0, 0 };
-    while (!events.mouse.empty())
+    while (!events.move.empty())
     {
-        mouse_move_delta.x += events.mouse.back().x;
-        mouse_move_delta.y += events.mouse.back().y;
-        events.mouse.pop_back();
+        mouse_move_delta.x += events.move.back().x;
+        mouse_move_delta.y += events.move.back().y;
+        events.move.pop_back();
     }
-    if (mouse_move_delta.x != mouse_move_delta.y != 0)
-        ui->button_left_drag(mouse_move_delta);
+    if (mouse_move_delta.x != 0 || mouse_move_delta.y != 0)
+        ui->move_viewport(mouse_move_delta);
 }
 
 void

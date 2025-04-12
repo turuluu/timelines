@@ -31,8 +31,7 @@ renderer::select_from(const core::entities& entities) const
     lanes.clear();
     for (const auto& e : entities)
     {
-        if (e.interval.start <= rendering_interval.end &&
-            e.interval.end >= rendering_interval.start)
+        if (rendering_interval.start < e.interval.end && e.interval.start < rendering_interval.end)
         {
             selected.push_back(std::cref(e));
             lanes.insert(e);
@@ -110,12 +109,12 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
 }
 
 void
-rendering_controller::button_left_drag(mouse_move m, const float multiplier)
+rendering_controller::move_viewport(mouse_move m, const float multiplier)
 {
     if (!is_renderer_set())
         return;
 
-    const i32 multiplied_value =
+    const auto multiplied_value =
       is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
 
     auto& interval = get_renderer().rendering_interval;
@@ -299,7 +298,11 @@ horizontal::draw_grid(interval interval, const double scale_x) const
             grid_label_bounds.h = label_h;
 
             color c{ 255, 255 };
-            render_text_2(font, &c, &grid_label_bounds, std::to_string(i - (int)zero_point).c_str(), 28);
+            render_text_2(font,
+                          &c,
+                          &grid_label_bounds,
+                          std::to_string(i - (int)zero_point).c_str(),
+                          28);
         }
     }
 }

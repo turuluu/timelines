@@ -12,7 +12,7 @@ inline
 {
 struct event_handler : event_handler_ifc
 {
-    void handle_events(events& events) override;
+    void handle_events(events& ui_events) override;
     const float wheel_y_mult = 2.0f;
 };
 

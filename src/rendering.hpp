@@ -169,7 +169,7 @@ struct rendering_controller
             timer->wait_ms(frame_interval_ms - elapsed_ms);
     }
 
-    void scroll_y(wheel_move scroll)
+    void zoom(wheel_move scroll)
     {
         if (renderer_idx < 0)
             return;
@@ -185,7 +185,7 @@ struct rendering_controller
 
     void render() { get_renderer().render_range(core.data, get_renderer().rendering_interval); }
 
-    void button_left_drag(mouse_move m, const float multiplier = 1.5f);
+    void move_viewport(mouse_move m, const float multiplier = 1.5f);
 
     bool is_renderer_set() const { return renderer_idx >= 0; }
 
