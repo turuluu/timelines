@@ -55,7 +55,7 @@ main(int argc, char** argv)
 
     std::filesystem::path csv_path;
     if (argc < 2)
-        csv_path = util::get_project_path() / "examples/example_big.csv";
+        csv_path = util::get_project_path() / "examples/example_scientists.csv";
     else
         csv_path = argv[1];
     if (!util::is_path_valid(csv_path))

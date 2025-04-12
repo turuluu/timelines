@@ -1,0 +1,487 @@
+name,start,end
+Eudoxus of Cnidus,-408,-355
+Euclid,-325,-265
+Archimedes,-287,-212
+Apollonius of Perga,-262,-190
+Hypatia,350,415
+Diophantus,200,284
+Brahmagupta,598,668
+Omar Khayyam,1048,1131
+Leonardo Fibonacci,1170,1250
+Nasir al-Din al-Tusi,1201,1274
+Al-Kashi,1380,1440
+Regiomontanus,1436,1476
+Niccolò Tartaglia,1499,1557
+Gerolamo Cardano,1501,1576
+François Viète,1540,1603
+Simon Stevin,1548,1620
+John Napier,1550,1617
+Girard Desargues,1591,1661
+Pierre de Fermat,1607,1665
+René Descartes,1596,1650
+Blaise Pascal,1623,1662
+Evangelista Torricelli,1608,1647
+Isaac Newton,1643,1727
+Gottfried Wilhelm Leibniz,1646,1716
+Jakob Bernoulli,1655,1705
+John Wallis,1616,1703
+Brook Taylor,1685,1731
+Leonhard Euler,1707,1783
+Jean le Rond d'Alembert,1717,1783
+Joseph-Louis Lagrange,1736,1813
+Pierre-Simon Laplace,1749,1827
+Adrien-Marie Legendre,1752,1833
+Carl Friedrich Gauss,1777,1855
+Augustin-Louis Cauchy,1789,1857
+Niels Henrik Abel,1802,1829
+Siméon Denis Poisson,1781,1840
+George Boole,1815,1864
+Bernhard Riemann,1826,1866
+William Rowan Hamilton,1805,1865
+J. J. Sylvester,1814,1897
+Hermann Grassmann,1809,1877
+Arthur Cayley,1821,1895
+Pafnuty Chebyshev,1821,1894
+Karl Weierstrass,1815,1897
+Henri Poincaré,1854,1912
+Georg Cantor,1845,1918
+Felix Klein,1849,1925
+Emmy Noether,1882,1935
+Srinivasa Ramanujan,1887,1920
+G. H. Hardy,1877,1947
+David Hilbert,1862,1943
+L. E. J. Brouwer,1881,1966
+Norbert Wiener,1894,1964
+André Weil,1906,1998
+John von Neumann,1903,1957
+Alan Turing,1912,1954
+Paul Erdős,1913,1996
+Alexander Grothendieck,1928,2014
+Kurt Gödel,1906,1978
+Andrey Kolmogorov,1903,1987
+Benoit Mandelbrot,1924,2010
+Terence Tao,1975,2025
+Grigori Perelman,1966,2025
+Andrew Wiles,1953,2025
+Peter Scholze,1987,2025
+Ingrid Daubechies,1954,2025
+Maryam Mirzakhani,1977,2017
+John Nash,1928,2015
+Irving Kaplansky,1917,2006
+Shiing-Shen Chern,1911,2004
+Jean-Pierre Serre,1926,2025
+Michael Atiyah,1929,2019
+Raoul Bott,1923,2005
+Simon Donaldson,1957,2025
+John Milnor,1931,2025
+Vladimir Arnold,1937,2010
+Andrei Okounkov,1969,2025
+Persi Diaconis,1945,2025
+Alexander Beilinson,1947,2025
+Alexander Kontorovich,1980,2025
+Peter Sarnak,1953,2025
+Stanislaw Ulam,1909,1984
+Évariste Galois,1811,1832
+Joseph Fourier,1768,1830
+Sophie Germain,1776,1831
+Mary Somerville,1780,1872
+Ada Lovelace,1815,1852
+Grace Chisholm Young,1868,1944
+Galileo Galilei,1564,1642
+Johannes Kepler,1571,1630
+Tycho Brahe,1546,1601
+Christiaan Huygens,1629,1695
+Robert Hooke,1635,1703
+Giovanni Battista Riccioli,1598,1671
+Robert Boyle,1627,1691
+Edmund Halley,1656,1742
+James Clerk Maxwell,1831,1879
+Ludwig Boltzmann,1844,1906
+Heinrich Hertz,1857,1894
+Marie Curie,1867,1934
+Henri Becquerel,1852,1908
+Pierre Curie,1859,1906
+Ernest Rutherford,1871,1937
+Niels Bohr,1885,1962
+Max Planck,1858,1947
+Albert Einstein,1879,1955
+Satyendra Nath Bose,1894,1974
+Enrico Fermi,1901,1954
+Wolfgang Pauli,1900,1958
+Erwin Schrödinger,1887,1961
+Paul Dirac,1902,1984
+Richard Feynman,1918,1988
+Julian Schwinger,1918,1994
+Lev Landau,1908,1968
+Hideki Yukawa,1907,1981
+Chen Ning Yang,1922,2025
+Tsung-Dao Lee,1926,2025
+Murray Gell-Mann,1929,2019
+Abdus Salam,1926,1996
+Steven Weinberg,1933,2025
+Sheldon Glashow,1932,2025
+Kip Thorne,1940,2025
+Roger Penrose,1931,2025
+Freeman Dyson,1923,2020
+Stephen Hawking,1942,2018
+John Wheeler,1911,2008
+Carlo Rubbia,1934,2025
+Frank Wilczek,1951,2025
+Gerard 't Hooft,1946,2025
+Edward Witten,1951,2025
+Lisa Randall,1962,2025
+Brian Greene,1963,2025
+Sean Carroll,1966,2025
+Carlo Rovelli,1956,2025
+Juan Maldacena,1968,2025
+Nima Arkani-Hamed,1970,2025
+Lise Meitner,1878,1968
+Chien-Shiung Wu,1912,1997
+Maria Goeppert Mayer,1906,1972
+Cecilia Payne-Gaposchkin,1900,1979
+Subrahmanyan Chandrasekhar,1910,1995
+Arthur Eddington,1882,1944
+Max Born,1882,1970
+Paul Langevin,1872,1946
+Felix Bloch,1905,1983
+Hans Bethe,1906,2005
+Yoichiro Nambu,1921,2015
+Roy Glauber,1925,2018
+David Bohm,1917,1992
+Leon Lederman,1922,2018
+Richard Taylor,1938,2018
+William Shockley,1910,1989
+John Bardeen,1908,1991
+Walter Brattain,1902,1987
+Herbert Friedman,1927,2000
+George Smoot,1945,2025
+Rainer Weiss,1932,2025
+Donna Strickland,1959,2025
+Margaret Geller,1947,2025
+Vera Rubin,1928,2016
+Jocelyn Bell Burnell,1943,2025
+Andrea Ghez,1965,2025
+Sandra Faber,1944,2025
+Martin Rees,1942,2025
+Leonard Susskind,1940,2025
+Eric Weinstein,1970,2025
+Sabine Hossenfelder,1976,2025
+Max Tegmark,1967,2025
+Brian Cox,1968,2025
+Jim Peebles,1935,2025
+Gustav Kirchhoff,1824,1887
+Joseph Henry,1797,1878
+Michael Faraday,1791,1867
+Alessandro Volta,1745,1827
+Hans Christian Ørsted,1777,1851
+André-Marie Ampère,1775,1836
+James Prescott Joule,1818,1889
+Christian Doppler,1803,1853
+Stanislaw Mazur,1933,2025
+Ennio de Giorgi,1928,1996
+Hyman Bass,1946,2025
+Vaughan Jones,1952,2025
+Edward Nelson,1932,2014
+William Thurston,1946,2012
+Jean Bourgain,1954,2018
+Stanislav Smirnov,1970,2025
+John Tate,1925,2019
+Atle Selberg,1917,2007
+Émile Borel,1871,1956
+Andrey Markov,1856,1922
+Alan Baker,1939,2018
+David Mumford,1937,2025
+John Conway,1937,2020
+Hugh Montgomery,1950,2025
+George Green,1793,1841
+Edward Lorenz,1917,2008
+Michael Berry,1941,2025
+Imhotep,-2650,-2600
+Thales of Miletus,-624,-546
+Pythagoras,-570,-495
+Empedocles,-495,-435
+Democritus,-460,-370
+Hippocrates,-460,-370
+Aristotle,-384,-322
+Eratosthenes,-276,-194
+Hipparchus,-190,-120
+Galen,129,210
+Aryabhata,476,550
+Al-Khwarizmi,780,850
+Al-Razi,854,925
+Ibn al-Haytham,965,1040
+Avicenna,980,1037
+Shen Kuo,1031,1095
+Bhaskara II,1114,1185
+Roger Bacon,1214,1294
+Albertus Magnus,1193,1280
+William of Ockham,1287,1347
+Nicole Oresme,1320,1382
+Leonardo da Vinci,1452,1519
+Nicolaus Copernicus,1473,1543
+Paracelsus,1493,1541
+Andreas Vesalius,1514,1564
+Giordano Bruno,1548,1600
+Francis Bacon,1561,1626
+William Harvey,1578,1657
+Antonie van Leeuwenhoek,1632,1723
+Isaac Newton,1642,1727
+Edmond Halley,1656,1742
+Carl Linnaeus,1707,1778
+Benjamin Franklin,1706,1790
+Joseph Priestley,1733,1804
+Antoine Lavoisier,1743,1794
+Edward Jenner,1749,1823
+John Dalton,1766,1844
+Alexander von Humboldt,1769,1859
+Charles Babbage,1791,1871
+Charles Lyell,1797,1875
+Samuel Morse,1791,1872
+Justus von Liebig,1803,1873
+Charles Darwin,1809,1882
+Gregor Mendel,1822,1884
+Louis Pasteur,1822,1895
+Dmitri Mendeleev,1834,1907
+Alfred Nobel,1833,1896
+Wilhelm Conrad Röntgen,1845,1923
+Ivan Pavlov,1849,1936
+Werner Heisenberg,1901,1976
+Alexander Fleming,1881,1955
+Rosalind Franklin,1920,1958
+Barbara McClintock,1902,1992
+Linus Pauling,1901,1994
+Jonas Salk,1914,1995
+James Watson,1928,2025
+Francis Crick,1916,2004
+Dorothy Hodgkin,1910,1994
+Edwin Hubble,1889,1953
+Carl Sagan,1934,1996
+Tim Berners-Lee,1955,2025
+Jane Goodall,1934,2025
+Richard Dawkins,1941,2025
+Thomas Edison,1847,1931
+Nikola Tesla,1856,1943
+J. Robert Oppenheimer,1904,1967
+Andrei Sakharov,1921,1989
+Noam Chomsky,1928,2025
+Claude Shannon,1916,2001
+James Lovelock,1919,2022
+Katherine Johnson,1918,2020
+Grace Hopper,1906,1992
+Georges Lemaitre,1894,1966
+Emil Fischer,1852,1919
+Karl Landsteiner,1868,1943
+Otto Hahn,1879,1968
+Guglielmo Marconi,1874,1937
+Gottlob Frege,1848,1925
+Alexander Graham Bell,1847,1922
+J.J. Thomson,1856,1940
+Max Weber,1864,1920
+Jean Piaget,1896,1980
+Lev Vygotsky,1896,1934
+B.F. Skinner,1904,1990
+Sigmund Freud,1856,1939
+Carl Jung,1875,1961
+Robert Millikan,1868,1953
+Percy Julian,1899,1975
+Claude Bernard,1813,1878
+Maurice Wilkins,1916,2004
+Sumerian Cuneiform Invention,-3200,-3100
+Egyptian Hieroglyphs,-3200,-3100
+Indus Script,-2600,-1900
+Chinese Oracle Bone Script,-1200,-1046
+Invention of the Abacus,-2700,-2600
+Invention of the Wheel,-3500,-3400
+Discovery of Bronze Metallurgy,-3300,-3000
+Discovery of Iron Smelting,-1200,-600
+Invention of Paper,105,150
+Invention of the Printing Press,1440,1450
+Mathematical Concept of Zero,500,600
+Adoption of Arabic Numerals in Europe,1200,1300
+The Pythagorean Theorem,-570,-495
+Euclid's Elements,-300,-300
+Archimedes' Principles,-287,-212
+Eratosthenes' Measurement of Earth,-276,-194
+Hypatia's Mathematical Works,350,415
+Al-Khwarizmi's Algebra,780,850
+Omar Khayyam's Mathematical Calendar,1050,1120
+Fibonacci's Introduction of Arabic Numerals,1170,1250
+Development of Analytic Geometry,1637,1637
+Development of Calculus,1666,1704
+Fermat's Last Theorem,1637,1994
+Fourier Analysis,1807,1822
+Invention of Non-Euclidean Geometry,1830,1868
+Riemann Hypothesis Formulation,1859,1859
+Cantor's Set Theory,1874,1884
+Gödel’s Incompleteness Theorems,1931,1931
+Turing Machine Concept,1936,1936
+Modern Cryptography Development,1976,2025
+Discovery of Higgs Boson,2012,2012
+Hubble's Law and Expansion of the Universe,1929,1929
+Big Bang Theory Formalization,1948,1965
+Discovery of Cosmic Inflation,1980,1981
+Development of Quantum Field Theory,1920,1960
+Invention of the Laser,1960,1960
+Discovery of Quasars,1963,1963
+Invention of the Integrated Circuit,1958,1959
+Launch of ARPANET (Internet),1969,1969
+Invention of the Microprocessor,1971,1971
+Invention of the Steamboat,1807,1807
+Invention of the Locomotive,1804,1804
+Invention of the Telegraph,1837,1837
+Invention of the Telephone,1876,1876
+Discovery of X‑rays,1895,1895
+Discovery of Insulin,1921,1922
+Discovery of the Polio Vaccine,1952,1955
+Invention of the Airplane,1903,1903
+Invention of Radar,1935,1935
+Invention of the Computer,1943,1946
+Invention of the World Wide Web,1990,1991
+Invention of the Smartphone,2007,2007
+Discovery of the Electron,1897,1897
+Discovery of the Nucleus (Rutherford Model),1911,1911
+Development of Quantum Mechanics,1900,1925
+Heisenberg's Uncertainty Principle,1927,1927
+Discovery of Neutrons,1932,1932
+Invention of the Cyclotron,1930,1930
+Discovery of Penicillin,1928,1929
+Manhattan Project and Nuclear Fission,1942,1946
+Discovery of DNA Structure,1953,1953
+Invention of the Transistor,1947,1947
+Discovery of the Cosmic Microwave Background,1964,1965
+Development of Plate Tectonics,1960,1965
+First Moon Landing,1969,1969
+Digital Revolution,1970,2020
+Human Genome Project,1990,2003
+Development of CRISPR Gene Editing,2012,2012
+Discovery of the Concept of Antimatter,1928,1928
+Formulation of the Standard Model,1970,1974
+Discovery of the Neutrino,1956,1956
+Discovery of Superconductivity,1911,1911
+Discovery of Electron Spin,1925,1925
+Development of String Theory,1984,1988
+Invention of Quantum Computing Concepts,1980,2020
+Detection of Exoplanets,1992,2020
+Discovery of Dark Energy (Accelerating Universe),1998,1998
+Discovery of the Kuiper Belt,1992,1992
+Proposal of the Oort Cloud,1950,1950
+Neolithic Agricultural Revolution,-10000,-8000
+Bronze Age Beginning,-3300,-1200
+Iron Age Beginning,-1200,600
+Development of Maritime Navigation,-1000,500
+Invention of the Magnetic Compass,1020,1100
+Invention of Gunpowder,900,1050
+Invention of the Mechanical Clock,1300,1350
+Development of the Scientific Method,1600,1650
+Invention of the Steam Engine,1712,1712
+Invention of Vaccination,1796,1796
+Discovery of the Electrical Battery (Voltaic Pile),1800,1800
+Discovery of the Dynamo,1831,1831
+Discovery of Lamarckian Evolution,1809,1809
+Isolation of Chlorophyll,1817,1817
+Discovery of the HIV Virus,1983,1984
+Invention of the Personal Computer,1977,1977
+Invention of the Laser Printer,1976,1976
+Discovery of High‑Temperature Superconductors,1986,1987
+Discovery of the First Exoplanet around a Sun‑like Star,1995,1995
+Development of Chaos Theory,1963,1979
+Discovery of the Möbius Strip,1858,1858
+Invention of Graph Theory (Seven Bridges Problem),1736,1736
+Formulation of Probability Theory (Pascal & Fermat),1654,1654
+Invention of the PCR Technique,1983,1983
+Invention of Radiocarbon Dating,1949,1949
+Discovery of Quasicrystals,1982,1984
+Invention of Machine Learning Algorithms,1959,2025
+Discovery of Dark Matter Evidence,1933,1933
+Formulation of the Drake Equation,1961,1961
+Invention of Fiber Optic Communication,1970,1970
+Invention of Synthetic Nylon,1935,1935
+Development of Modern Topology,1900,1920
+Formulation of Game Theory,1944,1944
+Invention of Bitcoin,2008,2008
+Invention of Mobile Telephony,1973,1973
+Discovery of Baryon Asymmetry,1967,1967
+Observation of Solar Neutrinos,1968,1968
+Discovery of Quarks (via Deep Inelastic Scattering),1968,1969
+Discovery of Noble Gases,1894,1894
+Invention of the Polaroid Camera,1947,1948
+Formulation of the Turing Test,1950,1950
+Invention of the Space Shuttle,1979,1981
+Discovery of the First Black Hole (Cygnus X‑1),1971,1971
+Invention of the Radar Detector,1936,1936
+Development of Supersymmetry,1970,1985
+Invention of Antiretroviral Therapy,1987,1996
+Discovery of Metallic Hydrogen,2017,2017
+Invention of Mobile Payment Systems,2003,2003
+Discovery of Graphene,2004,2004
+Development of Autonomous Vehicles,2005,2025
+Invention of Social Media Platforms,2004,2025
+Confirmation of Higgs Boson Decay Channels,2014,2014
+Discovery of Water on Mars,2008,2008
+Discovery of the Cosmic Web Structure,2004,2004
+Invention of 3D Printing,1983,1983
+Discovery of Exoplanet Atmospheres,2005,2020
+Development of Renewable Energy Technologies,1970,2025
+Invention of the Electric Car (Modern),2008,2008
+Discovery of Multiferroics in Materials Science,2003,2003
+Development of Wearable Technology,2010,2025
+Invention of Blockchain Technology,2008,2008
+Invention of Virtual Reality,1960,2025
+Discovery of Periodic Trends,1869,1869
+Discovery of the Solar Wind,1959,1959
+Invention of the Compact Disc,1982,1982
+Invention of HDTV,1998,1998
+Discovery of Blackbody Radiation,1900,1900
+Invention of the Slinky,1945,1945
+Advanced Neolithic Farming Techniques,-9000,-8500
+Compilation of Vedic Mathematics,500,600
+Invention of the Stirling Engine,1816,1816
+Development of Fluid Dynamics,1738,1748
+Discovery of the Seebeck Effect,1821,1821
+Invention of the Bessemer Process,1856,1856
+Discovery of Neutrino Oscillation,1998,1998
+Discovery of the Age of the Universe by WMAP,2003,2003
+Invention of CMOS Technology,1963,1963
+Discovery of the Role of Mitochondria in Cells,1957,1957
+Invention of the MRI Scanner,1977,1977
+Invention of Laser Eye Surgery,1990,1990
+Development of the Field of Cybernetics,1948,1968
+Invention of the Photocopier,1938,1938
+Invention of the VCR,1956,1956
+Invention of the Barcode,1974,1974
+Discovery of the Antarctic Ozone Hole,1985,1987
+Invention of the Electronic Calculator,1965,1965
+Development of Holography,1960,1960
+Invention of the EKG Machine,1901,1901
+Discovery of Quantum Entanglement,1935,1935
+Invention of the Hybrid Car,1997,1997
+Discovery of Titan (Saturn's Moon),1655,1655
+Invention of the Battery Management System,1990,1990
+Development of the Theory of Computation,1936,1936
+Discovery of the First Pulsar,1967,1967
+Invention of the Superconducting Quantum Interference Device (SQUID),1964,1964
+Discovery of the Top Quark,1995,1995
+Invention of Laser Cooling,1987,1987
+Discovery of Bose‑Einstein Condensate,1995,1995
+Invention of the Touchscreen,1971,1971
+Discovery of Andromeda as Separate Galaxy,1924,1924
+Invention of the Phonograph,1877,1877
+Discovery of the Electron Microscope,1931,1931
+Invention of the Digital Watch,1972,1972
+Invention of GPS,1978,1978
+Invention of the Electric Locomotive,1837,1837
+Discovery of the Sun's Differential Rotation,1665,1665
+Invention of Anesthesia,1846,1846
+Invention of the Endoscope,1957,1957
+Discovery of the Tick‑Borne Encephalitis Virus,1937,1937
+Invention of Carbon Fiber,1958,1958
+Invention of the Personal Digital Assistant (PDA),1992,1992
+Invention of the Hybrid Electric Vehicle,1997,1997
+Discovery of the Existence of Neutron Stars,1967,1967
+Invention of the QWERTY Keyboard,1873,1873
+Invention of the Social Network (Pre‑Internet e.g. Usenet),1980,1980
+Discovery of the Terahertz Gap,2000,2000
+Development of Nanotechnology,1986,2025
+Invention of the Smartwatch,2013,2013
+Invention of Augmented Reality,2016,2016
+Discovery of the First Multi‑Planet Exoplanetary System,1992,1992
