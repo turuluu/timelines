@@ -17,7 +17,7 @@ struct core
     }
 
     entities data;
-    intervals intervals;
+    intervals lanes;
 };
 
 struct filter

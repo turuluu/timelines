@@ -24,18 +24,18 @@ renderer::set_controller(rendering_controller* controller)
 std::vector<std::reference_wrapper<const entity>>
 renderer::select_from(const core::entities& entities) const
 {
-    // auto& intervals = controller->core.intervals;
+    auto& lanes = controller->core.lanes;
     // TODO : views without copy, something that won't have invalidated entries..
     // Queus, lists?
     std::vector<std::reference_wrapper<const entity>> selected;
-    // intervals.clear();
+    lanes.clear();
     for (const auto& e : entities)
     {
         if (e.interval.start <= rendering_interval.end &&
             e.interval.end >= rendering_interval.start)
         {
             selected.push_back(std::cref(e));
-            // intervals.insert(e);
+            lanes.insert(e);
         }
     }
 
@@ -43,16 +43,17 @@ renderer::select_from(const core::entities& entities) const
 }
 
 size_t
-renderer::entities_in_interval(interval interval) const
+renderer::lanes_in_interval(interval interval) const
 {
-    // auto& intervals = controller->core.intervals;
-    // size_t max_entities_in_interval = 0;
-    size_t count = 0;
-    for (const auto& e : controller->core.data)
-        if (e.interval.start >= interval.start && e.interval.end <= interval.end)
-            ++count;
+    auto& lanes = controller->core.lanes;
+    size_t lanes_count = 0;
+    for (auto i = to_index(interval.start); i < to_index(interval.end); ++i)
+        lanes_count = std::max(lanes.interval_bins[i], lanes_count);
 
-    return count;
+    if (lanes_count == 0)
+        std::cout << "no entities in time frame..\n";
+
+    return lanes_count;
 }
 
 void
@@ -66,15 +67,16 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
 
     auto selected_entities = select_from(entities);
 
-    auto max_entities_in_interval = entities_in_interval(interval);
+    auto max_entities_in_interval = lanes_in_interval(interval);
     if (max_entities_in_interval == 0)
         return;
 
     style_info specs;
     specs.font = font;
     specs.font_size = font_size;
-    specs.max_d = max_dim();
-    specs.d = specs.max_d / max_entities_in_interval;
+    specs.max_dimension = max_dim();
+    specs.dimension = specs.max_dimension / max_entities_in_interval;
+    utlz::dbg("ents: ", max_entities_in_interval);
 
     const auto bin_start = to_index(render_start);
     const auto bin_end = to_index(render_end);
@@ -126,10 +128,10 @@ rect
 stylist_v::lane_bounds(style_info s)
 {
     rect r;
-    r.x = 10 + (s.d * s.lane_index);
+    r.x = 10 + (s.dimension * s.lane_index);
     r.y = s.rect_start * s.scale;
     r.h = (s.rect_end - s.rect_start) * s.scale;
-    r.w = s.d;
+    r.w = s.dimension;
 
     return r;
 }
@@ -138,10 +140,10 @@ rect
 stylist_v::text_bounds(style_info s)
 {
     rect r;
-    r.x = s.max_d + 10;
+    r.x = s.max_dimension + 10;
     r.y = s.rect_start * s.scale;
     r.h = s.font_size;
-    r.w = s.max_d - 20;
+    r.w = s.max_dimension - 20;
 
     return r;
 }
@@ -155,7 +157,7 @@ stylist_v::render(style_info specs, const entity& e)
     SDL_RenderLine(graphics::get().ren,
                    r.x + r.w,
                    r.y + specs.font_size / 2,
-                   specs.max_d + 20,
+                   specs.max_dimension + 20,
                    r.y + specs.font_size / 2);
 
     // outline
@@ -238,13 +240,13 @@ stylist_h::render(style_info specs, const entity& e)
 }
 
 rect
-stylist_h::lane_bounds(style_info bi)
+stylist_h::lane_bounds(style_info s)
 {
     rect r;
-    r.x = bi.rect_start * bi.scale;
-    r.y = 10 + (bi.d * bi.lane_index);
-    r.w = (bi.rect_end - bi.rect_start) * bi.scale;
-    r.h = bi.d;
+    r.x = s.rect_start * s.scale;
+    r.y = 10 + (s.dimension * s.lane_index);
+    r.w = (s.rect_end - s.rect_start) * s.scale;
+    r.h = s.dimension;
 
     return r;
 }
@@ -309,10 +311,10 @@ rect
 stylist_v_line::lane_bounds(style_info s)
 {
     rect r;
-    r.x = 10 + (s.d * s.lane_index);
+    r.x = 10 + (s.dimension * s.lane_index);
     r.y = s.rect_start * s.scale;
     r.h = (s.rect_end - s.rect_start) * s.scale;
-    r.w = s.d;
+    r.w = s.dimension;
     return r;
 }
 
@@ -320,10 +322,10 @@ rect
 stylist_v_line::text_bounds(style_info s)
 {
     rect r;
-    r.x = s.max_d + 10;
+    r.x = s.max_dimension + 10;
     r.y = s.rect_start * s.scale;
     r.h = s.font_size;
-    r.w = s.max_d - 20;
+    r.w = s.max_dimension - 20;
     return r;
 }
 
@@ -338,7 +340,7 @@ stylist_v_line::render(style_info specs, const entity& e)
 
     // indicator line connecting text and lane box
     draw_line(point{ r.x + r.w / 2 + 1.0f, r.y + specs.font_size / 2 },
-              point{ (float)specs.max_d + 20, r.y + specs.font_size / 2 },
+              point{ (float)specs.max_dimension + 20, r.y + specs.font_size / 2 },
               color{ 0x77, 0x77 });
 
     auto rt = text_bounds(specs);
@@ -370,9 +372,9 @@ stylist_h_line::lane_bounds(style_info bi)
 {
     rect r;
     r.x = bi.rect_start * bi.scale;
-    r.y = 10 + (bi.d * bi.lane_index);
+    r.y = 10 + (bi.dimension * bi.lane_index);
     r.w = (bi.rect_end - bi.rect_start) * bi.scale;
-    r.h = bi.d;
+    r.h = bi.dimension;
     return r;
 }
 

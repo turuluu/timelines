@@ -35,7 +35,7 @@ TEST_CASE("select")
     scoped_graphics gfx(100, 100);
     rendering_controller rc(core);
     auto& v = rc.make<vertical>();
-    CHECK_EQ(2, v.entities_in_interval({Y(-400), Y(0)}));
-    CHECK_EQ(1, v.entities_in_interval({Y(-356), Y(-300)}));
-    CHECK_EQ(0, v.entities_in_interval({Y(0), Y(400)}));
+    CHECK_EQ(2, v.lanes_in_interval({Y(-400), Y(0)}));
+    CHECK_EQ(1, v.lanes_in_interval({Y(-356), Y(-300)}));
+    CHECK_EQ(0, v.lanes_in_interval({Y(0), Y(400)}));
 }

@@ -14,8 +14,8 @@ namespace tls
 struct style_info
 {
     color color;
-    int d;
-    int max_d;
+    int dimension;
+    int max_dimension;
     int rect_start;
     int rect_end;
     double scale;
@@ -48,7 +48,7 @@ struct renderer
     std::vector<std::reference_wrapper<const entity>> select_from(
       const core::entities& entities) const;
 
-    size_t entities_in_interval(interval interval) const;
+    size_t lanes_in_interval(interval interval) const;
 
     size_t lane(size_t max_entities_in_interval, time_point start, time_point end)
     {
@@ -118,7 +118,7 @@ struct stylist_v : stylist_base
 
 struct stylist_h : stylist_base
 {
-    rect lane_bounds(style_info bi) override;
+    rect lane_bounds(style_info s) override;
     rect text_bounds(style_info bi) override;
     void render(style_info specs, const entity& e) override;
 };
