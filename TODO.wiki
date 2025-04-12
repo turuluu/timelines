@@ -1,70 +1,77 @@
 # Backlog
 
+- [ ] known bugs
+  - [ ] ++ fix lane allocating for long arching entities (example_big.csv)
+  - [ ]    zoom gets stuck at extremes
 - [ ] UI
+  - [▣] controls
+    - [▣]    zoom gesture
+      - [▣]    it's now mapped to scroll up/down
+      - [▣] -- pinch (no-go on SDL2 and wip in SDL3)
+    - [ ] ++ Add arrow keys for movement and +- for zoom
+    - [ ]    "?" for help layer (keys)
+    - [ ] +  click on label to center on entity and fix to its interval
   - [ ] improve distinction of entities and labels
-    - [ ] basic sand grain algo for text positioning
-    - [ ] consider colours for the lines and indicators
+    - [ ] ++ basic sand grain algo for text positioning
+    - [ ] +  consider colours for the lines and indicators
+    - [ ] +  short intervals label width - min width for labels 
   - [ ] interactive mode "IX"
-    - [ ] UI components (system)
+    - [ ]    UI components (system)
   - [ ] graph/links mode
-    - [ ] entities as nodes
-    - [ ] default edges (parent, before/after, ...)
-    - [ ] IX
+    - [ ]    entities as nodes
+    - [ ]    default edges (parent, before/after, ...)
+    - [ ]    IX
   - [ ] list mode
-    - [ ] sorting
-    - [ ] filtering
-    - [ ] IX
-- [ ] hook up cpr (https://github.com/libcpr/cpr
-- [ ] requests to json (or csv)
+    - [ ]    sorting
+    - [ ]    filtering
+    - [ ]    IX
+- [ ]    hook up cpr (https://github.com/libcpr/cpr
+- [ ]    requests to json (or csv)
 - [ ] web stack
-  - [ ] hook up emscripten
-    - [ ] sdl2 port
-    - [ ] vcpkg https://github.com/microsoft/vcpkg/discussions/40368
-  - [ ] dockerized container for local deployment (eval)
-  - [ ] AWS deployment etc.
-    - [ ] IAMs
-    - [ ] vpc
-    - [ ] instance
-    - [ ] database for time event cache
-- [ ] multithreaded event, render, messages
-- [ ] replace sdl ttf with stf font or sth and include font as binary
-- [ ] show licenses in display/msgbox
-- [◤] time/entity parser
-  - [▣] fix doctest
-  - [◤] modularize for tests
-  - [◤] harness into tests for a feedback system
-  - [▣] parse into entities
+  - [ ]    hook up emscripten
+    - [ ]    sdl2 port
+    - [ ]    vcpkg https://github.com/microsoft/vcpkg/discussions/40368
+  - [ ]    dockerized container for local deployment (eval)
+  - [ ]    AWS deployment etc.
+    - [ ]    IAMs
+    - [ ]    vpc
+    - [ ]    instance
+    - [ ]    database for time event cache
+- [ ]    multithreaded event, render, messages
+- [ ]    replace sdl ttf with stf font or sth and include font as binary
+- [ ]    show licenses in display/msgbox
+- [◤]    time/entity parser
+  - [▣]    fix doctest
+  - [◤]    modularize for tests
+  - [◤]    harness into tests for a feedback system
+  - [▣]    parse into entities
 - [◤] refactorings
-  - [◤] free functions to reduce copypaste
-  - [◤] improve forwarding of entities
-  - [ ] font loading using binary resources instead of reading from file
-  - [ ] move csv to deps
+  - [◤]    free functions to reduce copypaste
+  - [◤]    improve forwarding of entities
+  - [ ] ++ font loading using binary resources instead of reading from file
+  - [ ] +  move csv to deps
 - [◤] helpers
-  - [▣] debug print (utlz)
-  - [ ] constexpr colours
-  - [ ] nesting tiler
+  - [▣]    debug print (utlz)
+  - [ ]    constexpr colours
+  - [ ]    nesting tiler
 - [◤] convenience stuff
-  - [▣] More examples as csvs
-  - [ ] request using wikipedia (https://www.mediawiki.org/wiki/API:Main_page)
+  - [▣]    More examples as csvs
+  - [ ]    request using wikipedia (https://www.mediawiki.org/wiki/API:Main_page)
   - [ ] LLM to figure out what is event-entity data from crap
-    - [ ] local models
-      - [ ] ollama via sockets
-    - [ ] remote models
-      - [ ] authorization handling
-- [◤] controls
-  - [◤] zoom gesture
-    - [▣] it's now mapped to scroll up/down
-    - [ ] pinch (no-go on SDL2 and wip in SDL3)
+    - [ ]    local models
+      - [ ]    ollama via sockets
+    - [ ]    remote models
+      - [ ]    authorization handling
 - [▣] path resolving for csv files
 - [◤] calendars - underlying timekeeping framework
-  - [◤] time point structure
-    - [▣] chrono-based
-    - [ ] cosmological time (epoch at big bang)
-    - [ ] quantum time
+  - [◤]    time point structure
+    - [▣]    chrono-based
+    - [ ]    cosmological time (epoch at big bang)
+    - [ ]    quantum time
   - [◤] conversion API broad strokes
-    - [▣] ISO 8601
-    - [ ] gregorian
-    - [ ] julian
-    - [ ] Holocene
-- [▣] create deps/ for all vcpkg installed libs
+    - [▣] +  ISO 8601
+    - [ ] +  gregorian
+    - [ ] +  julian
+    - [ ] +  Holocene
+- [▣]    create deps/ for all vcpkg installed libs
 
