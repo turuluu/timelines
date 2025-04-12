@@ -76,7 +76,6 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
     specs.font_size = font_size;
     specs.max_dimension = max_dim();
     specs.dimension = specs.max_dimension / max_entities_in_interval;
-    utlz::dbg("ents: ", max_entities_in_interval);
 
     const auto bin_start = to_index(render_start);
     const auto bin_end = to_index(render_end);
@@ -274,8 +273,7 @@ horizontal::horizontal()
 void
 horizontal::draw_grid(interval interval, const double scale_x) const
 {
-    return;
-#if 0
+    static const auto zero_point = to_index(clock::from_iso(0));
     const auto start = interval.start.time_since_epoch().count();
     const auto end = interval.end.time_since_epoch().count();
     const auto length = end - start;
@@ -283,12 +281,12 @@ horizontal::draw_grid(interval interval, const double scale_x) const
     splits = ((int)(splits / 10.0f)) * 10;
     splits = splits > 0 ? splits : 1;
     auto start_idx = to_index(interval.start);
-    for (int i = start; i < end; ++i)
+    for (int i = start_idx; i < to_index(interval.end); ++i)
     {
         if (i % splits == 0)
         {
             SDL_SetRenderDrawColor(graphics::get().ren, 0x5F, 0x5F, 0x5F, 0x20);
-            const int x = (to_index(i) - start_idx) * scale_x;
+            const int x = (i - start_idx) * scale_x;
             SDL_RenderLine(graphics::get().ren, x, 0, x, spec::screen_h);
 
             const int label_w = 50;
@@ -301,10 +299,9 @@ horizontal::draw_grid(interval interval, const double scale_x) const
             grid_label_bounds.h = label_h;
 
             color c{ 255, 255 };
-            render_text_2(font, &c, &grid_label_bounds, std::to_string(i).c_str(), 28);
+            render_text_2(font, &c, &grid_label_bounds, std::to_string(i - (int)zero_point).c_str(), 28);
         }
     }
-#endif
 }
 
 rect
