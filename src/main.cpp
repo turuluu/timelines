@@ -1,4 +1,4 @@
-#include "../deps/csv/csv.h"
+#include <csv/csv.h>
 #include "app.hpp"
 #include "entities.hpp"
 #include "rendering.hpp"

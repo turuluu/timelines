@@ -57,6 +57,7 @@ target_include_directories(
         ${PROJECT_NAME}
         PUBLIC
         ${vcpkg_installed_dir}/include
+        deps
 )
 
 target_link_libraries(

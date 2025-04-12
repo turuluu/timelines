@@ -49,7 +49,7 @@
   - [◤]    free functions to reduce copypaste
   - [◤]    improve forwarding of entities
   - [ ] ++ font loading using binary resources instead of reading from file
-  - [ ] +  move csv to deps
+  - [▣] +  move csv to deps
 - [◤] helpers
   - [▣]    debug print (utlz)
   - [ ]    constexpr colours
