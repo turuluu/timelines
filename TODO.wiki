@@ -1,37 +1,21 @@
-- [◤] time/entity parser
-  - [▣] fix doctest
-  - [◤] modularize for tests
-  - [◤] harness into tests for a feedback system
-  - [ ] parse into entities
+# Backlog
+
+- [ ] UI
+  - [ ] improve distinction of entities and labels
+    - [ ] basic sand grain algo for text positioning
+    - [ ] consider colours for the lines and indicators
+  - [ ] interactive mode "IX"
+    - [ ] UI components (system)
+  - [ ] graph/links mode
+    - [ ] entities as nodes
+    - [ ] default edges (parent, before/after, ...)
+    - [ ] IX
+  - [ ] list mode
+    - [ ] sorting
+    - [ ] filtering
+    - [ ] IX
 - [ ] hook up cpr (https://github.com/libcpr/cpr
 - [ ] requests to json (or csv)
-- [ ] refactorings
-  - [ ] free functions to reduce copypaste
-  - [ ] improve forwarding of entities
-  - [ ] move csv to deps
-- [ ] helpers
-  - [ ] constexpr colours
-  - [ ] nesting tiler
-  - [ ] debug print
-- [ ] convenience stuff
-  - [ ] request using wikipedia (https://www.mediawiki.org/wiki/API:Main_page)
-  - [ ] LLM to figure out what is event-entity data from crap
-    - [ ] local models
-      - [ ] ollama via sockets
-    - [ ] remote models
-      - [ ] authorization handling
-- [◤] controls
-  - [◤] zoom gesture
-    - [▣] it's now mapped to scroll up/down
-    - [ ] pinch
-- [ ] path resolving for csv files
-- [◤] calendars - underlying timekeeping framework
-  - [◤] time point structure
-  - [ ] conversion API broad strokes
-    - [ ] ISO 8601
-    - [ ] gregorian
-    - [ ] julian
-    - [ ] Holocene
 - [ ] web stack
   - [ ] hook up emscripten
     - [ ] sdl2 port
@@ -43,7 +27,44 @@
     - [ ] instance
     - [ ] database for time event cache
 - [ ] multithreaded event, render, messages
-- [ ] create deps/ for all vcpkg installed libs
 - [ ] replace sdl ttf with stf font or sth and include font as binary
-- [ ] license display
+- [ ] show licenses in display/msgbox
+- [◤] time/entity parser
+  - [▣] fix doctest
+  - [◤] modularize for tests
+  - [◤] harness into tests for a feedback system
+  - [▣] parse into entities
+- [◤] refactorings
+  - [◤] free functions to reduce copypaste
+  - [◤] improve forwarding of entities
+  - [ ] font loading using binary resources instead of reading from file
+  - [ ] move csv to deps
+- [◤] helpers
+  - [▣] debug print (utlz)
+  - [ ] constexpr colours
+  - [ ] nesting tiler
+- [◤] convenience stuff
+  - [▣] More examples as csvs
+  - [ ] request using wikipedia (https://www.mediawiki.org/wiki/API:Main_page)
+  - [ ] LLM to figure out what is event-entity data from crap
+    - [ ] local models
+      - [ ] ollama via sockets
+    - [ ] remote models
+      - [ ] authorization handling
+- [◤] controls
+  - [◤] zoom gesture
+    - [▣] it's now mapped to scroll up/down
+    - [ ] pinch (no-go on SDL2 and wip in SDL3)
+- [▣] path resolving for csv files
+- [◤] calendars - underlying timekeeping framework
+  - [◤] time point structure
+    - [▣] chrono-based
+    - [ ] cosmological time (epoch at big bang)
+    - [ ] quantum time
+  - [◤] conversion API broad strokes
+    - [▣] ISO 8601
+    - [ ] gregorian
+    - [ ] julian
+    - [ ] Holocene
+- [▣] create deps/ for all vcpkg installed libs
 

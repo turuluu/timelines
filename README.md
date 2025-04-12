@@ -4,10 +4,16 @@ Present historical events and similar timeseries correlated factoids on a visual
 
 WIP, MacOS, Linux and Windows
 
+## Usage
+
+Compile and run with examples:
+
+    ./build/timelines examples/example_prehistoric.csv
+
 ## Requirements
 
 * CMake
-* Compiler that supports C++17 (recent version of g++, clang++ or Visual Studio >=2019)
+* Compiler that supports C++20 (recent version of g++, clang++ or Visual Studio >=2019)
 
 This should be handled by the cmake.
 * vcpkg
@@ -37,11 +43,7 @@ Using ninja (for make, just drop the `-GNinja` flag)
 
     cmake -S . -B build -G 'Visual Studio 17 2022'
 
-    # Open build/timelines.sln in Visual Studio
-
-## Running
-
-    ./build/timelines
+=> Open build/timelines.sln in Visual Studio
 
 ## License
 
