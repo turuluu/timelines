@@ -393,7 +393,7 @@ stylist_h_line::render(style_info specs, const entity& e)
     draw_lane_dots(specs, r);
 
     color text_color{ 255, 255 };
-    auto offset = rect{ r.x, r.y - specs.font_size / 2, r.w, r.h };
+    auto offset = rect{ r.x, r.y - specs.font_size / 2, std::max(r.w, 100.0f), r.h };
     render_text_2(specs.font, &text_color, &offset, e.name.c_str(), specs.font_size);
 }
 

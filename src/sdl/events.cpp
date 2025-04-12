@@ -36,16 +36,20 @@ event_handler::handle_events(events& ui_events)
                     case SDLK_T:
                         ui_events.toggle_renderer = true;
                         break;
+                    case SDLK_A:
                     case SDLK_LEFT:
                         ui_events.move.push_back({ pan_fixed, pan_fixed });
                         break;
+                    case SDLK_D:
                     case SDLK_RIGHT:
                         ui_events.move.push_back({ -pan_fixed, pan_fixed });
                         break;
+                    case SDLK_W:
                     case SDLK_UP:
                         ui_events.zoom.push_back(
                           { tls::spec::screen_w / 2, tls::spec::screen_h / 2, 0.1f * pan_fixed });
                         break;
+                    case SDLK_S:
                     case SDLK_DOWN:
                         ui_events.zoom.push_back(
                           { tls::spec::screen_w / 2, tls::spec::screen_h / 2, 0.1f * -pan_fixed });
