@@ -297,9 +297,8 @@ horizontal::draw_grid(interval interval, const double scale_x) const
             grid_label_bounds.w = label_w;
             grid_label_bounds.h = label_h;
 
-            color c{ 255, 255 };
             render_text_2(font,
-                          &c,
+                          &colors::federal_blue,
                           &grid_label_bounds,
                           std::to_string(i - (int)zero_point).c_str(),
                           28);
@@ -391,18 +390,18 @@ stylist_h_line::render(style_info specs, const entity& e)
     float center_y = r.y + r.h / 2;
 
     // Lane line
-    auto line_color = palette::teal_breaker[e.id % 5];
+    auto line_color = palette::broken[e.id % 5];
     draw_line(point{ r.x, center_y }, point{ r.x + r.w, center_y }, line_color);
 
     // Dots for caps
-    color dot_color{ 255, 255 };
+    auto& dot_color = line_color;
     float dot_radius = 3.0f;
     draw_filled_circle(r.x, center_y, dot_radius, dot_color);
     draw_filled_circle(r.x + r.w, center_y, dot_radius, dot_color);
 
     // Text
     auto offset = rect{ r.x, r.y - specs.font_size / 2, std::max(r.w, 100.0f), r.h };
-    render_text_2(specs.font, &colors::baby_powder, &offset, e.name.c_str(), specs.font_size);
+    render_text_2(specs.font, &colors::night, &offset, e.name.c_str(), specs.font_size);
 }
 
 } // namespace tls

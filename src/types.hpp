@@ -31,6 +31,14 @@ constexpr color verdigris{ 68, 161, 160 };
 constexpr color teal{ 41, 127, 130 };
 constexpr color tiffany_blue{ 120, 205, 215 };
 constexpr color teal_lite{ 36, 123, 123 };
+
+constexpr color great_grey{192, 192, 192};
+constexpr color cardboard_white{251, 247, 244};
+constexpr color broken_blue{ 53, 80, 112 };
+constexpr color broken_magenta{ 109, 89, 122 };
+constexpr color pourage_lila{ 181, 101, 118 };
+constexpr color morning_after{ 229, 107, 111 };
+constexpr color kinda_yellow{ 234, 172, 139 };
 } // namespace colors
 namespace palette
 {
@@ -49,6 +57,11 @@ constexpr std::array<const color, 5> teal_breaker{ colors::caribbean_current,
                                                    colors::teal,
                                                    colors::tiffany_blue,
                                                    colors::teal_lite };
+constexpr std::array<const color, 5> broken{ colors::broken_blue,
+                                             colors::broken_magenta,
+                                             colors::pourage_lila,
+                                             colors::morning_after,
+                                             colors::kinda_yellow };
 }; // namespace palette
 
 struct mouse_move

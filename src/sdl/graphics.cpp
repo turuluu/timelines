@@ -22,7 +22,7 @@ void clear()
 
     u8 r, gr, b, a;
     SDL_GetRenderDrawColor(graphics::get().ren, &r, &gr, &b, &a);
-    auto c = colors::night;
+    auto c = colors::cardboard_white;
     SDL_SetRenderDrawColor(graphics::get().ren, c.r, c.g, c.b, c.a);
     SDL_RenderClear(graphics::get().ren);
     SDL_SetRenderDrawColor(graphics::get().ren, r, gr, b, a);
