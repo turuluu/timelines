@@ -11,10 +11,9 @@ to_index(time_point time_point)
 
     // Map the years to a bin index using max_bins/2 as the center point to allow for negative years
     double center = spec::max_bins / 2.0;
-    double scale = center / 10000.0;
-    double raw_index = center + (years * scale);
+    double raw_index = center + years;
+    auto index = utlz::limit<idx_t>(0, spec::max_bins - 1, static_cast<idx_t>(raw_index));
 
-    idx_t index = utlz::limit<idx_t>(0, spec::max_bins - 1, static_cast<idx_t>(raw_index));
     return index;
 }
 
