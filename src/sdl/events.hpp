@@ -1,8 +1,6 @@
 #pragma once
 
 #include "../types.hpp"
-#include <deque>
-#include <list>
 
 namespace tls
 {
@@ -15,8 +13,7 @@ inline
 struct event_handler : event_handler_ifc
 {
     void handle_events(events& events) override;
-
-    const float wheel_y_mult = 6.5f;
+    const float wheel_y_mult = 2.0f;
 };
 
 struct timer : timer_ifc

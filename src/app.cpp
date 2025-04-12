@@ -20,17 +20,18 @@ application::process_events()
         events.toggle_renderer = false;
     }
 
-    i32 y_scroll_delta = 0;
+    wheel_move event{0,0,0};
     while (!events.wheel.empty())
     {
-        y_scroll_delta += events.wheel.back();
+        auto& last = events.wheel.back();
+        event.mouse_x = last.mouse_x;
+        event.mouse_y = last.mouse_y;
+        event.wheel_delta += last.wheel_delta;
         events.wheel.pop_back();
     }
-    if (y_scroll_delta != 0)
+    if (event.wheel_delta != 0)
     {
-        float x = 0, y = 0;
-        SDL_GetMouseState(&x, &y);
-        ui->scroll_y(y_scroll_delta, x, y);
+        ui->scroll_y(event);
     }
 
     mouse_move mouse_move_delta = { 0, 0 };

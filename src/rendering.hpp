@@ -50,7 +50,7 @@ struct renderer
 
     size_t lanes_in_interval(interval interval) const;
 
-    size_t lane(size_t max_entities_in_interval, time_point start, time_point end)
+    size_t lane_index(size_t max_entities_in_interval, time_point start, time_point end)
     {
         size_t lane = 0;
         for (lane = 0; lane < max_entities_in_interval; ++lane)
@@ -169,22 +169,17 @@ struct rendering_controller
             timer->wait_ms(frame_interval_ms - elapsed_ms);
     }
 
-    void scroll_y(int delta_y, int x, int y)
+    void scroll_y(wheel_move scroll)
     {
         if (renderer_idx < 0)
             return;
 
-        auto screen_dim = is_horizontal() ? spec::screen_w : spec::screen_h;
+        // TODO : zoom for the vertical layout / Now it's a normal scroll
+        auto screen_dim = is_horizontal() ? spec::screen_w : -spec::screen_h / 2;
         auto& interval = get_renderer().rendering_interval;
-        struct interval timescaled = new_scaled_interval(delta_y, interval, x);
+        auto focus_point = screen_dim + (is_horizontal() ? -scroll.mouse_x : scroll.mouse_y);
+        struct interval timescaled = new_scaled_interval(scroll.wheel_delta, interval, focus_point, screen_dim);
 
-        /*
-        // TODO : shift range when zooming in to keep center of zoom under the
-        // mouse pointer
-        const int mid_x = screen_dim / 2;
-        constexpr double scale = 0.5e-2f;
-        int rel_mid_point = (x - mid_x) * (delta_y * scale);
-        */
         interval = timescaled;
     }
 
@@ -257,5 +252,4 @@ struct horizontal : renderer
     int max_dim() override;
     double get_scale(double bin_len) override;
 };
-
 } // namespace tls

@@ -24,12 +24,6 @@ event_handler::handle_events(events& events)
                 {
                     events.mouse.push_back({ e.motion.xrel, e.motion.yrel });
                 }
-                /*
-                else if (e.motion.state == 4)
-                {
-                    events.wheel.push_back(-e.motion.yrel);
-                }
-                */
                 break;
             case SDL_EVENT_KEY_DOWN:
                 switch (e.key.key)
@@ -44,9 +38,8 @@ event_handler::handle_events(events& events)
                 break;
             case SDL_EVENT_MOUSE_WHEEL:
                 if (e.wheel.y != 0)
-                    // events.wheel.push_back(e.wheel.y * wheel_y_mult);
-                    events.wheel.push_back(e.wheel.y * 2.0f);
-
+                    events.wheel.push_back(
+                      { e.wheel.mouse_x, e.wheel.mouse_y, e.wheel.y * wheel_y_mult });
                 break;
             default:;
         }

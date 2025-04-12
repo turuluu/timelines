@@ -17,12 +17,19 @@ struct mouse_move
     float y;
 };
 
+struct wheel_move
+{
+    float mouse_x;
+    float mouse_y;
+    float wheel_delta;
+};
+
 struct events
 {
     bool should_quit{ false };
     bool toggle_renderer{ false };
     std::deque<mouse_move> mouse;
-    std::deque<float> wheel;
+    std::deque<wheel_move> wheel;
 };
 
 struct event_handler_ifc

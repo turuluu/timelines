@@ -99,7 +99,7 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
         specs.rect_end = to_index(end_bound) - bin_start;
 
         // non const part
-        specs.lane_index = lane(max_entities_in_interval, entity_start, entity_end);
+        specs.lane_index = lane_index(max_entities_in_interval, entity_start, entity_end);
         specs.color.fill = e.get().id * colour_incr;
         specs.color.border = specs.color.fill + colour_incr;
 

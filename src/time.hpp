@@ -3,7 +3,6 @@
 #include <utlz/all.hpp>
 
 #include "spec.hpp"
-#include <cassert>
 
 namespace tls
 {
@@ -19,7 +18,7 @@ struct clock
 
     static constexpr bool is_steady = false;
 
-    // 0 := Big bang
+    // TODO: year 0 := Big bang
     static constexpr double big_bang_years_ago = 0;                      // 13.8e9;
     static constexpr double seconds_since_big_bang = big_bang_years_ago; // * 365.25 * 24 * 60 * 60;
 
@@ -44,13 +43,11 @@ struct clock
 
     static time_point interpolate(const time_point& tp0, const time_point& tp1, float ratio)
     {
-        // assert(0.0f <= ratio && ratio <= 1.0f);
         auto d0 = tp0.time_since_epoch().count();
         auto d1 = tp1.time_since_epoch().count();
         auto interpolated = d0 + (d1 - d0) * ratio;
 
         auto x = time_point(duration(interpolated));
-        utlz::dbg(ratio, " => ", interpolated);
         return x;
     }
 
@@ -94,7 +91,6 @@ new_scaled_interval(const float value,
 {
 
     const float mid_point = 1.0f - ((float)mid_x / relative_max);
-    // constexpr float scale = 1e-2f;
     float scale = std::pow(2.0f, -0.1f * value);
     scale = utlz::limit(0.125f, 8.0f, scale);
 
@@ -102,9 +98,6 @@ new_scaled_interval(const float value,
     const auto end = interval.end;
     const auto mid = clock::interpolate(start, end, mid_point);
 
-    // const int new_start = bin_limit((int)(((start - mid) * timescale) + mid));
-    // const int new_end = bin_limit((int)(((end - mid) * timescale) + mid));
-    // return { new_start, new_end };
     return { bin_limit(clock::interpolate(mid, start, scale)),
              bin_limit(clock::interpolate(mid, end, scale)) };
 }

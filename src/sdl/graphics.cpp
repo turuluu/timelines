@@ -71,7 +71,7 @@ void render_text(font* font, const color* color, rect* msg_bounds, const char* t
     int offset_msg_bounds_w = msg_bounds->w + (2 * margins);
     msg_box.w = std::min(cstrW, offset_msg_bounds_w);
     msg_box.h = pt_size_smooth;
-    msg_box.x = msg_bounds->x - margins; // + std::max(offset_msg_bounds_w - cstrW, 0) / 2;
+    msg_box.x = msg_bounds->x - margins;
     msg_box.y = msg_bounds->y + std::max((float)msg_bounds->h - msg_box.h, 0.0f) / 2;
     SDL_Texture* msg_texture = SDL_CreateTextureFromSurface(graphics::get().ren, msg_surface);
     SDL_RenderTexture(graphics::get().ren, msg_texture, NULL, &msg_box);
