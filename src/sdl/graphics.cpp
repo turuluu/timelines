@@ -22,7 +22,8 @@ void clear()
 
     u8 r, gr, b, a;
     SDL_GetRenderDrawColor(graphics::get().ren, &r, &gr, &b, &a);
-    SDL_SetRenderDrawColor(graphics::get().ren, grey, grey, grey, 0xFF);
+    auto c = colors::night;
+    SDL_SetRenderDrawColor(graphics::get().ren, c.r, c.g, c.b, c.a);
     SDL_RenderClear(graphics::get().ren);
     SDL_SetRenderDrawColor(graphics::get().ren, r, gr, b, a);
 }
@@ -54,7 +55,7 @@ void render_text(font* font, const color* color, rect* msg_bounds, const char* t
         return;
     }
 
-    SDL_Color sdl_color{ color->border, color->border, color->border, 0xFF };
+    SDL_Color sdl_color{ color->r, color->g, color->b, color->a };
     SDL_Surface* msg_surface;
     if (!(msg_surface = TTF_RenderText_Blended(font, text, strlen(text), sdl_color)))
     {
@@ -88,7 +89,7 @@ void render_text_2(font* font, const color* color, rect* text_bounds, const char
         return;
     }
 
-    SDL_Color sdl_color{ color->border, color->border, color->border, 0xFF };
+    SDL_Color sdl_color{ color->r, color->g, color->b, color->a };
     SDL_Surface* msg_surface;
     if (!(msg_surface = TTF_RenderText_Blended(font, text, strlen(text), sdl_color)))
     {
@@ -115,17 +116,17 @@ void render_text_2(font* font, const color* color, rect* text_bounds, const char
 }
 
 void draw_filled_rect(const rect rect, const color color) {
-    SDL_SetRenderDrawColor(graphics::get().ren, color.fill, color.fill, color.fill, 0xFF);
+    SDL_SetRenderDrawColor(graphics::get().ren, color.r, color.g, color.b, color.a);
     SDL_RenderFillRect(graphics::get().ren, &rect);
 }
 
 void draw_rect(const rect rect, const color color) {
-    SDL_SetRenderDrawColor(graphics::get().ren, color.border, color.border, color.border, 0xFF);
+    SDL_SetRenderDrawColor(graphics::get().ren, color.r, color.g, color.b, color.a);
     SDL_RenderRect(graphics::get().ren, &rect);
 }
 
 void draw_line(point p0, point p1, const color color, float width) {
-    SDL_SetRenderDrawColor(graphics::get().ren, color.border, color.border, color.border, 0xFF);
+    SDL_SetRenderDrawColor(graphics::get().ren, color.r, color.g, color.b, color.a);
     
     // Perpendicular vector
     float dx = p1.x - p0.x;
@@ -156,7 +157,7 @@ void draw_line(point p0, point p1, const color color, float width) {
 }
 
 void draw_filled_circle(float x, float y, float radius, const color color) {
-    SDL_SetRenderDrawColor(graphics::get().ren, color.fill, color.fill, color.fill, 0xFF);
+    SDL_SetRenderDrawColor(graphics::get().ren, color.r, color.g, color.b, color.a);
     
     // Using the midpoint circle algorithm with fill
     float offsetx = 0;
@@ -187,7 +188,7 @@ void draw_filled_circle(float x, float y, float radius, const color color) {
 }
 
 void draw_circle(float x, float y, float radius, const color color) {
-    SDL_SetRenderDrawColor(graphics::get().ren, color.border, color.border, color.border, 0xFF);
+    SDL_SetRenderDrawColor(graphics::get().ren, color.r, color.g, color.b, color.a);
     
     // Using the midpoint circle algorithm
     float offsetx = 0;
@@ -221,7 +222,7 @@ void draw_circle(float x, float y, float radius, const color color) {
 }
 
 void draw_filled_triangle(point p0, point p1, point p2, color color) {
-    SDL_SetRenderDrawColor(graphics::get().ren, color.fill, color.fill, color.fill, 0xFF);
+    SDL_SetRenderDrawColor(graphics::get().ren, color.r, color.g, color.b, color.a);
     
     // Sort vertices by y-coordinate
     if (p0.y > p1.y) { std::swap(p0, p1); }

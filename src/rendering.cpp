@@ -99,8 +99,8 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
 
         // non const part
         specs.lane_index = lane_index(max_entities_in_interval, entity_start, entity_end);
-        specs.color.fill = e.get().id * colour_incr;
-        specs.color.border = specs.color.fill + colour_incr;
+        specs.color.r = e.get().id * colour_incr;
+        specs.color.g = specs.color.g + colour_incr;
 
         style->render(specs, e);
     }
@@ -164,9 +164,9 @@ stylist_v::render(style_info specs, const entity& e)
 
     // fill
     SDL_SetRenderDrawColor(graphics::get().ren,
-                           0x9F - (specs.color.fill * 0.5f),
-                           0x90 + (0xFF - specs.color.fill) * 0.2f,
-                           0xFF - (specs.color.fill * 0.8f),
+                           0x9F - (specs.color.r * 0.5f),
+                           0x90 + (0xFF - specs.color.g) * 0.2f,
+                           0xFF - (specs.color.b * 0.8f),
                            0x70);
     SDL_RenderFillRect(graphics::get().ren, &r);
 
@@ -222,9 +222,9 @@ stylist_h::render(style_info specs, const entity& e)
 
     // fill
     SDL_SetRenderDrawColor(graphics::get().ren,
-                           0x9F - (specs.color.fill * 0.5f),
-                           0x90 + (0xFF - specs.color.fill) * 0.2f,
-                           0xFF - (specs.color.fill * 0.8f),
+                           0x9F - (specs.color.r * 0.5f),
+                           0x90 + (0xFF - specs.color.g) * 0.2f,
+                           0xFF - (specs.color.b * 0.8f),
                            0x70);
     SDL_RenderFillRect(graphics::get().ren, &r);
 
@@ -388,31 +388,21 @@ void
 stylist_h_line::render(style_info specs, const entity& e)
 {
     auto r = lane_bounds(specs);
+    float center_y = r.y + r.h / 2;
 
-    draw_lane_line(specs, r);
-    draw_lane_dots(specs, r);
+    // Lane line
+    auto line_color = palette::teal_breaker[e.id % 5];
+    draw_line(point{ r.x, center_y }, point{ r.x + r.w, center_y }, line_color);
 
-    color text_color{ 255, 255 };
-    auto offset = rect{ r.x, r.y - specs.font_size / 2, std::max(r.w, 100.0f), r.h };
-    render_text_2(specs.font, &text_color, &offset, e.name.c_str(), specs.font_size);
-}
-
-void
-stylist_h_line::draw_lane_line(style_info specs, rect bounds)
-{
-    color line_color{ 255, 255 };
-    float center_y = bounds.y + bounds.h / 2;
-    draw_line(point{ bounds.x, center_y }, point{ bounds.x + bounds.w, center_y }, line_color);
-}
-
-void
-stylist_h_line::draw_lane_dots(style_info specs, rect bounds)
-{
+    // Dots for caps
     color dot_color{ 255, 255 };
-    float center_y = bounds.y + bounds.h / 2;
     float dot_radius = 3.0f;
+    draw_filled_circle(r.x, center_y, dot_radius, dot_color);
+    draw_filled_circle(r.x + r.w, center_y, dot_radius, dot_color);
 
-    draw_filled_circle(bounds.x, center_y, dot_radius, dot_color);
-    draw_filled_circle(bounds.x + bounds.w, center_y, dot_radius, dot_color);
+    // Text
+    auto offset = rect{ r.x, r.y - specs.font_size / 2, std::max(r.w, 100.0f), r.h };
+    render_text_2(specs.font, &colors::baby_powder, &offset, e.name.c_str(), specs.font_size);
 }
+
 } // namespace tls

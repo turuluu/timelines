@@ -3,18 +3,18 @@
 - [ ] known bugs
   - [ ] ++ fix lane allocating for long arching entities (example_big.csv)
   - [ ]    zoom gets stuck at extremes
-- [ ] UI
-  - [▣] controls
+- [◤] UI
+  - [◤] controls
     - [▣]    zoom gesture
       - [▣]    it's now mapped to scroll up/down
       - [▣] -- pinch (no-go on SDL2 and wip in SDL3)
-    - [ ] ++ Add arrow keys for movement and +- for zoom
+    - [▣] ++ Add arrow keys for movement and +- for zoom
     - [ ]    "?" for help layer (keys)
     - [ ] +  click on label to center on entity and fix to its interval
-  - [ ] improve distinction of entities and labels
+  - [◤] improve distinction of entities and labels
     - [ ] ++ basic sand grain algo for text positioning
-    - [ ] +  consider colours for the lines and indicators
-    - [ ] +  short intervals label width - min width for labels 
+    - [▣] +  consider colours for the lines and indicators
+    - [▣] +  short intervals label width - min width for labels 
   - [ ] interactive mode "IX"
     - [ ]    UI components (system)
   - [ ] graph/links mode

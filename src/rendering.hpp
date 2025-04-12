@@ -138,9 +138,6 @@ struct stylist_h_line : stylist_base
     rect lane_bounds(style_info bi) override;
     rect text_bounds(style_info bi) override;
     void render(style_info specs, const entity& e) override;
-
-    void draw_lane_line(style_info specs, rect bounds);
-    void draw_lane_dots(style_info specs, rect bounds);
 };
 
 struct rendering_controller
