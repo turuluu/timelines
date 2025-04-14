@@ -334,36 +334,32 @@ stylist_v_line::render(style_info specs, const entity& e)
     auto r = lane_bounds(specs);
 
     // timeline-line
-    draw_lane_line(specs, r);
-    draw_lane_dots(specs, r);
+    auto line_color = palette::broken[e.id % 5];
+    float center_x = r.x + r.w / 2;
+    draw_line(point{ center_x, r.y }, point{ center_x, r.y + r.h }, line_color);
+
+    color dot_color = line_color;
+    float dot_radius = 3.0f;
+
+    draw_filled_circle(center_x, r.y, dot_radius, dot_color);
+    draw_filled_circle(center_x, r.y + r.h, dot_radius, dot_color);
 
     // indicator line connecting text and lane box
+    auto indicator_color = line_color;
+    indicator_color.a = 128;
     draw_line(point{ r.x + r.w / 2 + 1.0f, r.y + specs.font_size / 2 },
               point{ (float)specs.max_dimension + 20, r.y + specs.font_size / 2 },
-              color{ 0x77, 0x77 });
+              indicator_color);
 
     auto rt = text_bounds(specs);
-    color text_color{ 255, 255 };
-    render_text(specs.font, &text_color, &rt, e.name.c_str(), specs.font_size);
+    render_text(specs.font, &colors::night, &rt, e.name.c_str(), specs.font_size);
 }
 
-void
-stylist_v_line::draw_lane_line(style_info specs, rect bounds)
-{
-    color line_color{ 255, 255 };
-    float center_x = bounds.x + bounds.w / 2;
-    draw_line(point{ center_x, bounds.y }, point{ center_x, bounds.y + bounds.h }, line_color);
-}
 
 void
 stylist_v_line::draw_lane_dots(style_info specs, rect bounds)
 {
-    color dot_color{ 255, 255 };
-    float center_x = bounds.x + bounds.w / 2;
-    float dot_radius = 3.0f;
 
-    draw_filled_circle(center_x, bounds.y, dot_radius, dot_color);
-    draw_filled_circle(center_x, bounds.y + bounds.h, dot_radius, dot_color);
 }
 
 rect
