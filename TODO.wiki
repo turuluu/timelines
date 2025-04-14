@@ -1,7 +1,8 @@
 # Backlog
 
-- [ ] known bugs
-  - [ ] ++ fix lane allocating for long arching entities (example_big.csv)
+- [◤] known bugs
+  - [▣] ++ fix lane allocating for long arching entities (example_big.csv)
+  - [ ]  + fix lane count and rename lane_bins container
   - [ ]    zoom gets stuck at extremes
 - [◤] UI
   - [◤] controls

@@ -47,7 +47,7 @@ renderer::lanes_in_interval(interval interval) const
     auto& lanes = controller->core.lanes;
     size_t lanes_count = 0;
     for (auto i = to_index(interval.start); i < to_index(interval.end); ++i)
-        lanes_count = std::max(lanes.interval_bins[i], lanes_count);
+        lanes_count = std::max(lanes.lane_bins[i], lanes_count);
 
     if (lanes_count == 0)
         std::cout << "no entities in time frame..\n";
@@ -66,15 +66,15 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
 
     auto selected_entities = select_from(entities);
 
-    auto max_entities_in_interval = lanes_in_interval(interval);
-    if (max_entities_in_interval == 0)
+    auto lanes_n = lanes_in_interval(interval);
+    if (lanes_n == 0)
         return;
 
     style_info specs;
     specs.font = font;
     specs.font_size = font_size;
     specs.max_dimension = max_dim();
-    specs.dimension = specs.max_dimension / max_entities_in_interval;
+    specs.dimension = specs.max_dimension / lanes_n;
 
     const auto bin_start = to_index(render_start);
     const auto bin_end = to_index(render_end);
@@ -82,7 +82,7 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
     specs.scale = get_scale(bin_len);
 
     clear();
-    std::fill(lanes.begin(), lanes.end(), std::numeric_limits<uint8_t>::max());
+    std::fill(lanes.begin(), lanes.end(), std::bitset<128>());
     draw_grid(rendering_interval, specs.scale);
 
     u8 colour_incr = 255 / entities.size();
@@ -98,7 +98,7 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
         specs.rect_end = to_index(end_bound) - bin_start;
 
         // non const part
-        specs.lane_index = lane_index(max_entities_in_interval, entity_start, entity_end);
+        specs.lane_index = lane_index(lanes_n, entity_start, entity_end);
         specs.color.r = e.get().id * colour_incr;
         specs.color.g = specs.color.g + colour_incr;
 

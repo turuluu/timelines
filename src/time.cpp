@@ -27,18 +27,18 @@ bin_limit(time_point time_point)
     return cosmic::clock::time_point(cosmic::clock::duration(limited));
 }
 
-intervals::~intervals() { utlz::dbg("DTOR ", __PRETTY_FUNCTION__); }
+lanes::~lanes() { utlz::dbg("DTOR ", __PRETTY_FUNCTION__); }
 
 void
-intervals::insert(const entity& e)
+lanes::insert(const entity& e)
 {
     for (auto i = to_index(e.interval.start); i < to_index(e.interval.end); ++i)
-        ++interval_bins[i];
+        ++lane_bins[i];
 }
 
 void
-intervals::clear()
+lanes::clear()
 {
-    std::fill(interval_bins.begin(), interval_bins.end(), 0);
+    std::fill(lane_bins.begin(), lane_bins.end(), 0);
 }
 } // namespace tls

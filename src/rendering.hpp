@@ -55,17 +55,18 @@ struct renderer
         size_t lane = 0;
         for (lane = 0; lane < max_entities_in_interval; ++lane)
         {
-            auto lanes_begin = std::begin(lanes) + to_index(start);
-            auto lanes_end = std::begin(lanes) + to_index(end);
-            if (std::all_of(lanes_begin,
-                            lanes_end,
-                            [&](u8 ui) { return (bool)u8(1 << lane & ui); }))
+            // Find empty lane
+            if (std::all_of(lanes.begin() + to_index(start),
+                            lanes.begin() + to_index(end),
+                            [&lane](const auto& bits) { return !bits[lane]; }))
             {
                 // mark lane
-                auto marked_begin = std::begin(lanes) + to_index(start);
-                auto marked_end = std::begin(lanes) + to_index(end);
-                for (auto vbi = marked_begin; vbi != marked_end; ++vbi)
-                    *vbi = (*vbi) - (1 << lane);
+                for (auto vbi = lanes.begin() + to_index(start);
+                     vbi != lanes.begin() + to_index(end);
+                     ++vbi)
+                    vbi->set(lane);
+
+                // exit "find empty lane" loop
                 break;
             }
         }
@@ -93,7 +94,7 @@ struct renderer
     std::unique_ptr<stylist_base> style;
     rendering_controller* controller;
     interval rendering_interval;
-    std::vector<u8> lanes;
+    std::vector<std::bitset<128>> lanes;
     orientation orientation = orientation::horizontal;
 
     // TODO : refactor to style
@@ -175,7 +176,8 @@ struct rendering_controller
         auto screen_dim = is_horizontal() ? spec::screen_w : -spec::screen_h / 2;
         auto& interval = get_renderer().rendering_interval;
         auto focus_point = screen_dim + (is_horizontal() ? -scroll.mouse_x : scroll.mouse_y);
-        struct interval timescaled = new_scaled_interval(scroll.wheel_delta, interval, focus_point, screen_dim);
+        struct interval timescaled =
+          new_scaled_interval(scroll.wheel_delta, interval, focus_point, screen_dim);
 
         interval = timescaled;
     }

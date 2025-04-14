@@ -99,17 +99,19 @@ new_scaled_interval(const float value,
     const auto end = interval.end;
     const auto mid = clock::interpolate(start, end, mid_point);
 
+    // return { bin_limit(clock::interpolate(mid, start, scale)),
+             // bin_limit(clock::interpolate(mid, end, scale)) };
     return { bin_limit(clock::interpolate(mid, start, scale)),
              bin_limit(clock::interpolate(mid, end, scale)) };
 }
 
 struct entity;
-struct intervals
+struct lanes
 {
-    intervals() = default;
-    ~intervals();
+    lanes() = default;
+    ~lanes();
 
-    std::array<size_t, spec::max_bins> interval_bins{ 0 };
+    std::array<size_t, spec::max_bins> lane_bins{ 0 };
 
     void insert(const entity& e);
     void clear();
