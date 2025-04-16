@@ -99,8 +99,6 @@ new_scaled_interval(const float value,
     const auto end = interval.end;
     const auto mid = clock::interpolate(start, end, mid_point);
 
-    // return { bin_limit(clock::interpolate(mid, start, scale)),
-             // bin_limit(clock::interpolate(mid, end, scale)) };
     return { bin_limit(clock::interpolate(mid, start, scale)),
              bin_limit(clock::interpolate(mid, end, scale)) };
 }

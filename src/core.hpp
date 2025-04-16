@@ -1,6 +1,7 @@
 #pragma once
 
 #include "time.hpp"
+#include <vector>
 
 namespace tls
 {
@@ -17,11 +18,5 @@ struct core
 
     entities data;
     lanes lanes;
-};
-
-struct filter
-{
-    std::function<bool(entity)> predicate;
-    std::vector<int> indices;
 };
 } // namespace tls
