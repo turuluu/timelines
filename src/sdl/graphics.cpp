@@ -1,5 +1,5 @@
 #include "graphics.hpp"
-#include <utlz/all.hpp>
+#include <utlz.hpp>
 #include <filesystem>
 
 #if USE_SDL

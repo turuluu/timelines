@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utlz/all.hpp>
+#include <utlz.hpp>
 
 #include "spec.hpp"
 
