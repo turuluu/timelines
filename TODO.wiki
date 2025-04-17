@@ -11,13 +11,13 @@
       - [▣] -- pinch (no-go on SDL2 and wip in SDL3)
     - [▣] ++ Add arrow keys for movement and +- for zoom
     - [ ]    "?" for help layer (keys)
-    - [ ] +  click on label to center on entity and fix to its interval
   - [◤] improve distinction of entities and labels
     - [ ] ++ basic sand grain algo for text positioning
     - [▣] +  consider colours for the lines and indicators
     - [▣] +  short intervals label width - min width for labels 
   - [ ] interactive mode "IX"
-    - [ ]    UI components (system)
+    - [ ] ++ UI components (system)
+        - [ ] +  click on label to center on entity and fix to its interval
   - [ ] graph/links mode
     - [ ]    entities as nodes
     - [ ]    default edges (parent, before/after, ...)

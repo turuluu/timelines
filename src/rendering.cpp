@@ -5,6 +5,24 @@
 
 namespace tls
 {
+////////////////////////////////////////////////////////////////////////////////
+// rendering_controller
+void
+rendering_controller::move_viewport(mouse_move m, const float multiplier)
+{
+    if (!is_renderer_set())
+        return;
+
+    const auto multiplied_value =
+      is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
+
+    auto& interval = get_renderer().rendering_interval;
+    struct interval adjusted = new_relative_interval(multiplied_value, interval);
+    interval = adjusted;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// renderer
 renderer::renderer()
   : id(gen_id())
   , controller(nullptr)
@@ -108,20 +126,8 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
     SDL_RenderPresent(graphics::get().ren);
 }
 
-void
-rendering_controller::move_viewport(mouse_move m, const float multiplier)
-{
-    if (!is_renderer_set())
-        return;
-
-    const auto multiplied_value =
-      is_horizontal() ? ((float)-m.x) * multiplier : ((float)-m.y) * multiplier;
-
-    auto& interval = get_renderer().rendering_interval;
-    struct interval adjusted = new_relative_interval(multiplied_value, interval);
-    interval = adjusted;
-}
-
+////////////////////////////////////////////////////////////////////////////////
+// stylist_v
 rect
 stylist_v::lane_bounds(style_info s)
 {
@@ -175,6 +181,8 @@ stylist_v::render(style_info specs, const entity& e)
     render_text(specs.font, &text_color, &rt, e.name.c_str(), specs.font_size);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// vertical
 vertical::vertical()
 {
     utlz::dbg("CTOR ", __PRETTY_FUNCTION__);
@@ -203,58 +211,8 @@ vertical::get_scale(double bin_len)
     return spec::screen_w / bin_len;
 }
 
-int
-horizontal::max_dim()
-{
-    return spec::screen_h - 80;
-}
-
-double
-horizontal::get_scale(double bin_len)
-{
-    return spec::screen_w / bin_len;
-}
-
-void
-stylist_h::render(style_info specs, const entity& e)
-{
-    auto r = lane_bounds(specs);
-
-    // fill
-    SDL_SetRenderDrawColor(graphics::get().ren,
-                           0x9F - (specs.color.r * 0.5f),
-                           0x90 + (0xFF - specs.color.g) * 0.2f,
-                           0xFF - (specs.color.b * 0.8f),
-                           0x70);
-    SDL_RenderFillRect(graphics::get().ren, &r);
-
-    // outline
-    SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
-    SDL_RenderRect(graphics::get().ren, &r);
-
-    color text_color{ 255, 255 };
-    auto offset = rect{ r.x, r.y - specs.font_size / 2, r.w, r.h };
-    render_text_2(specs.font, &text_color, &offset, e.name.c_str(), specs.font_size);
-}
-
-rect
-stylist_h::lane_bounds(style_info s)
-{
-    rect r;
-    r.x = s.rect_start * s.scale;
-    r.y = 10 + (s.dimension * s.lane_index);
-    r.w = (s.rect_end - s.rect_start) * s.scale;
-    r.h = s.dimension;
-
-    return r;
-}
-
-rect
-stylist_h::text_bounds(style_info bi)
-{
-    return {};
-}
-
+////////////////////////////////////////////////////////////////////////////////
+// horizontal
 horizontal::horizontal()
 {
     utlz::dbg("CTOR ", __PRETTY_FUNCTION__);
@@ -306,6 +264,62 @@ horizontal::draw_grid(interval interval, const double scale_x) const
     }
 }
 
+int
+horizontal::max_dim()
+{
+    return spec::screen_h - 80;
+}
+
+double
+horizontal::get_scale(double bin_len)
+{
+    return spec::screen_w / bin_len;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// stylist_h
+void
+stylist_h::render(style_info specs, const entity& e)
+{
+    auto r = lane_bounds(specs);
+
+    // fill
+    SDL_SetRenderDrawColor(graphics::get().ren,
+                           0x9F - (specs.color.r * 0.5f),
+                           0x90 + (0xFF - specs.color.g) * 0.2f,
+                           0xFF - (specs.color.b * 0.8f),
+                           0x70);
+    SDL_RenderFillRect(graphics::get().ren, &r);
+
+    // outline
+    SDL_SetRenderDrawColor(graphics::get().ren, 0xFF, 0xFF, 0xFF, 0x20);
+    SDL_RenderRect(graphics::get().ren, &r);
+
+    color text_color{ 255, 255 };
+    auto offset = rect{ r.x, r.y - specs.font_size / 2, r.w, r.h };
+    render_text_2(specs.font, &text_color, &offset, e.name.c_str(), specs.font_size);
+}
+
+rect
+stylist_h::lane_bounds(style_info s)
+{
+    rect r;
+    r.x = s.rect_start * s.scale;
+    r.y = 10 + (s.dimension * s.lane_index);
+    r.w = (s.rect_end - s.rect_start) * s.scale;
+    r.h = s.dimension;
+
+    return r;
+}
+
+rect
+stylist_h::text_bounds(style_info bi)
+{
+    return {};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// stylist_v_line
 rect
 stylist_v_line::lane_bounds(style_info s)
 {
@@ -362,6 +376,8 @@ stylist_v_line::draw_lane_dots(style_info specs, rect bounds)
 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// stylist_h_line
 rect
 stylist_h_line::lane_bounds(style_info bi)
 {
