@@ -38,15 +38,24 @@ struct graphics
     SDL_Texture* bg;
 };
 
+struct scoped_graphics
+{
+    scoped_graphics(int screen_w, int screen_h);
+    ~scoped_graphics();
+
+    void init(int screen_w, int screen_h);
+    void destroy();
+};
+
 void clear();
 void destroy_font(font* font);
 font* get_title_font(int font_size);
 
-void render_text(font* font, const color* color, rect* msg_bounds, const char* text, int ptsize = 40);
+void render_text(font* font, color color, rect msg_bounds, const char* text, int ptsize = 40);
 
 void render_text_2(font* font,
-                   const color* color,
-                   rect* text_bounds,
+                   color color,
+                   rect text_bounds,
                    const char* text,
                    int ptsize = 40);
 
@@ -58,14 +67,7 @@ void draw_line(point p0, point p1, color color, float width = 1.0f);
 void draw_filled_triangle(point p0, point p1, point p2, color color);
 void draw_triangle(point p0, point p1, point p2, color color, float width = 1.0f);
 
-struct scoped_graphics
-{
-    scoped_graphics(int screen_w, int screen_h);
-    ~scoped_graphics();
 
-    void init(int screen_w, int screen_h);
-    void destroy();
-};
 }
 
 } // namespace tls

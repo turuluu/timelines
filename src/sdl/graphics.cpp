@@ -47,7 +47,12 @@ destroy_font(TTF_Font* font)
         TTF_CloseFont(font);
 }
 
-void render_text(font* font, const color* color, rect* msg_bounds, const char* text, int ptsize)
+SDL_Color adapt(const color tls_color)
+{
+    return {tls_color.r, tls_color.g, tls_color.b, tls_color.a};
+}
+
+void render_text(font* font, const color color, rect msg_bounds, const char* text, int ptsize)
 {
     if (font == nullptr || text == nullptr)
     {
@@ -55,7 +60,7 @@ void render_text(font* font, const color* color, rect* msg_bounds, const char* t
         return;
     }
 
-    SDL_Color sdl_color{ color->r, color->g, color->b, color->a };
+    SDL_Color sdl_color = adapt(color);
     SDL_Surface* msg_surface;
     if (!(msg_surface = TTF_RenderText_Blended(font, text, strlen(text), sdl_color)))
     {
@@ -69,11 +74,11 @@ void render_text(font* font, const color* color, rect* msg_bounds, const char* t
 
     SDL_FRect msg_box;
     int margins = -1 * pt_size_smooth;
-    int offset_msg_bounds_w = msg_bounds->w + (2 * margins);
+    int offset_msg_bounds_w = msg_bounds.w + (2 * margins);
     msg_box.w = std::min(cstrW, offset_msg_bounds_w);
     msg_box.h = pt_size_smooth;
-    msg_box.x = msg_bounds->x - margins;
-    msg_box.y = msg_bounds->y + std::max((float)msg_bounds->h - msg_box.h, 0.0f) / 2;
+    msg_box.x = msg_bounds.x - margins;
+    msg_box.y = msg_bounds.y + std::max((float)msg_bounds.h - msg_box.h, 0.0f) / 2;
     SDL_Texture* msg_texture = SDL_CreateTextureFromSurface(graphics::get().ren, msg_surface);
     SDL_RenderTexture(graphics::get().ren, msg_texture, NULL, &msg_box);
 
@@ -81,7 +86,7 @@ void render_text(font* font, const color* color, rect* msg_bounds, const char* t
     SDL_DestroySurface(msg_surface);
 }
 
-void render_text_2(font* font, const color* color, rect* text_bounds, const char* text, int ptsize)
+void render_text_2(font* font, const color color, rect text_bounds, const char* text, int ptsize)
 {
     if (font == nullptr || text == nullptr)
     {
@@ -89,7 +94,7 @@ void render_text_2(font* font, const color* color, rect* text_bounds, const char
         return;
     }
 
-    SDL_Color sdl_color{ color->r, color->g, color->b, color->a };
+    SDL_Color sdl_color = adapt(color);
     SDL_Surface* msg_surface;
     if (!(msg_surface = TTF_RenderText_Blended(font, text, strlen(text), sdl_color)))
     {
@@ -101,13 +106,13 @@ void render_text_2(font* font, const color* color, rect* text_bounds, const char
     const int cstr_l = utlz::length(text);
     const int cstr_w = cstr_l * (pt_size_smooth / 2);
 
-    SDL_FRect text_box;
     int margins = 2 * pt_size_smooth;
-    int offset_bounds_w = text_bounds->w + (2 * margins);
+    int offset_bounds_w = text_bounds.w + (2 * margins);
+    SDL_FRect text_box;
+    text_box.x = text_bounds.x - margins + std::max(offset_bounds_w - cstr_w, 0) / 2;
+    text_box.y = text_bounds.y + std::max((float)text_bounds.h - text_box.h, 0.0f) / 2;
     text_box.w = std::min(cstr_w, offset_bounds_w);
     text_box.h = pt_size_smooth;
-    text_box.x = text_bounds->x - margins + std::max(offset_bounds_w - cstr_w, 0) / 2;
-    text_box.y = text_bounds->y + std::max((float)text_bounds->h - text_box.h, 0.0f) / 2;
     SDL_Texture* msg_texture = SDL_CreateTextureFromSurface(graphics::get().ren, msg_surface);
     SDL_RenderTexture(graphics::get().ren, msg_texture, NULL, &text_box);
 
@@ -160,29 +165,29 @@ void draw_filled_circle(float x, float y, float radius, const color color) {
     SDL_SetRenderDrawColor(graphics::get().ren, color.r, color.g, color.b, color.a);
     
     // Using the midpoint circle algorithm with fill
-    float offsetx = 0;
-    float offsety = radius;
+    float offset_x = 0;
+    float offset_y = radius;
     float d = radius - 1;
     
-    while (offsety >= offsetx) {
+    while (offset_y >= offset_x) {
         // fill
-        SDL_RenderLine(graphics::get().ren, x - offsety, y + offsetx, x + offsety, y + offsetx);
-        SDL_RenderLine(graphics::get().ren, x - offsety, y - offsetx, x + offsety, y - offsetx);
-        SDL_RenderLine(graphics::get().ren, x - offsetx, y + offsety, x + offsetx, y + offsety);
-        SDL_RenderLine(graphics::get().ren, x - offsetx, y - offsety, x + offsetx, y - offsety);
+        SDL_RenderLine(graphics::get().ren, x - offset_y, y + offset_x, x + offset_y, y + offset_x);
+        SDL_RenderLine(graphics::get().ren, x - offset_y, y - offset_x, x + offset_y, y - offset_x);
+        SDL_RenderLine(graphics::get().ren, x - offset_x, y + offset_y, x + offset_x, y + offset_y);
+        SDL_RenderLine(graphics::get().ren, x - offset_x, y - offset_y, x + offset_x, y - offset_y);
         
-        if (d >= 2 * offsetx) {
-            d -= 2 * offsetx + 1;
-            offsetx += 1;
+        if (d >= 2 * offset_x) {
+            d -= 2 * offset_x + 1;
+            offset_x += 1;
         }
-        else if (d < 2 * (radius - offsety)) {
-            d += 2 * offsety - 1;
-            offsety -= 1;
+        else if (d < 2 * (radius - offset_y)) {
+            d += 2 * offset_y - 1;
+            offset_y -= 1;
         }
         else {
-            d += 2 * (offsety - offsetx - 1);
-            offsety -= 1;
-            offsetx += 1;
+            d += 2 * (offset_y - offset_x - 1);
+            offset_y -= 1;
+            offset_x += 1;
         }
     }
 }
@@ -191,32 +196,32 @@ void draw_circle(float x, float y, float radius, const color color) {
     SDL_SetRenderDrawColor(graphics::get().ren, color.r, color.g, color.b, color.a);
     
     // Using the midpoint circle algorithm
-    float offsetx = 0;
-    float offsety = radius;
+    float offset_x = 0;
+    float offset_y = radius;
     float d = radius - 1;
     
-    while (offsety >= offsetx) {
-        SDL_RenderPoint(graphics::get().ren, x + offsetx, y + offsety);
-        SDL_RenderPoint(graphics::get().ren, x + offsetx, y - offsety);
-        SDL_RenderPoint(graphics::get().ren, x - offsetx, y + offsety);
-        SDL_RenderPoint(graphics::get().ren, x - offsetx, y - offsety);
-        SDL_RenderPoint(graphics::get().ren, x + offsety, y + offsetx);
-        SDL_RenderPoint(graphics::get().ren, x + offsety, y - offsetx);
-        SDL_RenderPoint(graphics::get().ren, x - offsety, y + offsetx);
-        SDL_RenderPoint(graphics::get().ren, x - offsety, y - offsetx);
+    while (offset_y >= offset_x) {
+        SDL_RenderPoint(graphics::get().ren, x + offset_x, y + offset_y);
+        SDL_RenderPoint(graphics::get().ren, x + offset_x, y - offset_y);
+        SDL_RenderPoint(graphics::get().ren, x - offset_x, y + offset_y);
+        SDL_RenderPoint(graphics::get().ren, x - offset_x, y - offset_y);
+        SDL_RenderPoint(graphics::get().ren, x + offset_y, y + offset_x);
+        SDL_RenderPoint(graphics::get().ren, x + offset_y, y - offset_x);
+        SDL_RenderPoint(graphics::get().ren, x - offset_y, y + offset_x);
+        SDL_RenderPoint(graphics::get().ren, x - offset_y, y - offset_x);
         
-        if (d >= 2 * offsetx) {
-            d -= 2 * offsetx + 1;
-            offsetx += 1;
+        if (d >= 2 * offset_x) {
+            d -= 2 * offset_x + 1;
+            offset_x += 1;
         }
-        else if (d < 2 * (radius - offsety)) {
-            d += 2 * offsety - 1;
-            offsety -= 1;
+        else if (d < 2 * (radius - offset_y)) {
+            d += 2 * offset_y - 1;
+            offset_y -= 1;
         }
         else {
-            d += 2 * (offsety - offsetx - 1);
-            offsety -= 1;
-            offsetx += 1;
+            d += 2 * (offset_y - offset_x - 1);
+            offset_y -= 1;
+            offset_x += 1;
         }
     }
 }
@@ -245,14 +250,14 @@ void draw_filled_triangle(point p0, point p1, point p2, color color) {
     float x_start = p0.x;
     float x_end = p0.x;
     
-    // Top half of triangle
+    // Top half
     for (float y = p0.y; y <= p1.y; y++) {
         SDL_RenderLine(graphics::get().ren, x_start, y, x_end, y);
         x_start += slope1;
         x_end += slope2;
     }
     
-    // Bottom half of triangle
+    // Bottom half
     x_start = p1.x;
     for (float y = p1.y; y <= p2.y; y++) {
         SDL_RenderLine(graphics::get().ren, x_start, y, x_end, y);
