@@ -52,7 +52,7 @@ SDL_Color adapt(const color tls_color)
     return {tls_color.r, tls_color.g, tls_color.b, tls_color.a};
 }
 
-void render_text(font* font, const color color, rect msg_bounds, const char* text, int ptsize)
+void render_text_v(font* font, const color color, rect msg_bounds, const char* text, int ptsize)
 {
     if (font == nullptr || text == nullptr)
     {
@@ -86,7 +86,7 @@ void render_text(font* font, const color color, rect msg_bounds, const char* tex
     SDL_DestroySurface(msg_surface);
 }
 
-void render_text_2(font* font, const color color, rect text_bounds, const char* text, int ptsize)
+void render_text_h(font* font, const color color, rect text_bounds, const char* text, int ptsize)
 {
     if (font == nullptr || text == nullptr)
     {

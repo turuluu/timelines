@@ -51,9 +51,9 @@ void clear();
 void destroy_font(font* font);
 font* get_title_font(int font_size);
 
-void render_text(font* font, color color, rect msg_bounds, const char* text, int ptsize = 40);
+void render_text_v(font* font, color color, rect msg_bounds, const char* text, int ptsize = 40);
 
-void render_text_2(font* font,
+void render_text_h(font* font,
                    color color,
                    rect text_bounds,
                    const char* text,

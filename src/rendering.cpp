@@ -295,7 +295,7 @@ stylist_v::render(style_info specs, const entity& e)
 
     auto rt = text_bounds(specs);
     color text_color{ 255, 255 };
-    render_text(specs.font, text_color, rt, e.name.c_str(), specs.font_size);
+    render_text_v(specs.font, text_color, rt, e.name.c_str(), specs.font_size);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -372,7 +372,7 @@ horizontal::draw_grid(interval interval, const double scale_x) const
             grid_label_bounds.w = label_w;
             grid_label_bounds.h = label_h;
 
-            render_text_2(font,
+            render_text_h(font,
                           colors::federal_blue,
                           grid_label_bounds,
                           std::to_string(i - (int)zero_point).c_str(),
@@ -414,7 +414,7 @@ stylist_h::render(style_info specs, const entity& e)
 
     color text_color{ 255, 255 };
     auto offset = rect{ r.x, r.y - specs.font_size / 2, r.w, r.h };
-    render_text_2(specs.font, text_color, offset, e.name.c_str(), specs.font_size);
+    render_text_h(specs.font, text_color, offset, e.name.c_str(), specs.font_size);
 }
 
 rect
@@ -483,7 +483,7 @@ stylist_v_line::render(style_info specs, const entity& e)
               indicator_color);
 
     auto rt = text_bounds(specs);
-    render_text(specs.font, colors::night, rt, e.name.c_str(), specs.font_size);
+    render_text_v(specs.font, colors::night, rt, e.name.c_str(), specs.font_size);
 }
 
 void
@@ -528,7 +528,7 @@ stylist_h_line::render(style_info specs, const entity& e)
 
     // Text
     auto offset = rect{ r.x, r.y - specs.font_size / 2, std::max(r.w, 100.0f), r.h };
-    render_text_2(specs.font, colors::night, offset, e.name.c_str(), specs.font_size);
+    render_text_h(specs.font, colors::night, offset, e.name.c_str(), specs.font_size);
 }
 
 } // namespace tls
