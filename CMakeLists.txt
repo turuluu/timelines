@@ -72,5 +72,11 @@ add_library(${PROJECT_NAME}_lib
         ${DETAILS_SRC_LIST}
         ${HEADERS}
 )
+target_include_directories(
+        ${PROJECT_NAME}_lib
+        PUBLIC
+        ${vcpkg_installed_dir}/include
+        deps
+)
 target_link_libraries(${PROJECT_NAME}_lib ${dependencies})
 add_subdirectory(tests)

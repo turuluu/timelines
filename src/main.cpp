@@ -12,7 +12,7 @@ main(int argc, char** argv)
 
     file::path csv_path;
     if (argc < 2)
-        csv_path = file::get_project_path() / "examples/example_scientists.csv";
+        csv_path = file::get_project_path() / "examples/example.csv";
     else
         csv_path = argv[1];
     if (!file::is_path_valid(csv_path))

@@ -33,60 +33,33 @@ struct renderer
 
     renderer();
 
+    virtual ~renderer();
+
+    enum class orientation : int
+       {
+           horizontal = 1,
+           vertical = 2
+       };
+
     static int gen_id()
     {
         static int id = 0;
         return id++;
     }
 
-    enum class orientation : int
-    {
-        horizontal = 1,
-        vertical = 2
-    };
-
     std::vector<std::reference_wrapper<const entity>> select_from(
       const core::entities& entities) const;
 
     size_t lanes_in_interval(interval interval) const;
-
-    size_t lane_index(size_t max_entities_in_interval, time_point start, time_point end)
-    {
-        size_t lane = 0;
-        for (lane = 0; lane < max_entities_in_interval; ++lane)
-        {
-            // Find empty lane
-            if (std::all_of(lanes.begin() + to_index(start),
-                            lanes.begin() + to_index(end),
-                            [&lane](const auto& bits) { return !bits[lane]; }))
-            {
-                // mark lane
-                for (auto vbi = lanes.begin() + to_index(start);
-                     vbi != lanes.begin() + to_index(end);
-                     ++vbi)
-                    vbi->set(lane);
-
-                // exit "find empty lane" loop
-                break;
-            }
-        }
-        return lane;
-    }
-
-    virtual ~renderer();
-
+    size_t lane_index(size_t max_entities_in_interval, time_point start, time_point end);
     void set_controller(rendering_controller* controller);
 
     virtual int max_dim() = 0;
-
     virtual double get_scale(double bin_len) = 0;
-
     virtual void draw_grid(interval interval, const double scale_x) const {};
-
     virtual void render_range(std::vector<entity>& _entities, interval interval);
 
     friend bool operator==(const renderer& lhs, const renderer& rhs) { return lhs.id == rhs.id; }
-
     friend bool operator!=(const renderer& lhs, const renderer& rhs) { return !(lhs == rhs); }
 
     // TODO : consider other options, state in interface..
@@ -143,80 +116,32 @@ struct stylist_h_line : stylist_base
 
 struct rendering_controller
 {
-    explicit rendering_controller(core& core)
-      : core(core)
-    {
-    }
+    explicit rendering_controller(core& core);
 
-    bool is_horizontal() const
-    {
-        return get_renderer().orientation == renderer::orientation::horizontal;
-    }
-    bool is_vertical() const
-    {
-        return get_renderer().orientation == renderer::orientation::vertical;
-    }
-    void set_refresh_rate(size_t refresh_rate) { frame_interval_ms = 1000 / refresh_rate; }
-    void wait_until_next_frame() const
-    {
-        auto time_delta_ms = timer->get_ms_since_start();
-        auto elapsed_ms = time_delta_ms - last_frame_ms;
-        if (elapsed_ms >= frame_interval_ms)
-            return;
-        else
-            timer->wait_ms(frame_interval_ms - elapsed_ms);
-    }
+    bool is_horizontal() const;
 
-    void zoom(wheel_move scroll)
-    {
-        if (renderer_idx < 0)
-            return;
+    bool is_vertical() const;
 
-        // TODO : zoom for the vertical layout / Now it's a normal scroll
-        auto screen_dim = is_horizontal() ? spec::screen_w : -spec::screen_h / 2;
-        auto& interval = get_renderer().rendering_interval;
-        auto focus_point = screen_dim + (is_horizontal() ? -scroll.mouse_x : scroll.mouse_y);
-        struct interval timescaled =
-          new_scaled_interval(scroll.wheel_delta, interval, focus_point, screen_dim);
+    void set_refresh_rate(size_t refresh_rate);
+    void wait_until_next_frame() const;
 
-        interval = timescaled;
-    }
+    void zoom(wheel_move scroll);
 
-    void render() { get_renderer().render_range(core.data, get_renderer().rendering_interval); }
+    void render();
 
     void move_viewport(mouse_move m, const float multiplier = 1.5f);
 
-    bool is_renderer_set() const { return renderer_idx >= 0; }
+    bool is_renderer_set() const;
 
-    void toggle_renderer()
-    {
-        toggle = !toggle;
-        renderer_idx = (int)toggle;
-        get_renderer().render_range(core.data, renderer_container[!toggle]->rendering_interval);
-    }
+    void toggle_renderer();
 
     void button_right_drag() {}
 
-    void set_current(renderer& renderer_ref)
-    {
-        int i = 0;
-        while (i < renderer_container.size() && *renderer_container[i] != renderer_ref)
-            ++i;
+    void set_current(renderer& renderer_ref);
 
-        assert(i < renderer_container.size());
-        renderer_idx = i;
-    }
+    const renderer& get_renderer() const;
 
-    const renderer& get_renderer() const
-    {
-        assert(is_renderer_set());
-        return *renderer_container[renderer_idx];
-    }
-    renderer& get_renderer()
-    {
-        assert(is_renderer_set());
-        return *renderer_container[renderer_idx];
-    }
+    renderer& get_renderer();
 
     template<typename T>
     T& make()

@@ -7,6 +7,101 @@ namespace tls
 {
 ////////////////////////////////////////////////////////////////////////////////
 // rendering_controller
+
+rendering_controller::rendering_controller(struct core& core)
+  : core(core)
+{
+}
+
+bool
+rendering_controller::is_horizontal() const
+{
+    return get_renderer().orientation == renderer::orientation::horizontal;
+}
+
+bool
+rendering_controller::is_vertical() const
+{
+    return get_renderer().orientation == renderer::orientation::vertical;
+}
+
+void rendering_controller::set_refresh_rate(size_t refresh_rate)
+{
+    frame_interval_ms = 1000 / refresh_rate;
+}
+
+void
+rendering_controller::wait_until_next_frame() const
+{
+    auto time_delta_ms = timer->get_ms_since_start();
+    auto elapsed_ms = time_delta_ms - last_frame_ms;
+    if (elapsed_ms >= frame_interval_ms)
+        return;
+    else
+        timer->wait_ms(frame_interval_ms - elapsed_ms);
+}
+
+void
+rendering_controller::zoom(wheel_move scroll)
+{
+    if (renderer_idx < 0)
+        return;
+
+    // TODO : zoom for the vertical layout / Now it's a normal scroll
+    auto screen_dim = is_horizontal() ? spec::screen_w : -spec::screen_h / 2;
+    auto& interval = get_renderer().rendering_interval;
+    auto focus_point = screen_dim + (is_horizontal() ? -scroll.mouse_x : scroll.mouse_y);
+    struct interval timescaled =
+      new_scaled_interval(scroll.wheel_delta, interval, focus_point, screen_dim);
+
+    interval = timescaled;
+}
+
+void
+rendering_controller::render()
+{
+    get_renderer().render_range(core.data, get_renderer().rendering_interval);
+}
+
+bool
+rendering_controller::is_renderer_set() const
+{
+    return renderer_idx >= 0;
+}
+
+void
+rendering_controller::toggle_renderer()
+{
+    toggle = !toggle;
+    renderer_idx = (int)toggle;
+    get_renderer().render_range(core.data, renderer_container[!toggle]->rendering_interval);
+}
+
+void
+rendering_controller::set_current(renderer& renderer_ref)
+{
+    int i = 0;
+    while (i < renderer_container.size() && *renderer_container[i] != renderer_ref)
+        ++i;
+
+    assert(i < renderer_container.size());
+    renderer_idx = i;
+}
+
+const renderer&
+rendering_controller::get_renderer() const
+{
+    assert(is_renderer_set());
+    return *renderer_container[renderer_idx];
+}
+
+renderer&
+rendering_controller::get_renderer()
+{
+    assert(is_renderer_set());
+    return *renderer_container[renderer_idx];
+}
+
 void
 rendering_controller::move_viewport(mouse_move m, const float multiplier)
 {
@@ -73,6 +168,28 @@ renderer::lanes_in_interval(interval interval) const
     return lanes_count;
 }
 
+size_t
+renderer::lane_index(size_t max_entities_in_interval, time_point start, time_point end)
+{
+    size_t lane = 0;
+    for (lane = 0; lane < max_entities_in_interval; ++lane)
+    {
+        // Find empty lane
+        if (std::all_of(lanes.begin() + to_index(start),
+                        lanes.begin() + to_index(end),
+                        [&lane](const auto& bits) { return !bits[lane]; }))
+        {
+            // mark lane
+            for (auto vbi = lanes.begin() + to_index(start); vbi != lanes.begin() + to_index(end);
+                 ++vbi)
+                vbi->set(lane);
+
+            // exit "find empty lane" loop
+            break;
+        }
+    }
+    return lane;
+}
 void
 renderer::render_range(std::vector<entity>& entities, interval interval)
 {
@@ -369,11 +486,9 @@ stylist_v_line::render(style_info specs, const entity& e)
     render_text(specs.font, colors::night, rt, e.name.c_str(), specs.font_size);
 }
 
-
 void
 stylist_v_line::draw_lane_dots(style_info specs, rect bounds)
 {
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
