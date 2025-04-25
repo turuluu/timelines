@@ -85,6 +85,18 @@ struct events
     std::deque<wheel_move> zoom;
 };
 
+using sz = std::size_t;
+template <typename T>
+struct storage
+{
+    virtual ~storage() = default;
+    virtual sz size() = 0;
+    bool empty() { return size() == 0; }
+    virtual T& at(sz) = 0;
+};
+
+
+
 struct event_handler_ifc
 {
     virtual ~event_handler_ifc() { printf("Event Handler DTOR\n"); }

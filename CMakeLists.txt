@@ -19,7 +19,8 @@ set(HEADERS
         src/sdl/graphics.cpp
         src/backend.hpp
         src/time.cpp
-        src/files.hpp)
+        src/files.hpp
+        src/ui/base.hpp)
 
 # Sources
 aux_source_directory(src SRC_LIST)
