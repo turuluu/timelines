@@ -15,25 +15,26 @@ namespace ui
 struct context
 {
     rect bounds;
+    mouse_move mouse;
 };
 
 // component "does"
-struct component_ifc
+struct component
 {
-    component() {}
     virtual ~component() = default;
-    virtual bool click(const context& ctx) {};
-    virtual bool cursor(const context& ctx) {};
-    virtual bool hit_test(const context& ctx, point p) {};
+    virtual std::string_view name() const = 0;
+    virtual bool click(const context& ctx) { return false; };
+    virtual bool cursor(const context& ctx) { return false; };
+    virtual bool hit_test(const context& ctx, point p) { return false; };
     virtual void draw(const context& ctx) {};
     virtual void refresh(const context& ctx) {};
     virtual void layout(const context& ctx) {};
 };
 
-struct component : component_ifc
-{
-    sz id;
-};
+// struct component : component_ifc
+// {
+//     sz id;
+// };
 
 struct handle
 {
@@ -44,12 +45,18 @@ struct handle
 // SoA structure for caching and mapping
 struct base
 {
-    sz add(component&& new_component, context&& ctx)
+    base()
+    {
+        components.reserve(spec::max_components);
+        contexts.reserve(spec::max_components);
+    }
+    template <typename Component>
+    sz add(Component new_component, context&& ctx)
     {
         sz index = 0;
         if (freelist.empty())
         {
-            components.emplace_back(std::move(new_component));
+            components.emplace_back(std::make_unique<Component>(std::move(new_component)));
             contexts.emplace_back(std::move(ctx));
 
             auto& slot = slots.emplace_back(std::move(handle{ slots.size(), 0, true }));
@@ -65,7 +72,7 @@ struct base
             index = slot.index;
 
             slots[index] = std::move(slot);
-            components[index] = std::move(new_component);
+            components[index] = std::make_unique<Component>(std::move(new_component));
             contexts[index] = std::move(ctx);
         }
 
@@ -75,7 +82,7 @@ struct base
     bool remove(sz id)
     {
         if (id >= size || (!freelist.empty() &&
-                           std::find(freelist.begin(), freelist.end(), id) == freelist.end()))
+                           std::find_if(freelist.begin(), freelist.end(), [&id](struct handle& handle){ return id == handle.index; }) == freelist.end()))
             return false;
 
         auto slot = slots[id];
@@ -88,7 +95,7 @@ struct base
     sz size = 0;
     std::vector<handle> freelist;
     std::vector<handle> slots;
-    std::vector<component> components;
+    std::vector<std::unique_ptr<component>> components;
     std::vector<context> contexts;
 };
 struct composite_base
@@ -104,6 +111,22 @@ struct composite_base
     // ...
 
     base& base;
+};
+
+struct time_indicator : component
+{
+    std::string_view name() const override { return "time_indicator"; }
+    void draw(const context& ctx) override
+    {
+        point start{ coord, bounds.y + bounds.h };
+        point end{ coord, 0 };
+        draw_line(start, end, colors::broken_blue, 3);
+    }
+    void refresh(const context& ctx) override { coord = ctx.mouse.x; }
+    void layout(const context& ctx) override { bounds = ctx.bounds; }
+
+    rect bounds;
+    float coord = 0;
 };
 } // namespace ui
 } // namespace tls

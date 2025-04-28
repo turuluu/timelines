@@ -21,12 +21,25 @@ event_handler::handle_events(events& ui_events)
         {
             case SDL_EVENT_QUIT:
                 break;
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            {
+                mouse_drag = true;
+            }
+            break;
+            case SDL_EVENT_MOUSE_BUTTON_UP:
+            {
+                mouse_drag = false;
+            }
+            break;
             case SDL_EVENT_MOUSE_MOTION:
-                if (e.motion.state == SDL_BUTTON_LEFT)
-                {
-                    ui_events.move.push_back({ e.motion.xrel, e.motion.yrel });
-                }
-                break;
+            {
+                if (mouse_drag)
+                    ui_events.drag.push_back({ e.motion.xrel, e.motion.yrel });
+                else
+                    ui_events.move.push_back({e.motion.x, e.motion.y});
+                    // ui_events.move.push_back({ e.motion.xrel, e.motion.yrel });
+            }
+            break;
             case SDL_EVENT_KEY_DOWN:
                 switch (e.key.key)
                 {
@@ -38,11 +51,11 @@ event_handler::handle_events(events& ui_events)
                         break;
                     case SDLK_A:
                     case SDLK_LEFT:
-                        ui_events.move.push_back({ pan_fixed, pan_fixed });
+                        ui_events.drag.push_back({ pan_fixed, pan_fixed });
                         break;
                     case SDLK_D:
                     case SDLK_RIGHT:
-                        ui_events.move.push_back({ -pan_fixed, pan_fixed });
+                        ui_events.drag.push_back({ -pan_fixed, pan_fixed });
                         break;
                     case SDLK_W:
                     case SDLK_UP:

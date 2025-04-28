@@ -7,6 +7,7 @@
 #include "backend.hpp"
 #include "core.hpp"
 #include "types.hpp"
+#include "ui/base.hpp"
 
 namespace tls
 {
@@ -127,9 +128,11 @@ struct rendering_controller
 
     void zoom(wheel_move scroll);
 
+    void refresh();
     void render();
 
-    void move_viewport(mouse_move m, const float multiplier = 1.5f);
+    void mouse_move(struct mouse_move m, const float multiplier = 1.5f);
+    void move_viewport(struct mouse_move m, const float multiplier = 1.5f);
 
     bool is_renderer_set() const;
 
@@ -151,7 +154,9 @@ struct rendering_controller
         return (T&)*new_renderer;
     }
 
+    struct mouse_move mouse;
     core& core;
+    ui::base base;
     bool toggle{ true };
     size_t frame_interval_ms{};
     size_t last_frame_ms{};

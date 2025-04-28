@@ -81,6 +81,7 @@ struct events
 {
     bool should_quit{ false };
     bool toggle_renderer{ false };
+    std::deque<mouse_move> drag;
     std::deque<mouse_move> move;
     std::deque<wheel_move> zoom;
 };

@@ -14,6 +14,7 @@ struct event_handler : event_handler_ifc
 {
     void handle_events(events& ui_events) override;
     const float wheel_y_mult = 2.0f;
+    bool mouse_drag = false;
 };
 
 struct timer : timer_ifc

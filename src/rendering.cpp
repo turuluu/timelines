@@ -11,6 +11,8 @@ namespace tls
 rendering_controller::rendering_controller(struct core& core)
   : core(core)
 {
+    base.add(ui::time_indicator(), {});
+    utlz::dbg("component: ", base.components[0]->name());
 }
 
 bool
@@ -25,7 +27,8 @@ rendering_controller::is_vertical() const
     return get_renderer().orientation == renderer::orientation::vertical;
 }
 
-void rendering_controller::set_refresh_rate(size_t refresh_rate)
+void
+rendering_controller::set_refresh_rate(size_t refresh_rate)
 {
     frame_interval_ms = 1000 / refresh_rate;
 }
@@ -55,11 +58,35 @@ rendering_controller::zoom(wheel_move scroll)
       new_scaled_interval(scroll.wheel_delta, interval, focus_point, screen_dim);
 
     interval = timescaled;
+
+
+}
+
+void
+rendering_controller::refresh()
+{
+    for (const auto& handle : base.slots)
+    {
+        auto index = handle.index;
+        ui::context ctx = { { 0, 0, spec::screen_w, spec::screen_h }, mouse };
+
+        base.components[index]->layout(ctx);
+    }
+
+    ui::context ctx = { {}, mouse };
+    for (const auto& handle : base.slots)
+        base.components[handle.index]->refresh(ctx);
 }
 
 void
 rendering_controller::render()
 {
+    clear();
+
+    ui::context ctx = { {}, mouse };
+    for (const auto& handle : base.slots)
+        base.components[handle.index]->draw(ctx);
+
     get_renderer().render_range(core.data, get_renderer().rendering_interval);
 }
 
@@ -75,6 +102,8 @@ rendering_controller::toggle_renderer()
     toggle = !toggle;
     renderer_idx = (int)toggle;
     get_renderer().render_range(core.data, renderer_container[!toggle]->rendering_interval);
+
+
 }
 
 void
@@ -103,7 +132,17 @@ rendering_controller::get_renderer()
 }
 
 void
-rendering_controller::move_viewport(mouse_move m, const float multiplier)
+rendering_controller::mouse_move(struct mouse_move m, const float multiplier)
+{
+    if (!is_renderer_set())
+        return;
+
+    mouse.x = m.x;
+    mouse.y = m.y;
+}
+
+void
+rendering_controller::move_viewport(struct mouse_move m, const float multiplier)
 {
     if (!is_renderer_set())
         return;
@@ -216,7 +255,6 @@ renderer::render_range(std::vector<entity>& entities, interval interval)
     const auto bin_len = utlz::limit<int>(0, spec::max_bins, bin_end - bin_start);
     specs.scale = get_scale(bin_len);
 
-    clear();
     std::fill(lanes.begin(), lanes.end(), std::bitset<128>());
     draw_grid(rendering_interval, specs.scale);
 

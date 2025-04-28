@@ -37,12 +37,22 @@ application::process_events()
     mouse_move mouse_move_delta = { 0, 0 };
     while (!events.move.empty())
     {
-        mouse_move_delta.x += events.move.back().x;
-        mouse_move_delta.y += events.move.back().y;
+        mouse_move_delta.x = events.move.back().x;
+        mouse_move_delta.y = events.move.back().y;
         events.move.pop_back();
     }
     if (mouse_move_delta.x != 0 || mouse_move_delta.y != 0)
-        ui->move_viewport(mouse_move_delta);
+        ui->mouse_move(mouse_move_delta);
+
+    mouse_move mouse_drag_delta = { 0, 0 };
+    while (!events.drag.empty())
+    {
+        mouse_drag_delta.x += events.drag.back().x;
+        mouse_drag_delta.y += events.drag.back().y;
+        events.drag.pop_back();
+    }
+    if (mouse_drag_delta.x != 0 || mouse_drag_delta.y != 0)
+        ui->move_viewport(mouse_drag_delta);
 }
 
 void
@@ -54,6 +64,7 @@ application::loop()
         ui->wait_until_next_frame();
         event_handler->handle_events(events);
         process_events();
+        ui->refresh();
         ui->render();
         ui->last_frame_ms = ui->timer->get_ms_since_start();
     }
