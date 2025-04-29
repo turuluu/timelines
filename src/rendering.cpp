@@ -84,7 +84,7 @@ gui::render()
 {
     clear();
 
-    ui::context ctx { {}, mouse, this };
+    ui::context ctx { {0, 0, spec::screen_w, spec::screen_h}, mouse, this };
     for (const auto& handle : base.slots)
         base.components[handle.index]->draw(ctx);
 
