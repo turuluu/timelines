@@ -28,7 +28,7 @@ main(int argc, char** argv)
     scoped_graphics sc_g(spec::screen_w, spec::screen_h);
 
     application app(core);
-    auto& ui = app.make<rendering_controller>(core);
+    auto& ui = app.make<gui>(core);
     {
         auto start = clock::from_iso(-430);
         auto end = clock::from_iso(0);

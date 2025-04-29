@@ -20,17 +20,20 @@ set(HEADERS
         src/backend.hpp
         src/time.cpp
         src/files.hpp
-        src/ui/base.hpp)
+        src/ui/base.hpp
+        src/ui/components.hpp)
 
 # Sources
 aux_source_directory(src SRC_LIST)
 aux_source_directory(src/sdl DETAILS_SRC_LIST)
+aux_source_directory(src/ui UI_SRC_LIST)
 
 add_compile_definitions(USE_SDL=1)
 add_compile_definitions(CMAKE_ROOT=\"${CMAKE_CURRENT_SOURCE_DIR}\")
 add_executable(${PROJECT_NAME}
         ${SRC_LIST}
         ${DETAILS_SRC_LIST}
+        ${UI_SRC_LIST}
 )
 add_subdirectory(deps/utlz)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)

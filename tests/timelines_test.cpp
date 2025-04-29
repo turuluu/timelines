@@ -33,7 +33,7 @@ TEST_CASE("select")
     core.add_entity("Philip II of Macedon", Y(-382), Y(-336));
     core.add_entity("Alexander the Great", Y(-356), Y(-323));
     scoped_graphics gfx(100, 100);
-    rendering_controller rc(core);
+    gui rc(core);
     auto& v = rc.make<vertical>();
     CHECK_EQ(2, v.lanes_in_interval({Y(-400), Y(0)}));
     CHECK_EQ(1, v.lanes_in_interval({Y(-356), Y(-300)}));

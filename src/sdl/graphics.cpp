@@ -51,8 +51,7 @@ SDL_Color adapt(const color tls_color)
 {
     return {tls_color.r, tls_color.g, tls_color.b, tls_color.a};
 }
-
-void render_text_v(font* font, const color color, rect msg_bounds, const char* text, int ptsize)
+void draw_text(font* font, const color color, rect bounds, const char* text)
 {
     if (font == nullptr || text == nullptr)
     {
@@ -61,46 +60,39 @@ void render_text_v(font* font, const color color, rect msg_bounds, const char* t
     }
 
     SDL_Color sdl_color = adapt(color);
-    SDL_Surface* msg_surface;
-    if (!(msg_surface = TTF_RenderText_Blended(font, text, strlen(text), sdl_color)))
+    SDL_Surface* surface;
+    if (!(surface = TTF_RenderText_Blended(font, text, strlen(text), sdl_color)))
     {
         std::cout << __PRETTY_FUNCTION__ << ": " << SDL_GetError() << "\n";
         return;
     }
 
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(graphics::get().ren, surface);
+    SDL_RenderTexture(graphics::get().ren, texture, NULL, &bounds);
+
+    SDL_DestroyTexture(texture);
+    SDL_DestroySurface(surface);
+}
+
+void render_text_v(font* font, const color color, rect text_bounds, const char* text, int ptsize)
+{
     const int pt_size_smooth = ptsize / 2;
     const int cstrL = utlz::length(text);
     const int cstrW = cstrL * (pt_size_smooth / 2);
 
-    SDL_FRect msg_box;
+    SDL_FRect text_box;
     int margins = -1 * pt_size_smooth;
-    int offset_msg_bounds_w = msg_bounds.w + (2 * margins);
-    msg_box.w = std::min(cstrW, offset_msg_bounds_w);
-    msg_box.h = pt_size_smooth;
-    msg_box.x = msg_bounds.x - margins;
-    msg_box.y = msg_bounds.y + std::max((float)msg_bounds.h - msg_box.h, 0.0f) / 2;
-    SDL_Texture* msg_texture = SDL_CreateTextureFromSurface(graphics::get().ren, msg_surface);
-    SDL_RenderTexture(graphics::get().ren, msg_texture, NULL, &msg_box);
+    int offset_msg_bounds_w = text_bounds.w + (2 * margins);
+    text_box.w = std::min(cstrW, offset_msg_bounds_w);
+    text_box.h = pt_size_smooth;
+    text_box.x = text_bounds.x - margins;
+    text_box.y = text_bounds.y + std::max((float)text_bounds.h - text_box.h, 0.0f) / 2;
 
-    SDL_DestroyTexture(msg_texture);
-    SDL_DestroySurface(msg_surface);
+    draw_text(font, color, text_box, text);
 }
 
 void render_text_h(font* font, const color color, rect text_bounds, const char* text, int ptsize)
 {
-    if (font == nullptr || text == nullptr)
-    {
-        std::cout << "font was null. Exiting text rendering..";
-        return;
-    }
-
-    SDL_Color sdl_color = adapt(color);
-    SDL_Surface* msg_surface;
-    if (!(msg_surface = TTF_RenderText_Blended(font, text, strlen(text), sdl_color)))
-    {
-        std::cout << __PRETTY_FUNCTION__ << ": " << SDL_GetError() << "\n";
-        return;
-    }
 
     const int pt_size_smooth = ptsize / 2;
     const int cstr_l = utlz::length(text);
@@ -113,11 +105,8 @@ void render_text_h(font* font, const color color, rect text_bounds, const char* 
     text_box.y = text_bounds.y + std::max((float)text_bounds.h - text_box.h, 0.0f) / 2;
     text_box.w = std::min(cstr_w, offset_bounds_w);
     text_box.h = pt_size_smooth;
-    SDL_Texture* msg_texture = SDL_CreateTextureFromSurface(graphics::get().ren, msg_surface);
-    SDL_RenderTexture(graphics::get().ren, msg_texture, NULL, &text_box);
 
-    SDL_DestroyTexture(msg_texture);
-    SDL_DestroySurface(msg_surface);
+    draw_text(font, color, text_box, text);
 }
 
 void draw_filled_rect(const rect rect, const color color) {

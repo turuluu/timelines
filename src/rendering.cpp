@@ -2,39 +2,40 @@
 #include "entities.hpp"
 #include "sdl/graphics.hpp"
 #include "time.hpp"
+#include "ui/components.hpp"
 
 namespace tls
 {
 ////////////////////////////////////////////////////////////////////////////////
 // rendering_controller
 
-rendering_controller::rendering_controller(struct core& core)
+gui::gui(struct core& core)
   : core(core)
 {
-    base.add(ui::time_indicator(), {});
+    base.add<ui::time_indicator>({});
     utlz::dbg("component: ", base.components[0]->name());
 }
 
 bool
-rendering_controller::is_horizontal() const
+gui::is_horizontal() const
 {
     return get_renderer().orientation == renderer::orientation::horizontal;
 }
 
 bool
-rendering_controller::is_vertical() const
+gui::is_vertical() const
 {
     return get_renderer().orientation == renderer::orientation::vertical;
 }
 
 void
-rendering_controller::set_refresh_rate(size_t refresh_rate)
+gui::set_refresh_rate(size_t refresh_rate)
 {
     frame_interval_ms = 1000 / refresh_rate;
 }
 
 void
-rendering_controller::wait_until_next_frame() const
+gui::wait_until_next_frame() const
 {
     auto time_delta_ms = timer->get_ms_since_start();
     auto elapsed_ms = time_delta_ms - last_frame_ms;
@@ -45,7 +46,7 @@ rendering_controller::wait_until_next_frame() const
 }
 
 void
-rendering_controller::zoom(wheel_move scroll)
+gui::zoom(wheel_move scroll)
 {
     if (renderer_idx < 0)
         return;
@@ -63,12 +64,12 @@ rendering_controller::zoom(wheel_move scroll)
 }
 
 void
-rendering_controller::refresh()
+gui::refresh()
 {
     for (const auto& handle : base.slots)
     {
         auto index = handle.index;
-        ui::context ctx = { { 0, 0, spec::screen_w, spec::screen_h }, mouse };
+        ui::context ctx { { 0, 0, spec::screen_w, spec::screen_h }, mouse, this };
 
         base.components[index]->layout(ctx);
     }
@@ -79,11 +80,11 @@ rendering_controller::refresh()
 }
 
 void
-rendering_controller::render()
+gui::render()
 {
     clear();
 
-    ui::context ctx = { {}, mouse };
+    ui::context ctx { {}, mouse, this };
     for (const auto& handle : base.slots)
         base.components[handle.index]->draw(ctx);
 
@@ -91,23 +92,21 @@ rendering_controller::render()
 }
 
 bool
-rendering_controller::is_renderer_set() const
+gui::is_renderer_set() const
 {
     return renderer_idx >= 0;
 }
 
 void
-rendering_controller::toggle_renderer()
+gui::toggle_renderer()
 {
     toggle = !toggle;
     renderer_idx = (int)toggle;
     get_renderer().render_range(core.data, renderer_container[!toggle]->rendering_interval);
-
-
 }
 
 void
-rendering_controller::set_current(renderer& renderer_ref)
+gui::set_current(renderer& renderer_ref)
 {
     int i = 0;
     while (i < renderer_container.size() && *renderer_container[i] != renderer_ref)
@@ -118,21 +117,21 @@ rendering_controller::set_current(renderer& renderer_ref)
 }
 
 const renderer&
-rendering_controller::get_renderer() const
+gui::get_renderer() const
 {
     assert(is_renderer_set());
     return *renderer_container[renderer_idx];
 }
 
 renderer&
-rendering_controller::get_renderer()
+gui::get_renderer()
 {
     assert(is_renderer_set());
     return *renderer_container[renderer_idx];
 }
 
 void
-rendering_controller::mouse_move(struct mouse_move m, const float multiplier)
+gui::mouse_move(struct mouse_move m, const float multiplier)
 {
     if (!is_renderer_set())
         return;
@@ -142,7 +141,7 @@ rendering_controller::mouse_move(struct mouse_move m, const float multiplier)
 }
 
 void
-rendering_controller::move_viewport(struct mouse_move m, const float multiplier)
+gui::move_viewport(struct mouse_move m, const float multiplier)
 {
     if (!is_renderer_set())
         return;
@@ -168,7 +167,7 @@ renderer::renderer()
 renderer::~renderer() { destroy_font(font); }
 
 void
-renderer::set_controller(rendering_controller* controller)
+renderer::set_controller(gui* controller)
 {
     this->controller = controller;
 }

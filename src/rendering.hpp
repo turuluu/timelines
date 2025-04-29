@@ -11,7 +11,6 @@
 
 namespace tls
 {
-
 struct style_info
 {
     color color;
@@ -26,7 +25,7 @@ struct style_info
     font* font;
 };
 
-struct rendering_controller;
+struct gui;
 struct stylist_base;
 struct renderer
 {
@@ -53,7 +52,7 @@ struct renderer
 
     size_t lanes_in_interval(interval interval) const;
     size_t lane_index(size_t max_entities_in_interval, time_point start, time_point end);
-    void set_controller(rendering_controller* controller);
+    void set_controller(gui* controller);
 
     virtual int max_dim() = 0;
     virtual double get_scale(double bin_len) = 0;
@@ -66,7 +65,7 @@ struct renderer
     // TODO : consider other options, state in interface..
     const int id;
     std::unique_ptr<stylist_base> style;
-    rendering_controller* controller;
+    gui* controller;
     interval rendering_interval;
     std::vector<std::bitset<128>> lanes;
     orientation orientation = orientation::horizontal;
@@ -115,9 +114,9 @@ struct stylist_h_line : stylist_base
     void render(style_info specs, const entity& e) override;
 };
 
-struct rendering_controller
+struct gui
 {
-    explicit rendering_controller(core& core);
+    explicit gui(core& core);
 
     bool is_horizontal() const;
 

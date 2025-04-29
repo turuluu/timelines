@@ -26,7 +26,7 @@ struct application
             event_handler = std::make_unique<T>();
             return *dynamic_cast<T*>(event_handler.get());
         }
-        if constexpr (std::is_base_of<rendering_controller, T>::value)
+        if constexpr (std::is_base_of<gui, T>::value)
         {
             ui = std::make_unique<T>(std::forward<Args&...>(args...));
             return *ui;
@@ -41,6 +41,6 @@ struct application
     bool is_running{ true };
     events events;
     std::unique_ptr<event_handler_ifc> event_handler;
-    std::unique_ptr<rendering_controller> ui;
+    std::unique_ptr<gui> ui;
 };
 } // namespace tls

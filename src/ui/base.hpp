@@ -1,21 +1,27 @@
+#pragma once
+
 #include "../types.hpp"
 
 #include <bitset>
 #include <cassert>
 namespace tls
 {
+struct gui;
+
 namespace spec
 {
 constexpr sz max_components = 256;
 }
 namespace ui
 {
+struct base;
 
 // context "is"
 struct context
 {
     rect bounds;
     mouse_move mouse;
+    gui* gui{ nullptr };
 };
 
 // component "does"
@@ -50,13 +56,13 @@ struct base
         components.reserve(spec::max_components);
         contexts.reserve(spec::max_components);
     }
-    template <typename Component>
-    sz add(Component new_component, context&& ctx)
+    template<typename Component, typename... Args>
+    sz add(context&& ctx, Args&&... args)
     {
         sz index = 0;
         if (freelist.empty())
         {
-            components.emplace_back(std::make_unique<Component>(std::move(new_component)));
+            components.emplace_back(std::make_unique<Component>( std::forward<Args>(args)...));
             contexts.emplace_back(std::move(ctx));
 
             auto& slot = slots.emplace_back(std::move(handle{ slots.size(), 0, true }));
@@ -72,7 +78,7 @@ struct base
             index = slot.index;
 
             slots[index] = std::move(slot);
-            components[index] = std::make_unique<Component>(std::move(new_component));
+            components[index] = std::make_unique<Component>(std::forward<Args>(args)...);
             contexts[index] = std::move(ctx);
         }
 
@@ -81,8 +87,11 @@ struct base
     }
     bool remove(sz id)
     {
-        if (id >= size || (!freelist.empty() &&
-                           std::find_if(freelist.begin(), freelist.end(), [&id](struct handle& handle){ return id == handle.index; }) == freelist.end()))
+        if (id >= size ||
+            (!freelist.empty() && std::find_if(freelist.begin(),
+                                               freelist.end(),
+                                               [&id](struct handle& handle)
+                                               { return id == handle.index; }) == freelist.end()))
             return false;
 
         auto slot = slots[id];
@@ -102,7 +111,7 @@ struct composite_base
   : component
   , storage<component>
 {
-    composite_base(base& base)
+    composite_base(struct base& base)
       : base(base)
     {
     }
@@ -110,23 +119,8 @@ struct composite_base
     // TODO : tree of indices matching components and contexts
     // ...
 
-    base& base;
+    struct base& base;
 };
 
-struct time_indicator : component
-{
-    std::string_view name() const override { return "time_indicator"; }
-    void draw(const context& ctx) override
-    {
-        point start{ coord, bounds.y + bounds.h };
-        point end{ coord, 0 };
-        draw_line(start, end, colors::broken_blue, 3);
-    }
-    void refresh(const context& ctx) override { coord = ctx.mouse.x; }
-    void layout(const context& ctx) override { bounds = ctx.bounds; }
-
-    rect bounds;
-    float coord = 0;
-};
 } // namespace ui
 } // namespace tls
