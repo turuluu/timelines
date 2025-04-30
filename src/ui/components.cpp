@@ -5,7 +5,6 @@ namespace tls
 {
 namespace ui
 {
-time_indicator::time_indicator() {}
 
 void
 time_indicator::draw(const context& ctx)
@@ -33,11 +32,13 @@ time_indicator::draw(const context& ctx)
     else
         r = { 10, coord.y - (h * 0.5f), w, h };
 
-    // point start{ coord, bounds.y + bounds.h };
-    // point end{ coord, 0 };
-    // draw_line(start, end, colors::baby_powder, 1);
+    draw_text(renderer.font, color, r, text);
+}
 
-    draw_text(renderer.font, colors::broken_blue, r, text);
+void
+text::draw(const context& ctx)
+{
+
 }
 } // namespace ui
 } // namespace tls
