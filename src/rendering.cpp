@@ -74,7 +74,7 @@ gui::refresh()
         base.components[index]->layout(ctx);
     }
 
-    ui::context ctx = { {}, mouse };
+    ui::context ctx { {0, 0, spec::screen_w, spec::screen_h}, mouse, this };
     for (const auto& handle : base.slots)
         base.components[handle.index]->refresh(ctx);
 }
@@ -84,9 +84,8 @@ gui::render()
 {
     clear();
 
-    ui::context ctx { {0, 0, spec::screen_w, spec::screen_h}, mouse, this };
     for (const auto& handle : base.slots)
-        base.components[handle.index]->draw(ctx);
+        base.components[handle.index]->draw({});
 
     get_renderer().render_range(core.data, get_renderer().rendering_interval);
 }

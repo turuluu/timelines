@@ -8,6 +8,7 @@
 #include "core.hpp"
 #include "types.hpp"
 #include "ui/base.hpp"
+#include "sdl/graphics.hpp"
 
 namespace tls
 {
